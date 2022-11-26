@@ -98,7 +98,7 @@ class _LoginScreen extends State<LoginScreen> with BackPressedMixin {
                         ATTextfield(
                           hintText: I18n.of(context).enter_password,
                           textEditingController: passwordController,
-                          isPasswordField: true,
+                          //isPasswordField: true,
                           isSuffixIcon: true,
                           onFieldSubmitted: (String? value) => context
                               .read<LoginScreenBloc>()

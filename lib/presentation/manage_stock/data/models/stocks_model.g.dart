@@ -20,10 +20,10 @@ class StockModelAdapter extends TypeAdapter<StockModel> {
       id: fields[0] as String?,
       name: fields[1] as String?,
       description: fields[2] as String?,
-      minQuantity: fields[3] as double?,
-      maxQuantity: fields[4] as double?,
-      orderQuantity: fields[5] as double?,
-      quantityOnHand: fields[6] as double?,
+      minQuantity: fields[3] as double,
+      maxQuantity: fields[4] as double,
+      order: fields[5] as double,
+      onHand: fields[6] as double,
       sku: fields[7] as String?,
       isActive: fields[8] as String?,
       num: fields[9] as String?,
@@ -38,13 +38,14 @@ class StockModelAdapter extends TypeAdapter<StockModel> {
       price: fields[18] as String?,
       createdDate: fields[19] as String?,
       modifiedDate: fields[20] as String?,
+      quantity: fields[21] as double?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StockModel obj) {
     writer
-      ..writeByte(21)
+      ..writeByte(22)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -56,9 +57,9 @@ class StockModelAdapter extends TypeAdapter<StockModel> {
       ..writeByte(4)
       ..write(obj.maxQuantity)
       ..writeByte(5)
-      ..write(obj.orderQuantity)
+      ..write(obj.order)
       ..writeByte(6)
-      ..write(obj.quantityOnHand)
+      ..write(obj.onHand)
       ..writeByte(7)
       ..write(obj.sku)
       ..writeByte(8)
@@ -86,7 +87,9 @@ class StockModelAdapter extends TypeAdapter<StockModel> {
       ..writeByte(19)
       ..write(obj.createdDate)
       ..writeByte(20)
-      ..write(obj.modifiedDate);
+      ..write(obj.modifiedDate)
+      ..writeByte(21)
+      ..write(obj.quantity);
   }
 
   @override

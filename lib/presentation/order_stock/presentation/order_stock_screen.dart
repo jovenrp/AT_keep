@@ -35,7 +35,6 @@ class OrderStockScreen extends StatefulWidget {
 }
 
 class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
-  bool _isDoubleBackPressed = false;
   late TextEditingController searchController;
   late TextEditingController orderController;
   late FocusNode orderNode;
@@ -82,7 +81,7 @@ class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
             child: Scaffold(
               backgroundColor: AppColors.background,
               appBar: AppBar(
-                  backgroundColor: AppColors.secondary,
+                  backgroundColor: AppColors.gomoRedOverlay,
                   iconTheme: const IconThemeData(color: AppColors.background),
                   title: const ATText(
                     text: 'Order Stock',
@@ -214,7 +213,7 @@ class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
                               alignment: Alignment.centerRight,
                               color: AppColors.headerGrey,
                               child: const ATText(
-                                text: 'Ord',
+                                text: 'Qty',
                                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.white),
                               ),
                             ),
@@ -237,7 +236,7 @@ class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
                           itemBuilder: (BuildContext context, index) {
                             return Visibility(
                               visible: isShowAll == true ||
-                                  (double.parse(context.read<ManageStockBloc>().getOrderQuantity(state.stocksList?[index]).toString()) > 0),
+                                  (double.parse(context.read<ManageStockBloc>().getQuantity(state.stocksList?[index]).toString()) > 0),
                               child: Slidable(
                                 key: ValueKey<int>(index),
                                 child: GestureDetector(
@@ -320,7 +319,7 @@ class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
                                                             alignment: Alignment.centerRight,
                                                             color: AppColors.headerGrey,
                                                             child: const ATText(
-                                                              text: 'Ord',
+                                                              text: 'Qty',
                                                               style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.white),
                                                             ),
                                                           ),
@@ -379,9 +378,9 @@ class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
                                                             padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
                                                             alignment: Alignment.centerRight,
                                                             child: ATText(
-                                                              text: state.stocksList?[index].quantityOnHand
+                                                              text: state.stocksList?[index].onHand
                                                                       .toString()
-                                                                      .removeDecimalZeroFormat(state.stocksList?[index].quantityOnHand ?? 0) ??
+                                                                      .removeDecimalZeroFormat(state.stocksList?[index].onHand ?? 0) ??
                                                                   '',
                                                               fontColor: AppColors.onboardingText,
                                                               fontSize: 16,
@@ -392,9 +391,9 @@ class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
                                                             padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
                                                             alignment: Alignment.centerRight,
                                                             child: ATText(
-                                                              text: state.stocksList?[index].orderQuantity
+                                                              text: state.stocksList?[index].quantity
                                                                       .toString()
-                                                                      .removeDecimalZeroFormat(state.stocksList?[index].orderQuantity ?? 0) ??
+                                                                      .removeDecimalZeroFormat(state.stocksList?[index].quantity ?? 0) ??
                                                                   '',
                                                               fontColor: AppColors.onboardingText,
                                                               fontSize: 16,
@@ -476,9 +475,9 @@ class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
                                             color: state.stocksList?[index].maxQuantity == 0
                                                 ? AppColors.subtleGrey
                                                 : double.parse(state.stocksList?[index].maxQuantity.toString() ?? '0') <=
-                                                        double.parse(state.stocksList?[index].quantityOnHand.toString() ?? '0')
+                                                        double.parse(state.stocksList?[index].onHand.toString() ?? '0')
                                                     ? AppColors.successGreen
-                                                    : state.stocksList?[index].quantityOnHand == 0
+                                                    : state.stocksList?[index].onHand == 0
                                                         ? AppColors.criticalRed
                                                         : AppColors.warningOrange),
                                       ),
@@ -531,9 +530,9 @@ class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
                                                     padding: const EdgeInsets.only(right: 18),
                                                     alignment: Alignment.centerRight,
                                                     child: ATText(
-                                                      text: state.stocksList?[index].quantityOnHand
+                                                      text: state.stocksList?[index].onHand
                                                           .toString()
-                                                          .removeDecimalZeroFormat(state.stocksList?[index].quantityOnHand ?? 0),
+                                                          .removeDecimalZeroFormat(state.stocksList?[index].onHand ?? 0),
                                                       style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.tertiary),
                                                     ),
                                                   ),
@@ -541,7 +540,7 @@ class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
                                                     padding: const EdgeInsets.only(right: 8),
                                                     alignment: Alignment.centerRight,
                                                     child: ATText(
-                                                      text: context.read<ManageStockBloc>().getOrderQuantity(state.stocksList?[index]),
+                                                      text: context.read<ManageStockBloc>().getQuantity(state.stocksList?[index]),
                                                       style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.tertiary),
                                                     ),
                                                   ),

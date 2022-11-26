@@ -7,7 +7,10 @@ part of 'actiontrak_api_service.dart';
 // **************************************************************************
 
 class _ActionTRAKApiService implements ActionTRAKApiService {
-  _ActionTRAKApiService(this._dio, {this.baseUrl}) {
+  _ActionTRAKApiService(
+    this._dio, {
+    this.baseUrl,
+  }) {
     baseUrl ??= 'https://api.gomo.ph/';
   }
 

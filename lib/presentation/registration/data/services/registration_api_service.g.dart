@@ -7,7 +7,10 @@ part of 'registration_api_service.dart';
 // **************************************************************************
 
 class _RegistrationApiService implements RegistrationApiService {
-  _RegistrationApiService(this._dio, {this.baseUrl}) {
+  _RegistrationApiService(
+    this._dio, {
+    this.baseUrl,
+  }) {
     baseUrl ??= 'http://166.70.31.151:5000';
   }
 
@@ -16,16 +19,25 @@ class _RegistrationApiService implements RegistrationApiService {
   String? baseUrl;
 
   @override
-  Future<String> createAccount(uid, pwd) async {
+  Future<String> createAccount(
+    uid,
+    pwd,
+  ) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio.fetch<String>(_setStreamType<String>(Options(
-            method: 'POST', headers: _headers, extra: _extra)
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
         .compose(
-            _dio.options, '/userBasicLogin.html?useHdrs=true&uid=$uid&pwd=$pwd',
-            queryParameters: queryParameters, data: _data)
+          _dio.options,
+          '/userBasicLogin.html?useHdrs=true&uid=$uid&pwd=$pwd',
+          queryParameters: queryParameters,
+          data: _data,
+        )
         .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = _result.data!;
     return value;

@@ -23,29 +23,19 @@ class ManageStockBloc extends Cubit<ManageStockState> {
   final ManageStockRepository manageStockRepository;
   final PersistenceService persistenceService;
 
-  Future<void> addStock(
-      {String? sku,
-      String? name,
-      String? num,
-      String? minQuantity,
-      String? maxQuantity,
-      String? orderQuantity}) async {
+  Future<void> addStock({String? sku, String? name, String? num, String? minQuantity, String? maxQuantity, String? order}) async {
     emit(state.copyWith(isAdding: true));
     Box box = await baseStorageRepository.openBox();
     List<StockModel> stockList = baseStorageRepository.getStockList(box);
 
     StockModel stock = StockModel(
-      id: stockList.isNotEmpty
-          ? (int.parse(stockList[stockList.length - 1].id ?? '0') + 1)
-              .toString()
-              .padLeft(5, '0')
-          : '00001',
+      id: stockList.isNotEmpty ? (int.parse(stockList[stockList.length - 1].id ?? '0') + 1).toString().padLeft(5, '0') : '00001',
       sku: sku,
       name: name ?? '',
       num: num ?? '',
       minQuantity: double.parse(minQuantity ?? '0'),
       maxQuantity: double.parse(maxQuantity ?? '0'),
-      orderQuantity: double.parse(orderQuantity ?? '0'),
+      order: double.parse(order ?? '0'),
     );
 
     await baseStorageRepository.addStock(box, stock);
@@ -53,12 +43,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
   }
 
   Future<void> updateStock(int index, StockModel? stockModel,
-      {String? sku,
-      String? name,
-      String? num,
-      String? minQuantity,
-      String? maxQuantity,
-      String? orderQuantity}) async {
+      {String? sku, String? name, String? num, String? minQuantity, String? maxQuantity, String? order}) async {
     emit(state.copyWith(isAdding: true));
 
     Box box = await baseStorageRepository.openBox();
@@ -69,52 +54,40 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     stockModel?.setNum(num ?? '');
     stockModel?.setMinQuantity(double.parse(minQuantity ?? '0'));
     stockModel?.setMaxQuantity(double.parse(maxQuantity ?? '0'));
-    stockModel?.setOrderQuantity(double.parse(orderQuantity ?? '0'));
+    stockModel?.setorder(double.parse(order ?? '0'));
 
-    await baseStorageRepository.updateStock(
-        box, index, stockModel ?? StockModel());
+    await baseStorageRepository.updateStock(box, index, stockModel ?? StockModel());
     emit(state.copyWith(isAdding: false));
   }
 
   Future<void> getStocks() async {
-    emit(state.copyWith(
-        isLoading: true,
-        stocksList: <StockModel>[],
-        formResponse: FormModel(error: false, message: '')));
+    emit(state.copyWith(isLoading: true, stocksList: <StockModel>[], formResponse: FormModel(error: false, message: '')));
 
     Box box = await baseStorageRepository.openBox();
     List<StockModel> stockList = baseStorageRepository.getStockList(box);
 
-    emit(state.copyWith(
-        isLoading: false, hasError: false, stocksList: stockList));
+    emit(state.copyWith(isLoading: false, hasError: false, stocksList: stockList));
   }
 
-  Future<void> adjustStock(
-      {StockModel? stockModel,
-      required int index,
-      required double quantity,
-      bool? isIn}) async {
+  Future<void> adjustStock({StockModel? stockModel, required int index, required double quantity, bool? isIn}) async {
     Box box = await baseStorageRepository.openBox();
     double qty = 0;
-    double currentQuantity = stockModel?.quantityOnHand ?? 0;
+    double currentQuantity = stockModel?.onHand ?? 0;
     if (isIn == true) {
       qty = currentQuantity += quantity;
     } else {
       qty = currentQuantity -= quantity;
     }
 
-    stockModel?.setQuantityOnHand(qty);
+    stockModel?.setonHand(qty);
     baseStorageRepository.updateStock(box, index, stockModel ?? StockModel());
   }
 
-  Future<void> orderStock(
-      {StockModel? stockModel,
-      required int index,
-      required double quantity,
-      bool? isIn}) async {
+  Future<void> orderStock({StockModel? stockModel, required int index, required double quantity, bool? isIn}) async {
     Box box = await baseStorageRepository.openBox();
 
-    stockModel?.setOrderQuantity(quantity);
+    stockModel?.setQuantity(quantity);
+    log('TESTSTS ${stockModel?.quantity}');
     baseStorageRepository.updateStock(box, index, stockModel ?? StockModel());
   }
 
@@ -126,40 +99,42 @@ class ManageStockBloc extends Cubit<ManageStockState> {
   }
 
   Future<void> displayErrorMessage(FormModel? response) async {
-    emit(state.copyWith(
-        isLoading: false, hasError: false, formResponse: response));
+    emit(state.copyWith(isLoading: false, hasError: false, formResponse: response));
   }
 
-  String getOrderQuantity(StockModel? stockModel) {
-    String order = '0';
-    if (stockModel!.minQuantity! <= 0 && stockModel.maxQuantity! <= 0) {
-      order = stockModel.orderQuantity
-          .toString()
-          .removeDecimalZeroFormat(stockModel.orderQuantity ?? 0);
-    } else if (stockModel.minQuantity! <= 0 &&
-        stockModel.maxQuantity! > 0 &&
-        stockModel.quantityOnHand! <= stockModel.minQuantity!) {
-      if (stockModel.orderQuantity! > 0) {
-        order = stockModel.orderQuantity
-            .toString()
-            .removeDecimalZeroFormat(stockModel.orderQuantity ?? 0);
+  String getQuantity(StockModel? stockModel) {
+    String quantity = '0';
+    double stockQuantity = stockModel?.quantity ?? 0;
+
+    if (stockModel!.minQuantity <= 0 && stockModel.maxQuantity <= 0) {
+      quantity = stockModel.quantity.toString().removeDecimalZeroFormat(stockModel.quantity ?? 0);
+    } else if (stockModel.minQuantity <= 0 && stockModel.maxQuantity > 0 && stockModel.onHand < stockModel.minQuantity) {
+      if (stockQuantity > 0) {
+        quantity = stockModel.quantity.toString().removeDecimalZeroFormat(stockModel.quantity ?? 0);
       } else {
-        order = stockModel.maxQuantity
-            .toString()
-            .removeDecimalZeroFormat(stockModel.maxQuantity ?? 0);
+        quantity = stockModel.maxQuantity.toString().removeDecimalZeroFormat(stockModel.maxQuantity);
       }
     } else {
-      if (stockModel.quantityOnHand! >= stockModel.maxQuantity!) {
-        order = stockModel.orderQuantity
-            .toString()
-            .removeDecimalZeroFormat((stockModel.orderQuantity!));
+      if (stockModel.onHand > stockModel.maxQuantity) {
+        quantity = stockModel.quantity.toString().removeDecimalZeroFormat((stockModel.quantity ?? 0));
+      } else if (stockModel.onHand < stockModel.minQuantity) {
+        if (stockModel.order > 0) {
+          quantity = stockModel.order.toString().removeDecimalZeroFormat((stockModel.order));
+        } else {
+          quantity = (stockModel.maxQuantity - stockModel.onHand).toString().removeDecimalZeroFormat((stockModel.maxQuantity - stockModel.onHand));
+        }
       } else {
-        order = (stockModel.maxQuantity! - stockModel.quantityOnHand!)
-            .toString()
-            .removeDecimalZeroFormat(
-                (stockModel.maxQuantity! - stockModel.quantityOnHand!));
+        if (stockModel.quantity! > 0) {
+          quantity = stockModel.quantity.toString().removeDecimalZeroFormat((stockModel.quantity ?? 0));
+        } else if (stockModel.onHand == stockModel.minQuantity) {
+          quantity = '0';
+        } else {
+          quantity = (stockModel.maxQuantity - stockModel.onHand).toString().removeDecimalZeroFormat((stockModel.maxQuantity - stockModel.onHand));
+        }
       }
+
     }
-    return order;
+    stockModel.setQuantity(double.parse(quantity));
+    return quantity;
   }
 }

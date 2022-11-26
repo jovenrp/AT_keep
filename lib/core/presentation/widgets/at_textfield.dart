@@ -8,10 +8,11 @@ class ATTextfield extends StatefulWidget {
   const ATTextfield({
     Key? key,
     this.hintText,
-    this.isPasswordField = false,
+    this.isScanner = false,
     this.isNumbersOnly = false,
     this.isSuffixIcon = false,
     this.onFieldSubmitted,
+    this.onPressed,
     this.textInputAction = TextInputAction.done,
     this.textAlign = TextAlign.left,
     this.textEditingController,
@@ -19,11 +20,12 @@ class ATTextfield extends StatefulWidget {
   }) : super(key: key);
 
   final String? hintText;
-  final bool isPasswordField;
+  final bool? isScanner;
   final bool isSuffixIcon;
   final TextAlign? textAlign;
   final TextInputAction? textInputAction;
   final Function(String?)? onFieldSubmitted;
+  final Function()? onPressed;
   final TextEditingController? textEditingController;
   final FocusNode? focusNode;
   final bool isNumbersOnly;
@@ -43,7 +45,6 @@ class _ATTextfield extends State<ATTextfield> {
         controller: widget.textEditingController,
         focusNode: widget.focusNode,
         key: widget.key,
-        obscureText: widget.isPasswordField ? _passwordNotVisible : false,
         onFieldSubmitted: widget.onFieldSubmitted,
         textAlign: widget.textAlign ?? TextAlign.center,
         textInputAction: widget.textInputAction,
@@ -85,32 +86,11 @@ class _ATTextfield extends State<ATTextfield> {
             alignLabelWithHint: true,
             fillColor: AppColors.white,
             filled: true,
-            suffixIcon: widget.isSuffixIcon
-                ? IconButton(
-                    icon: widget.isPasswordField
-                        ? Icon(
-                            // Based on passwordVisible state choose the icon
-                            _passwordNotVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: Theme.of(context).primaryColorDark,
-                          )
-                        : Icon(Icons.clear,
-                            color: Theme.of(context).primaryColorDark),
-                    onPressed: widget.isPasswordField
-                        ? () {
-                            // Update the state i.e. toogle the state of passwordVisible variable
-                            setState(() {
-                              _passwordNotVisible = !_passwordNotVisible;
-                            });
-                          }
-                        : () {
-                            setState(() {
-                              widget.textEditingController?.clear();
-                            });
-                          },
-                  )
-                : null),
+            suffixIcon: widget.isScanner == true ? IconButton(
+              icon: const Icon(Icons.qr_code,
+                  color: AppColors.semiDark),
+              onPressed: widget.onPressed ?? () {},
+            ) : null),
       ),
     );
   }

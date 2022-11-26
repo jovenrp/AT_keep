@@ -145,7 +145,7 @@ class _RegistrationScreen extends State<RegistrationScreen> {
                           hintText: 'password',
                           textEditingController: passwordController,
                           textAlign: TextAlign.start,
-                          isPasswordField: true,
+                          //isPasswordField: true,
                           isSuffixIcon: true,
                         ),
                         const SizedBox(

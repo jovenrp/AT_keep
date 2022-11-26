@@ -8,10 +8,10 @@ class StockModel {
     this.id,
     this.name,
     this.description,
-    this.minQuantity,
-    this.maxQuantity,
-    this.orderQuantity = 0,
-    this.quantityOnHand = 0,
+    this.minQuantity = 0,
+    this.maxQuantity = 0,
+    this.order = 0,
+    this.onHand = 0,
     this.sku,
     this.isActive = 'Y',
     this.num,
@@ -26,6 +26,7 @@ class StockModel {
     this.price,
     this.createdDate,
     this.modifiedDate,
+    this.quantity = 0,
   });
 
   @HiveField(0)
@@ -38,16 +39,16 @@ class StockModel {
   String? description;
 
   @HiveField(3)
-  double? minQuantity;
+  double minQuantity;
 
   @HiveField(4)
-  double? maxQuantity;
+  double maxQuantity;
 
   @HiveField(5)
-  double? orderQuantity;
+  double order;
 
   @HiveField(6)
-  double? quantityOnHand;
+  double onHand;
 
   @HiveField(7)
   String? sku;
@@ -91,6 +92,9 @@ class StockModel {
   @HiveField(20)
   String? modifiedDate;
 
+  @HiveField(21)
+  double? quantity;
+
   void setName(String name) {
     this.name = name;
   }
@@ -111,15 +115,19 @@ class StockModel {
     maxQuantity = quantity;
   }
 
-  void setQuantityOnHand(double quantity) {
-    quantityOnHand = quantity;
+  void setonHand(double quantity) {
+    onHand = quantity;
   }
 
-  void setOrderQuantity(double quantity) {
-    orderQuantity = quantity;
+  void setorder(double quantity) {
+    order = quantity;
   }
 
   void setNum(String num) {
     this.num = num;
+  }
+
+  void setQuantity(double quantity) {
+    this.quantity = quantity;
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -14,6 +16,7 @@ import '../../../core/domain/utils/constants/app_colors.dart';
 import '../../../core/presentation/utils/dialog_utils.dart';
 import '../../../core/presentation/widgets/at_loading_indicator.dart';
 import '../../../core/presentation/widgets/at_textfield.dart';
+import '../../scanners/qr_screen.dart';
 import '../data/models/form_model.dart';
 
 class ManageStockScreen extends StatefulWidget {
@@ -51,12 +54,13 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
   late FocusNode nameNode;
   late FocusNode minNode;
   late FocusNode maxNode;
-  late FocusNode orderQuantityNode;
+  late FocusNode orderNode;
   late FocusNode adjustNode;
   late FocusNode submitNode;
 
   final RefreshController refreshController = RefreshController();
   bool canRefresh = true;
+  bool skuHasFocus = false;
 
   @override
   void initState() {
@@ -74,7 +78,7 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
     nameNode = FocusNode();
     minNode = FocusNode();
     maxNode = FocusNode();
-    orderQuantityNode = FocusNode();
+    orderNode = FocusNode();
     adjustNode = FocusNode();
     submitNode = FocusNode();
 
@@ -362,9 +366,9 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                                                           padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
                                                           alignment: Alignment.centerRight,
                                                           child: ATText(
-                                                            text: state.stocksList?[index].quantityOnHand
+                                                            text: state.stocksList?[index].onHand
                                                                     .toString()
-                                                                    .removeDecimalZeroFormat(state.stocksList?[index].quantityOnHand ?? 0) ??
+                                                                    .removeDecimalZeroFormat(state.stocksList?[index].onHand ?? 0) ??
                                                                 '',
                                                             fontColor: AppColors.onboardingText,
                                                             fontSize: 16,
@@ -375,9 +379,9 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                                                           padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
                                                           alignment: Alignment.centerRight,
                                                           child: ATText(
-                                                            text: state.stocksList?[index].orderQuantity
+                                                            text: state.stocksList?[index].order
                                                                     .toString()
-                                                                    .removeDecimalZeroFormat(state.stocksList?[index].orderQuantity ?? 0) ??
+                                                                    .removeDecimalZeroFormat(state.stocksList?[index].order ?? 0) ??
                                                                 '',
                                                             fontColor: AppColors.onboardingText,
                                                             fontSize: 16,
@@ -483,9 +487,9 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                                           color: state.stocksList?[index].maxQuantity == 0
                                               ? AppColors.subtleGrey
                                               : double.parse(state.stocksList?[index].maxQuantity.toString() ?? '0') <=
-                                                      double.parse(state.stocksList?[index].quantityOnHand.toString() ?? '0')
+                                                      double.parse(state.stocksList?[index].onHand.toString() ?? '0')
                                                   ? AppColors.successGreen
-                                                  : state.stocksList?[index].quantityOnHand == 0
+                                                  : state.stocksList?[index].onHand == 0
                                                       ? AppColors.criticalRed
                                                       : AppColors.warningOrange),
                                     ),
@@ -538,9 +542,9 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                                                   padding: const EdgeInsets.only(right: 8),
                                                   alignment: Alignment.centerRight,
                                                   child: ATText(
-                                                    text: state.stocksList?[index].quantityOnHand
+                                                    text: state.stocksList?[index].onHand
                                                         .toString()
-                                                        .removeDecimalZeroFormat(state.stocksList?[index].quantityOnHand ?? 0),
+                                                        .removeDecimalZeroFormat(state.stocksList?[index].onHand ?? 0),
                                                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.tertiary),
                                                   ),
                                                 ),
@@ -548,9 +552,9 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                                                   padding: const EdgeInsets.only(right: 8),
                                                   alignment: Alignment.centerRight,
                                                   child: ATText(
-                                                    text: state.stocksList?[index].orderQuantity
+                                                    text: state.stocksList?[index].order
                                                         .toString()
-                                                        .removeDecimalZeroFormat(state.stocksList?[index].orderQuantity ?? 0),
+                                                        .removeDecimalZeroFormat(state.stocksList?[index].order ?? 0),
                                                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.tertiary),
                                                   ),
                                                 ),
@@ -589,26 +593,30 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
     );
   }
 
-  Future<dynamic> openBottomModal({required ManageStockState state, int index = 0, bool isFloatingButton = true}) {
-    return showModalBottomSheet(
+  void openBottomModal({required ManageStockState state, int index = 0, bool isFloatingButton = true}) {
+     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (context) {
-        skuController.text = isFloatingButton ? '' : state.stocksList?[index].sku ?? '';
-        nameController.text = isFloatingButton ? '' : state.stocksList?[index].name ?? '';
-        numController.text = isFloatingButton ? '' : state.stocksList?[index].num ?? '';
-        minController.text = isFloatingButton
-            ? ''
-            : state.stocksList?[index].minQuantity.toString().removeDecimalZeroFormat(state.stocksList?[index].minQuantity ?? 0) ?? '';
-        maxController.text = isFloatingButton
-            ? ''
-            : state.stocksList?[index].maxQuantity.toString().removeDecimalZeroFormat(state.stocksList?[index].maxQuantity ?? 0) ?? '';
-        orderController.text = isFloatingButton
-            ? ''
-            : state.stocksList?[index].orderQuantity.toString().removeDecimalZeroFormat(state.stocksList?[index].orderQuantity ?? 0) ?? '';
-        skuController.selection = TextSelection.fromPosition(TextPosition(offset: skuController.text.length));
+        if (!skuHasFocus) {
+          skuHasFocus = true;
+          Future<void>.delayed(const Duration(milliseconds: 200), () {skuNode.requestFocus();});
 
-        Future<void>.delayed(const Duration(milliseconds: 200), () => skuNode.requestFocus());
+          skuController.text = isFloatingButton ? '' : state.stocksList?[index].sku ?? '';
+          nameController.text = isFloatingButton ? '' : state.stocksList?[index].name ?? '';
+          numController.text = isFloatingButton ? '' : state.stocksList?[index].num ?? '';
+          minController.text = isFloatingButton
+              ? ''
+              : state.stocksList?[index].minQuantity.toString().removeDecimalZeroFormat(state.stocksList?[index].minQuantity ?? 0) ?? '';
+          maxController.text = isFloatingButton
+              ? ''
+              : state.stocksList?[index].maxQuantity.toString().removeDecimalZeroFormat(state.stocksList?[index].maxQuantity ?? 0) ?? '';
+          orderController.text =
+          isFloatingButton ? '' : state.stocksList?[index].order.toString().removeDecimalZeroFormat(state.stocksList?[index].order ?? 0) ?? '';
+
+          skuController.selection = TextSelection.fromPosition(TextPosition(offset: skuController.text.length));
+        }
+
         return Container(
           padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: MediaQuery.of(context).viewInsets.bottom + 30),
           child: Wrap(
@@ -628,7 +636,16 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                   hintText: 'SKU',
                   textEditingController: skuController,
                   focusNode: skuNode,
+                  isScanner: true,
                   textInputAction: TextInputAction.next,
+                  onPressed: () {
+                    Future<void>.delayed(Duration.zero, () async {
+                      String? scannedSku = await Navigator.push(context, MaterialPageRoute<String>(builder: (BuildContext context) {
+                        return const QRScreen(scanner: 'serial');
+                      }));
+                      skuController.text = scannedSku ?? '';
+                    });
+                  },
                 ),
               ),
               Padding(
@@ -637,7 +654,16 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                   hintText: 'Num',
                   textEditingController: numController,
                   focusNode: numNode,
+                  isScanner: true,
                   textInputAction: TextInputAction.next,
+                  onPressed: () {
+                    Future<void>.delayed(Duration.zero, () async {
+                      String? scannedSku = await Navigator.push(context, MaterialPageRoute<String>(builder: (BuildContext context) {
+                        return const QRScreen(scanner: 'serial');
+                      }));
+                      numController.text = scannedSku ?? '';
+                    });
+                  },
                 ),
               ),
               Padding(
@@ -685,7 +711,7 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                         hintText: 'Ord Quantity',
                         textEditingController: orderController,
                         textAlign: TextAlign.center,
-                        focusNode: orderQuantityNode,
+                        focusNode: orderNode,
                         textInputAction: TextInputAction.done,
                         onFieldSubmitted: (String? value) => addOrder(state, index, isFloatingButton),
                       ),
@@ -709,7 +735,9 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
           ),
         );
       },
-    );
+    ).whenComplete(() {
+      skuHasFocus = false;
+     });
   }
 
   void addOrder(ManageStockState state, int index, bool isFloatingButton) {
@@ -724,7 +752,7 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
               num: numController.text,
               minQuantity: minController.text,
               maxQuantity: maxController.text,
-              orderQuantity: orderController.text,
+              order: orderController.text,
             )
             .then((_) {
           Navigator.of(context).pop();
@@ -741,7 +769,7 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
               num: numController.text,
               minQuantity: minController.text,
               maxQuantity: maxController.text,
-              orderQuantity: orderController.text,
+              order: orderController.text,
             )
             .then((_) {
           Navigator.of(context).pop();
