@@ -97,7 +97,9 @@ class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
                     child: ATTextfield(
                       hintText: 'Search Item',
                       textEditingController: searchController,
-                      onFieldSubmitted: (String? value) {},
+                      onFieldSubmitted: (String? value) {
+                        context.read<ManageStockBloc>().searchStocks(search: value ?? '');
+                      },
                     ),
                   ),
                   Padding(
@@ -220,6 +222,23 @@ class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
                           ],
                         ),
                       ],
+                    ),
+                  ),
+                  Visibility(
+                    visible: state.stocksList?.isEmpty == true,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const <Widget>[
+                          SizedBox(height: 70,),
+                          Icon(
+                            Icons.local_shipping_outlined,
+                            size: 70,
+                            color: AppColors.tertiary,
+                          ),
+                          ATText(text: 'No orders at the moment.', fontSize: 20, fontColor: AppColors.tertiary,)
+                        ],
+                      ),
                     ),
                   ),
                   Expanded(

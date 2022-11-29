@@ -187,15 +187,20 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
                               ],
                             ),
                             Column(
-                              children: const <Widget>[
-                                ATText(
+                              children: <Widget>[
+                                const ATText(
                                   text: 'Copyright ActionTRAK 2022',
                                   style: TextStyle(fontSize: 12),
                                 ),
-                                ATText(
+                                const ATText(
                                   text: 'All Rights Reserved',
                                   style: TextStyle(fontSize: 12),
-                                )
+                                ),
+                                const SizedBox(height: 10,),
+                                ATText(
+                                  text: 'v${widget.config?.appVersion}',
+                                  style: const TextStyle(fontSize: 12),
+                                ),
                               ],
                             )
                           ],

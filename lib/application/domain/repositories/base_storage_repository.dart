@@ -7,4 +7,6 @@ abstract class BaseStorageRepository {
   Future<void> addStock(Box box, StockModel stockModel);
   Future<void> updateStock(Box box, int index, StockModel stockModel);
   Future<void> deleteStock(Box box, StockModel stockModel, int index);
+  Future<void> backupDatabase(Box box, String? path);
+  Future<void> restoreDatabase(Box box, String? path);
 }

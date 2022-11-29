@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -36,6 +37,34 @@ class BaseStorageRepositoryImpl implements BaseStorageRepository {
   @override
   Future<void> deleteStock(Box box, StockModel stockModel, int index) async {
     await box.deleteAt(index);
+    //await box.clear();
+  }
+
+  @override
+  Future<void> backupDatabase(Box box, String? path) async {
+    /*final box = await Hive.openBox(boxName);
+    final boxPath = box.path;
+    await box.close();
+
+    try {
+      File(boxPath ?? '').copy(path ?? '');
+    } finally {
+      await Hive.openBox(boxName);
+    }*/
+    //await box.clear();
+  }
+
+  @override
+  Future<void> restoreDatabase(Box box, String? path) async {
+    /*final box = await Hive.openBox(boxName);
+    final boxPath = box.path;
+    await box.close();
+
+    try {
+      File(path ?? '').copy(boxPath ?? '');
+    } finally {
+      await Hive.openBox(boxName);
+    }*/
     //await box.clear();
   }
 }

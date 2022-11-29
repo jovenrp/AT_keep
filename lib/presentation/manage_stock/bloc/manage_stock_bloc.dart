@@ -69,6 +69,26 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     emit(state.copyWith(isLoading: false, hasError: false, stocksList: stockList));
   }
 
+  Future<void> searchStocks({required String search}) async {
+    emit(state.copyWith(isLoading: true, stocksList: <StockModel>[], formResponse: FormModel(error: false, message: '')));
+
+    Box box = await baseStorageRepository.openBox();
+    List<StockModel> stockList = baseStorageRepository.getStockList(box);
+
+    String searchText = search.toLowerCase();
+    List<StockModel> values =
+        stockList.where((StockModel item) {
+          String sku = item.sku?.toLowerCase() ?? '';
+          String num = item.num?.toLowerCase() ?? '';
+          String name = item.name?.toLowerCase() ?? '';
+          return sku.contains(searchText) ||
+              num.contains((searchText)) ||
+              name.contains(searchText);
+        }).toList();
+
+    emit(state.copyWith(isLoading: false, hasError: false, stocksList: values));
+  }
+
   Future<void> adjustStock({StockModel? stockModel, required int index, required double quantity, bool? isIn}) async {
     Box box = await baseStorageRepository.openBox();
     double qty = 0;
@@ -103,38 +123,24 @@ class ManageStockBloc extends Cubit<ManageStockState> {
   }
 
   String getQuantity(StockModel? stockModel) {
-    String quantity = '0';
-    double stockQuantity = stockModel?.quantity ?? 0;
+    double quantity = 0;
+    double min = stockModel?.minQuantity ?? 0;
+    double max = stockModel?.maxQuantity ?? 0;
+    double onHand = stockModel?.onHand ?? 0;
+    double qtyOrder = stockModel?.quantity ?? 0;
 
-    if (stockModel!.minQuantity <= 0 && stockModel.maxQuantity <= 0) {
-      quantity = stockModel.quantity.toString().removeDecimalZeroFormat(stockModel.quantity ?? 0);
-    } else if (stockModel.minQuantity <= 0 && stockModel.maxQuantity > 0 && stockModel.onHand < stockModel.minQuantity) {
-      if (stockQuantity > 0) {
-        quantity = stockModel.quantity.toString().removeDecimalZeroFormat(stockModel.quantity ?? 0);
+    if (qtyOrder > 0) {
+      if (onHand < max) {
+        quantity = onHand+qtyOrder > max ? max - onHand : qtyOrder;
       } else {
-        quantity = stockModel.maxQuantity.toString().removeDecimalZeroFormat(stockModel.maxQuantity);
+        quantity = 0;
       }
-    } else {
-      if (stockModel.onHand > stockModel.maxQuantity) {
-        quantity = stockModel.quantity.toString().removeDecimalZeroFormat((stockModel.quantity ?? 0));
-      } else if (stockModel.onHand < stockModel.minQuantity) {
-        if (stockModel.order > 0) {
-          quantity = stockModel.order.toString().removeDecimalZeroFormat((stockModel.order));
-        } else {
-          quantity = (stockModel.maxQuantity - stockModel.onHand).toString().removeDecimalZeroFormat((stockModel.maxQuantity - stockModel.onHand));
-        }
-      } else {
-        if (stockModel.quantity! > 0) {
-          quantity = stockModel.quantity.toString().removeDecimalZeroFormat((stockModel.quantity ?? 0));
-        } else if (stockModel.onHand == stockModel.minQuantity) {
-          quantity = '0';
-        } else {
-          quantity = (stockModel.maxQuantity - stockModel.onHand).toString().removeDecimalZeroFormat((stockModel.maxQuantity - stockModel.onHand));
-        }
-      }
-
+      return quantity.toString().removeDecimalZeroFormat(quantity);
     }
-    stockModel.setQuantity(double.parse(quantity));
-    return quantity;
+    if (onHand < min || (onHand == 0 && min == 0)) {
+      quantity = max - onHand;
+    }
+
+    return quantity.toString().removeDecimalZeroFormat(quantity);
   }
 }
