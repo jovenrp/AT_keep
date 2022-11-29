@@ -13,6 +13,7 @@ class ATTextfield extends StatefulWidget {
     this.isSuffixIcon = false,
     this.onFieldSubmitted,
     this.onPressed,
+    this.onChanged,
     this.textInputAction = TextInputAction.done,
     this.textAlign = TextAlign.left,
     this.textEditingController,
@@ -25,6 +26,7 @@ class ATTextfield extends StatefulWidget {
   final TextAlign? textAlign;
   final TextInputAction? textInputAction;
   final Function(String?)? onFieldSubmitted;
+  final ValueChanged<String>? onChanged;
   final Function()? onPressed;
   final TextEditingController? textEditingController;
   final FocusNode? focusNode;
@@ -35,7 +37,6 @@ class ATTextfield extends StatefulWidget {
 }
 
 class _ATTextfield extends State<ATTextfield> {
-  bool _passwordNotVisible = true;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +47,7 @@ class _ATTextfield extends State<ATTextfield> {
         focusNode: widget.focusNode,
         key: widget.key,
         onFieldSubmitted: widget.onFieldSubmitted,
+        onChanged: widget.onChanged,
         textAlign: widget.textAlign ?? TextAlign.center,
         textInputAction: widget.textInputAction,
         inputFormatters: widget.isNumbersOnly

@@ -107,7 +107,6 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     Box box = await baseStorageRepository.openBox();
 
     stockModel?.setQuantity(quantity);
-    log('TESTSTS ${stockModel?.quantity}');
     baseStorageRepository.updateStock(box, index, stockModel ?? StockModel());
   }
 

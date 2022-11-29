@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -124,6 +125,11 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                       onFieldSubmitted: (String? value) {
                         context.read<ManageStockBloc>().searchStocks(search: value ?? '');
                       },
+                      onChanged: (String value) {
+                        EasyDebounce.debounce('deebouncer1', const Duration(milliseconds: 500), () {
+                          context.read<ManageStockBloc>().searchStocks(search: value ?? '');
+                        });
+                      },
                     ),
                   ),
                   Visibility(
@@ -201,13 +207,19 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const <Widget>[
-                          SizedBox(height: 70,),
+                          SizedBox(
+                            height: 70,
+                          ),
                           Icon(
                             Icons.local_shipping_outlined,
                             size: 70,
                             color: AppColors.tertiary,
                           ),
-                          ATText(text: 'No orders at the moment.', fontSize: 20, fontColor: AppColors.tertiary,)
+                          ATText(
+                            text: 'No orders at the moment.',
+                            fontSize: 20,
+                            fontColor: AppColors.tertiary,
+                          )
                         ],
                       ),
                     ),
@@ -613,14 +625,13 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
   }
 
   void openBottomModal({required ManageStockState state, int index = 0, bool isFloatingButton = true}) {
-     showModalBottomSheet(
+    skuHasFocus = false;
+    showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (context) {
         if (!skuHasFocus) {
           skuHasFocus = true;
-          Future<void>.delayed(const Duration(milliseconds: 200), () {skuNode.requestFocus();});
-
           skuController.text = isFloatingButton ? '' : state.stocksList?[index].sku ?? '';
           nameController.text = isFloatingButton ? '' : state.stocksList?[index].name ?? '';
           numController.text = isFloatingButton ? '' : state.stocksList?[index].num ?? '';
@@ -633,7 +644,10 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
           orderController.text =
           isFloatingButton ? '' : state.stocksList?[index].order.toString().removeDecimalZeroFormat(state.stocksList?[index].order ?? 0) ?? '';
 
-          skuController.selection = TextSelection.fromPosition(TextPosition(offset: skuController.text.length));
+          Future<void>.delayed(const Duration(milliseconds: 200), () {
+            skuNode.requestFocus();
+            skuController.selection = TextSelection.fromPosition(TextPosition(offset: skuController.text.length));
+          });
         }
 
         return Container(
@@ -754,9 +768,7 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
           ),
         );
       },
-    ).whenComplete(() {
-      skuHasFocus = false;
-     });
+    );
   }
 
   void addOrder(ManageStockState state, int index, bool isFloatingButton) {

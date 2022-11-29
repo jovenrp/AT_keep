@@ -1,3 +1,4 @@
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -99,6 +100,12 @@ class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
                       textEditingController: searchController,
                       onFieldSubmitted: (String? value) {
                         context.read<ManageStockBloc>().searchStocks(search: value ?? '');
+                      },
+                      onChanged: (String value) {
+                        EasyDebounce.debounce(
+                            'deebouncer1', const Duration(milliseconds: 500), () {
+                          context.read<ManageStockBloc>().searchStocks(search: value);
+                        });
                       },
                     ),
                   ),
