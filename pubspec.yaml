@@ -71,6 +71,8 @@ dependencies:
   qr_flutter: any
   modal_bottom_sheet: any
   fluttertoast: ^8.1.1
+  filesystem_picker: ^3.0.0
+  json_annotation: ^4.6.0
 
 
   ## Testing and Development

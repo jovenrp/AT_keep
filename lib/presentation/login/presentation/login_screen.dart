@@ -11,7 +11,6 @@ import 'package:keep/presentation/login/bloc/loginscreen_bloc.dart';
 import 'package:keep/presentation/login/bloc/loginscreen_state.dart';
 import 'package:keep/presentation/registration/presentation/registration_screen.dart';
 import '../../../core/presentation/widgets/keep_elevated_button.dart';
-import '../../in_and_out/presentation/in_out_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key, this.config}) : super(key: key);
@@ -161,10 +160,7 @@ class _LoginScreen extends State<LoginScreen> with BackPressedMixin {
                           width: double.infinity,
                           child: KeepElevatedButton(
                             isEnabled: !state.isLoading,
-                            onPressed: () =>
-                                Navigator.of(context).pushReplacement(
-                              InOutScreen.route(config: widget.config),
-                            ),
+                            onPressed: () {},
                             /*onPressed: () => context
                                 .read<LoginScreenBloc>()
                                 .login(usernameController.text,

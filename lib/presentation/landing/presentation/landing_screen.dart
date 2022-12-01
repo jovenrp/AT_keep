@@ -8,7 +8,7 @@ import 'package:keep/core/presentation/widgets/at_text.dart';
 import 'package:keep/presentation/landing/bloc/landing_screen_bloc.dart';
 import 'package:keep/presentation/landing/bloc/landing_screen_state.dart';
 import 'package:keep/presentation/landing/presentation/landing_drawer.dart';
-import 'package:keep/presentation/order_stock/presentation/order_stock_screen.dart';
+import 'package:keep/presentation/manage_stock/presentation/order_stock_screen.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../../core/presentation/widgets/keep_elevated_button.dart';
@@ -196,7 +196,9 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
                                   text: 'All Rights Reserved',
                                   style: TextStyle(fontSize: 12),
                                 ),
-                                const SizedBox(height: 10,),
+                                const SizedBox(
+                                  height: 10,
+                                ),
                                 ATText(
                                   text: 'v${widget.config?.appVersion}',
                                   style: const TextStyle(fontSize: 12),

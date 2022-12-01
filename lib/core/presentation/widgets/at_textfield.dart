@@ -37,7 +37,6 @@ class ATTextfield extends StatefulWidget {
 }
 
 class _ATTextfield extends State<ATTextfield> {
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -88,11 +87,12 @@ class _ATTextfield extends State<ATTextfield> {
             alignLabelWithHint: true,
             fillColor: AppColors.white,
             filled: true,
-            suffixIcon: widget.isScanner == true ? IconButton(
-              icon: const Icon(Icons.qr_code,
-                  color: AppColors.semiDark),
-              onPressed: widget.onPressed ?? () {},
-            ) : null),
+            suffixIcon: widget.isScanner == true
+                ? IconButton(
+                    icon: const Icon(Icons.qr_code, color: AppColors.semiDark),
+                    onPressed: widget.onPressed ?? () {},
+                  )
+                : null),
       ),
     );
   }

@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:keep/core/domain/utils/string_extensions.dart';
 import 'package:keep/presentation/manage_stock/data/models/stocks_model.dart';
+import 'package:keep/presentation/profile/data/models/profile_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'application/application.dart';
@@ -25,6 +26,7 @@ void commonMain(ApplicationConfig applicationConfig) async {
 
   Hive.initFlutter();
   Hive.registerAdapter(StockModelAdapter());
+  Hive.registerAdapter(ProfileModelAdapter());
 
   // Set override for appVersion
   appVersion = applicationConfig.appVersion;

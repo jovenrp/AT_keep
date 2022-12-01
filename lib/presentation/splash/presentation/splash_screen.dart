@@ -5,7 +5,6 @@ import 'package:keep/core/presentation/widgets/application_logo.dart';
 import 'package:keep/core/presentation/widgets/at_loading_indicator.dart';
 import 'package:keep/core/presentation/widgets/at_text.dart';
 import 'package:keep/generated/i18n.dart';
-import 'package:keep/presentation/in_and_out/presentation/in_out_screen.dart';
 import 'package:keep/presentation/landing/presentation/landing_screen.dart';
 import 'package:keep/presentation/splash/bloc/splashscreen_bloc.dart';
 import 'package:keep/presentation/splash/bloc/splashscreen_state.dart';
@@ -30,15 +29,9 @@ class SplashScreen extends StatelessWidget {
     return BlocConsumer<SplashScreenBloc, SplashScreenState>(
         listener: (BuildContext context, SplashScreenState state) {
       if (!state.isLoading) {
-        if (state.isAlreadySignedIn == true) {
-          Navigator.of(context).pushReplacement(
-            InOutScreen.route(config: config),
-          );
-        } else {
-          Navigator.of(context).pushReplacement(
-            LandingScreen.route(config: config),
-          );
-        }
+        Navigator.of(context).pushReplacement(
+          LandingScreen.route(config: config),
+        );
       }
     }, builder: (BuildContext context, SplashScreenState state) {
       return Scaffold(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keep/core/presentation/widgets/at_text.dart';
+import 'package:keep/presentation/profile/presentation/profile_screen.dart';
 
 import '../../../core/domain/utils/constants/app_colors.dart';
 
@@ -48,21 +49,23 @@ class LandingDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.home),
             title: const ATText(
-              text: 'Settings 1',
+              text: 'Profile',
             ),
-            onTap: () {},
+            onTap: () => Navigator.of(context)
+                .push(ProfileScreen.route(type: 'profile')),
           ),
           ListTile(
-            leading: const Icon(Icons.storage),
+            leading: const Icon(Icons.receipt),
             title: const ATText(
-              text: 'Settings 2',
+              text: 'Vendor',
             ),
-            onTap: () {},
+            onTap: () =>
+                Navigator.of(context).push(ProfileScreen.route(type: 'vendor')),
           ),
           ListTile(
-            leading: const Icon(Icons.add),
+            leading: const Icon(Icons.storage_outlined),
             title: const ATText(
-              text: 'Settings 3',
+              text: 'Backup Database',
             ),
             onTap: () {},
           ),

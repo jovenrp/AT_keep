@@ -20,12 +20,10 @@ class QRScreen extends StatefulWidget {
 
   final String? scanner;
 
-  static ModalRoute<QRScreen> route(
-          { String? scanner}) =>
+  static ModalRoute<QRScreen> route({String? scanner}) =>
       MaterialPageRoute<QRScreen>(
           settings: const RouteSettings(name: routeName),
           builder: (_) => QRScreen(
-
                 scanner: scanner,
               ));
 
@@ -41,7 +39,6 @@ class _QRScreen extends State<QRScreen> {
 
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
-
 
   @override
   void reassemble() {
@@ -160,7 +157,6 @@ class _QRScreen extends State<QRScreen> {
         }
       });
     });
-
   }
 
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
