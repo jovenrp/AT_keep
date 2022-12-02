@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -18,23 +20,13 @@ class ManageStockBloc extends Cubit<ManageStockState> {
   final BaseStorageRepository baseStorageRepository;
   final PersistenceService persistenceService;
 
-  Future<void> addStock(
-      {String? sku,
-      String? name,
-      String? num,
-      String? minQuantity,
-      String? maxQuantity,
-      String? order}) async {
+  Future<void> addStock({String? sku, String? name, String? num, String? minQuantity, String? maxQuantity, String? order}) async {
     emit(state.copyWith(isAdding: true));
     Box box = await baseStorageRepository.openBox();
     List<StockModel> stockList = baseStorageRepository.getStockList(box);
 
     StockModel stock = StockModel(
-      id: stockList.isNotEmpty
-          ? (int.parse(stockList[stockList.length - 1].id ?? '0') + 1)
-              .toString()
-              .padLeft(5, '0')
-          : '00001',
+      id: stockList.isNotEmpty ? (int.parse(stockList[stockList.length - 1].id ?? '0') + 1).toString().padLeft(5, '0') : '00001',
       sku: sku,
       name: name ?? '',
       num: num ?? '',
@@ -48,13 +40,9 @@ class ManageStockBloc extends Cubit<ManageStockState> {
   }
 
   Future<void> updateStock(int index, StockModel? stockModel,
-      {String? sku,
-      String? name,
-      String? num,
-      String? minQuantity,
-      String? maxQuantity,
-      String? order}) async {
+      {String? sku, String? name, String? num, String? minQuantity, String? maxQuantity, String? order}) async {
     emit(state.copyWith(isAdding: true));
+
 
     Box box = await baseStorageRepository.openBox();
     //List<StockModel> stockList = baseStorageRepository.getStockList(box);
@@ -65,30 +53,22 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     stockModel?.setMinQuantity(double.parse(minQuantity ?? '0'));
     stockModel?.setMaxQuantity(double.parse(maxQuantity ?? '0'));
     stockModel?.setorder(double.parse(order ?? '0'));
-
-    await baseStorageRepository.updateStock(
-        box, index, stockModel ?? StockModel());
+    log('index $index ${box.keyAt(index)}');
+    await baseStorageRepository.updateStock(box, index, stockModel ?? StockModel());
     emit(state.copyWith(isAdding: false));
   }
 
   Future<void> getStocks() async {
-    emit(state.copyWith(
-        isLoading: true,
-        stocksList: <StockModel>[],
-        formResponse: FormModel(error: false, message: '')));
+    emit(state.copyWith(isLoading: true, stocksList: <StockModel>[], formResponse: FormModel(error: false, message: '')));
 
     Box box = await baseStorageRepository.openBox();
     List<StockModel> stockList = baseStorageRepository.getStockList(box);
 
-    emit(state.copyWith(
-        isLoading: false, hasError: false, stocksList: stockList));
+    emit(state.copyWith(isLoading: false, hasError: false, stocksList: stockList));
   }
 
   Future<void> searchStocks({required String search}) async {
-    emit(state.copyWith(
-        isLoading: true,
-        stocksList: <StockModel>[],
-        formResponse: FormModel(error: false, message: '')));
+    emit(state.copyWith(isLoading: true, stocksList: <StockModel>[], formResponse: FormModel(error: false, message: '')));
 
     Box box = await baseStorageRepository.openBox();
     List<StockModel> stockList = baseStorageRepository.getStockList(box);
@@ -98,19 +78,13 @@ class ManageStockBloc extends Cubit<ManageStockState> {
       String sku = item.sku?.toLowerCase() ?? '';
       String num = item.num?.toLowerCase() ?? '';
       String name = item.name?.toLowerCase() ?? '';
-      return sku.contains(searchText) ||
-          num.contains((searchText)) ||
-          name.contains(searchText);
+      return sku.contains(searchText) || num.contains((searchText)) || name.contains(searchText);
     }).toList();
 
     emit(state.copyWith(isLoading: false, hasError: false, stocksList: values));
   }
 
-  Future<void> adjustStock(
-      {StockModel? stockModel,
-      required int index,
-      required double quantity,
-      bool? isIn}) async {
+  Future<void> adjustStock({StockModel? stockModel, required int index, required double quantity, bool? isIn}) async {
     Box box = await baseStorageRepository.openBox();
     double qty = 0;
     double currentQuantity = stockModel?.onHand ?? 0;
@@ -124,11 +98,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     baseStorageRepository.updateStock(box, index, stockModel ?? StockModel());
   }
 
-  Future<void> orderStock(
-      {StockModel? stockModel,
-      required int index,
-      required double quantity,
-      bool? isIn}) async {
+  Future<void> orderStock({StockModel? stockModel, required int index, required double quantity, bool? isIn}) async {
     Box box = await baseStorageRepository.openBox();
 
     stockModel?.setQuantity(quantity);
@@ -143,8 +113,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
   }
 
   Future<void> displayErrorMessage(FormModel? response) async {
-    emit(state.copyWith(
-        isLoading: false, hasError: false, formResponse: response));
+    emit(state.copyWith(isLoading: false, hasError: false, formResponse: response));
   }
 
   String getQuantity(StockModel? stockModel) {
@@ -154,7 +123,15 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     double onHand = stockModel?.onHand ?? 0;
     double qtyOrder = stockModel?.quantity ?? 0;
 
-    if (qtyOrder > 0) {
+    if (qtyOrder >= 0 && min == 0 && max == 0 && onHand == 0) {
+      quantity = qtyOrder;
+    } else {
+      if ((onHand < min) || (onHand == 0) && min == 0) {
+        quantity = (max >= min) ? max - onHand : 0;
+      }
+    }
+
+    /*if (qtyOrder > 0) {
       if (onHand < max) {
         quantity = onHand + qtyOrder > max ? max - onHand : qtyOrder;
       } else {
@@ -164,8 +141,41 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     }
     if (onHand < min || (onHand == 0 && min == 0)) {
       quantity = max - onHand;
-    }
+    }*/
 
     return quantity.toString().removeDecimalZeroFormat(quantity);
+  }
+
+  Future<void> sortStockOrders({List<StockModel>? stockList, String? column, required bool sortBy}) async {
+    List<StockModel> sorted = stockList ?? <StockModel>[];
+    sorted.sort((StockModel? a, StockModel? b) {
+      switch (column) {
+        case 'sku':
+          String aa = a?.sku ?? '';
+          String bb = b?.sku ?? '';
+          return sortBy ? bb.toLowerCase().compareTo(aa.toLowerCase()) : aa.toLowerCase().compareTo(bb.toLowerCase());
+        case 'min':
+          double aa = a?.minQuantity ?? 0;
+          double bb = b?.minQuantity ?? 0;
+          return sortBy ? bb.compareTo(aa) : aa.compareTo(bb);
+        case 'max':
+          double aa = a?.maxQuantity ?? 0;
+          double bb = b?.maxQuantity ?? 0;
+          return sortBy ? bb.compareTo(aa) : aa.compareTo(bb);
+        case 'onHand':
+          double aa = a?.onHand ?? 0;
+          double bb = b?.onHand ?? 0;
+          return sortBy ? bb.compareTo(aa) : aa.compareTo(bb);
+        case 'quantity':
+          double aa = a?.quantity ?? 0;
+          double bb = b?.quantity ?? 0;
+          return sortBy ? bb.compareTo(aa) : aa.compareTo(bb);
+        default:
+          String aa = a?.sku ?? '';
+          String bb = b?.sku ?? '';
+          return sortBy ? bb.toLowerCase().compareTo(aa.toLowerCase()) : aa.toLowerCase().compareTo(bb.toLowerCase());
+      }
+    });
+    emit(state.copyWith(isLoading: false, stocksList: sorted, hasError: false));
   }
 }

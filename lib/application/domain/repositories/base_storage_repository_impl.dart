@@ -31,12 +31,12 @@ class BaseStorageRepositoryImpl implements BaseStorageRepository {
 
   @override
   Future<void> updateStock(Box box, int index, StockModel stockModel) async {
-    await box.putAt(index, stockModel);
+    await box.put(stockModel.id, stockModel);
   }
 
   @override
   Future<void> deleteStock(Box box, StockModel stockModel, int index) async {
-    await box.deleteAt(index);
+    await box.delete(stockModel.id);
     //await box.clear();
   }
 

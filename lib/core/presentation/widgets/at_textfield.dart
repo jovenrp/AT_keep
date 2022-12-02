@@ -64,7 +64,7 @@ class _ATTextfield extends State<ATTextfield> {
                 })
               ]
             : [],
-        style: const TextStyle(fontSize: 14, color: AppColors.primary),
+        style: const TextStyle(fontSize: 16, color: AppColors.primary),
         decoration: InputDecoration(
             focusedBorder: const OutlineInputBorder(
               borderSide:
@@ -81,9 +81,9 @@ class _ATTextfield extends State<ATTextfield> {
             isDense: true,
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            //hintText: widget.hintText ?? 'Enter a text here',
+            hintText: widget.hintText ?? 'Enter a text here',
             labelText: widget.hintText ?? 'Enter a text here',
-            labelStyle: const TextStyle(fontSize: 14.0, height: 1),
+            labelStyle: const TextStyle(fontSize: 16.0, height: 1),
             alignLabelWithHint: true,
             fillColor: AppColors.white,
             filled: true,

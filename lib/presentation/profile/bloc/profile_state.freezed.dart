@@ -22,7 +22,9 @@ class _$ProfileStateTearOff {
       bool hasError = false,
       String? errorMessage,
       bool isProfileExisting = false,
+      bool isProfileButton = false,
       bool isVendorExisiting = false,
+      bool isVendorButton = false,
       bool isSaved = false,
       bool isUpdated = false,
       bool isInit = false,
@@ -33,7 +35,9 @@ class _$ProfileStateTearOff {
       hasError: hasError,
       errorMessage: errorMessage,
       isProfileExisting: isProfileExisting,
+      isProfileButton: isProfileButton,
       isVendorExisiting: isVendorExisiting,
+      isVendorButton: isVendorButton,
       isSaved: isSaved,
       isUpdated: isUpdated,
       isInit: isInit,
@@ -52,7 +56,9 @@ mixin _$ProfileState {
   bool get hasError => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
   bool get isProfileExisting => throw _privateConstructorUsedError;
+  bool get isProfileButton => throw _privateConstructorUsedError;
   bool get isVendorExisiting => throw _privateConstructorUsedError;
+  bool get isVendorButton => throw _privateConstructorUsedError;
   bool get isSaved => throw _privateConstructorUsedError;
   bool get isUpdated => throw _privateConstructorUsedError;
   bool get isInit => throw _privateConstructorUsedError;
@@ -74,7 +80,9 @@ abstract class $ProfileStateCopyWith<$Res> {
       bool hasError,
       String? errorMessage,
       bool isProfileExisting,
+      bool isProfileButton,
       bool isVendorExisiting,
+      bool isVendorButton,
       bool isSaved,
       bool isUpdated,
       bool isInit,
@@ -96,7 +104,9 @@ class _$ProfileStateCopyWithImpl<$Res> implements $ProfileStateCopyWith<$Res> {
     Object? hasError = freezed,
     Object? errorMessage = freezed,
     Object? isProfileExisting = freezed,
+    Object? isProfileButton = freezed,
     Object? isVendorExisiting = freezed,
+    Object? isVendorButton = freezed,
     Object? isSaved = freezed,
     Object? isUpdated = freezed,
     Object? isInit = freezed,
@@ -120,9 +130,17 @@ class _$ProfileStateCopyWithImpl<$Res> implements $ProfileStateCopyWith<$Res> {
           ? _value.isProfileExisting
           : isProfileExisting // ignore: cast_nullable_to_non_nullable
               as bool,
+      isProfileButton: isProfileButton == freezed
+          ? _value.isProfileButton
+          : isProfileButton // ignore: cast_nullable_to_non_nullable
+              as bool,
       isVendorExisiting: isVendorExisiting == freezed
           ? _value.isVendorExisiting
           : isVendorExisiting // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isVendorButton: isVendorButton == freezed
+          ? _value.isVendorButton
+          : isVendorButton // ignore: cast_nullable_to_non_nullable
               as bool,
       isSaved: isSaved == freezed
           ? _value.isSaved
@@ -160,7 +178,9 @@ abstract class _$ProfileStateCopyWith<$Res>
       bool hasError,
       String? errorMessage,
       bool isProfileExisting,
+      bool isProfileButton,
       bool isVendorExisiting,
+      bool isVendorButton,
       bool isSaved,
       bool isUpdated,
       bool isInit,
@@ -184,7 +204,9 @@ class __$ProfileStateCopyWithImpl<$Res> extends _$ProfileStateCopyWithImpl<$Res>
     Object? hasError = freezed,
     Object? errorMessage = freezed,
     Object? isProfileExisting = freezed,
+    Object? isProfileButton = freezed,
     Object? isVendorExisiting = freezed,
+    Object? isVendorButton = freezed,
     Object? isSaved = freezed,
     Object? isUpdated = freezed,
     Object? isInit = freezed,
@@ -208,9 +230,17 @@ class __$ProfileStateCopyWithImpl<$Res> extends _$ProfileStateCopyWithImpl<$Res>
           ? _value.isProfileExisting
           : isProfileExisting // ignore: cast_nullable_to_non_nullable
               as bool,
+      isProfileButton: isProfileButton == freezed
+          ? _value.isProfileButton
+          : isProfileButton // ignore: cast_nullable_to_non_nullable
+              as bool,
       isVendorExisiting: isVendorExisiting == freezed
           ? _value.isVendorExisiting
           : isVendorExisiting // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isVendorButton: isVendorButton == freezed
+          ? _value.isVendorButton
+          : isVendorButton // ignore: cast_nullable_to_non_nullable
               as bool,
       isSaved: isSaved == freezed
           ? _value.isSaved
@@ -244,7 +274,9 @@ class _$_ProfileState implements _ProfileState {
       this.hasError = false,
       this.errorMessage,
       this.isProfileExisting = false,
+      this.isProfileButton = false,
       this.isVendorExisiting = false,
+      this.isVendorButton = false,
       this.isSaved = false,
       this.isUpdated = false,
       this.isInit = false,
@@ -264,7 +296,13 @@ class _$_ProfileState implements _ProfileState {
   final bool isProfileExisting;
   @JsonKey(defaultValue: false)
   @override
+  final bool isProfileButton;
+  @JsonKey(defaultValue: false)
+  @override
   final bool isVendorExisiting;
+  @JsonKey(defaultValue: false)
+  @override
+  final bool isVendorButton;
   @JsonKey(defaultValue: false)
   @override
   final bool isSaved;
@@ -281,7 +319,7 @@ class _$_ProfileState implements _ProfileState {
 
   @override
   String toString() {
-    return 'ProfileState(isLoading: $isLoading, hasError: $hasError, errorMessage: $errorMessage, isProfileExisting: $isProfileExisting, isVendorExisiting: $isVendorExisiting, isSaved: $isSaved, isUpdated: $isUpdated, isInit: $isInit, profileModel: $profileModel, userProfileModel: $userProfileModel)';
+    return 'ProfileState(isLoading: $isLoading, hasError: $hasError, errorMessage: $errorMessage, isProfileExisting: $isProfileExisting, isProfileButton: $isProfileButton, isVendorExisiting: $isVendorExisiting, isVendorButton: $isVendorButton, isSaved: $isSaved, isUpdated: $isUpdated, isInit: $isInit, profileModel: $profileModel, userProfileModel: $userProfileModel)';
   }
 
   @override
@@ -300,9 +338,15 @@ class _$_ProfileState implements _ProfileState {
             (identical(other.isProfileExisting, isProfileExisting) ||
                 const DeepCollectionEquality()
                     .equals(other.isProfileExisting, isProfileExisting)) &&
+            (identical(other.isProfileButton, isProfileButton) ||
+                const DeepCollectionEquality()
+                    .equals(other.isProfileButton, isProfileButton)) &&
             (identical(other.isVendorExisiting, isVendorExisiting) ||
                 const DeepCollectionEquality()
                     .equals(other.isVendorExisiting, isVendorExisiting)) &&
+            (identical(other.isVendorButton, isVendorButton) ||
+                const DeepCollectionEquality()
+                    .equals(other.isVendorButton, isVendorButton)) &&
             (identical(other.isSaved, isSaved) ||
                 const DeepCollectionEquality()
                     .equals(other.isSaved, isSaved)) &&
@@ -326,7 +370,9 @@ class _$_ProfileState implements _ProfileState {
       const DeepCollectionEquality().hash(hasError) ^
       const DeepCollectionEquality().hash(errorMessage) ^
       const DeepCollectionEquality().hash(isProfileExisting) ^
+      const DeepCollectionEquality().hash(isProfileButton) ^
       const DeepCollectionEquality().hash(isVendorExisiting) ^
+      const DeepCollectionEquality().hash(isVendorButton) ^
       const DeepCollectionEquality().hash(isSaved) ^
       const DeepCollectionEquality().hash(isUpdated) ^
       const DeepCollectionEquality().hash(isInit) ^
@@ -345,7 +391,9 @@ abstract class _ProfileState implements ProfileState {
       bool hasError,
       String? errorMessage,
       bool isProfileExisting,
+      bool isProfileButton,
       bool isVendorExisiting,
+      bool isVendorButton,
       bool isSaved,
       bool isUpdated,
       bool isInit,
@@ -361,7 +409,11 @@ abstract class _ProfileState implements ProfileState {
   @override
   bool get isProfileExisting => throw _privateConstructorUsedError;
   @override
+  bool get isProfileButton => throw _privateConstructorUsedError;
+  @override
   bool get isVendorExisiting => throw _privateConstructorUsedError;
+  @override
+  bool get isVendorButton => throw _privateConstructorUsedError;
   @override
   bool get isSaved => throw _privateConstructorUsedError;
   @override

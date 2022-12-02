@@ -20,25 +20,42 @@ class ProfileBloc extends Cubit<ProfileState> {
     Box box = await profileRepository.openBox();
     List<ProfileModel> profileList = profileRepository.getProfile(box);
     ProfileModel profileModel = ProfileModel();
+    bool isProfileExist = false;
+    bool isVendorExist = false;
     for (ProfileModel item in profileList) {
       if (item.type == 'profile' && type == 'profile') {
         profileModel = item;
+        isProfileExist = true;
       } else if (item.type == 'vendor' && type == 'vendor') {
         profileModel = item;
+        isVendorExist = true;
       }
     }
-    log('asdqweq ${profileModel.lastname}');
-    emit(state.copyWith(isInit: true, isVendorExisiting: false, isProfileExisting: false, isUpdated: false, isSaved: false, profileModel: profileModel));
 
+    emit(state.copyWith(
+        isInit: true,
+        isProfileButton: isProfileExist,
+        isVendorButton: isVendorExist,
+        isVendorExisiting: false,
+        isProfileExisting: false,
+        isUpdated: false,
+        isSaved: false,
+        profileModel: profileModel));
   }
 
-  Future<void> checkProfile({String? email, String? firstname, String? lastname, String? phone, String? address, String? type}) async {
+  Future<void> checkProfile(
+      {String? email,
+      String? firstname,
+      String? lastname,
+      String? phone,
+      String? address,
+      String? type}) async {
     emit(state.copyWith(
       isLoading: false,
       isProfileExisting: false,
       isVendorExisiting: false,
-        isUpdated: false,
-        isSaved: false,
+      isUpdated: false,
+      isSaved: false,
       isInit: false,
     ));
     Box box = await profileRepository.openBox();
@@ -48,16 +65,22 @@ class ProfileBloc extends Cubit<ProfileState> {
       if (item.type == 'profile' && type == 'profile') {
         //already has a profile saved
         isExist = true;
-        emit(state.copyWith(isLoading: false, isProfileExisting: true, isInit: true));
+        emit(state.copyWith(
+            isLoading: false, isProfileExisting: true, isInit: true));
       } else if (item.type == 'vendor' && type == 'vendor') {
         isExist = true;
         //already has a vendor saved
-        emit(state.copyWith(isLoading: false, isVendorExisiting: true, isInit: true));
+        emit(state.copyWith(
+            isLoading: false, isVendorExisiting: true, isInit: true));
       }
     }
     if (!isExist) {
       ProfileModel profile = ProfileModel(
-        id: profileList.isNotEmpty ? (int.parse(profileList[profileList.length - 1].id ?? '0') + 1).toString().padLeft(5, '0') : '00001',
+        id: profileList.isNotEmpty
+            ? (int.parse(profileList[profileList.length - 1].id ?? '0') + 1)
+                .toString()
+                .padLeft(5, '0')
+            : '00001',
         firstname: firstname,
         lastname: lastname,
         email: email,
@@ -71,20 +94,29 @@ class ProfileBloc extends Cubit<ProfileState> {
     }
   }
 
-  Future<void> saveProfile({String? email, String? firstname, String? lastname, String? phone, String? address, String? type}) async {
+  Future<void> saveProfile(
+      {String? email,
+      String? firstname,
+      String? lastname,
+      String? phone,
+      String? address,
+      String? type}) async {
     emit(state.copyWith(
-      isLoading: false,
-      isProfileExisting: false,
-      isVendorExisiting: false,
+        isLoading: false,
+        isProfileExisting: false,
+        isVendorExisiting: false,
         isUpdated: false,
-        isSaved: false
-    ));
+        isSaved: false));
     log('12312312');
     Box box = await profileRepository.openBox();
     List<ProfileModel> profileList = profileRepository.getProfile(box);
 
     ProfileModel profile = ProfileModel(
-      id: profileList.isNotEmpty ? (int.parse(profileList[profileList.length - 1].id ?? '0') + 1).toString().padLeft(5, '0') : '00001',
+      id: profileList.isNotEmpty
+          ? (int.parse(profileList[profileList.length - 1].id ?? '0') + 1)
+              .toString()
+              .padLeft(5, '0')
+          : '00001',
       firstname: firstname,
       lastname: lastname,
       email: email,

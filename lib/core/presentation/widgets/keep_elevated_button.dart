@@ -9,6 +9,7 @@ class KeepElevatedButton extends StatelessWidget {
     Key? key,
     required this.text,
     this.isEnabled = true,
+    this.disableText,
     this.color,
     this.disabledColor,
     this.focusNode,
@@ -17,6 +18,7 @@ class KeepElevatedButton extends StatelessWidget {
 
   final String text;
   final bool isEnabled;
+  final Widget? disableText;
   final Color? color;
   final Color? disabledColor;
   final FocusNode? focusNode;
@@ -54,7 +56,7 @@ class KeepElevatedButton extends StatelessWidget {
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),
               )
-            : const ATLoadingIndicator(
+            : disableText ?? const ATLoadingIndicator(
                 color: AppColors.background,
               ),
       ),
