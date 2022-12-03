@@ -39,13 +39,14 @@ class StockModelAdapter extends TypeAdapter<StockModel> {
       createdDate: fields[19] as String?,
       modifiedDate: fields[20] as String?,
       quantity: fields[21] as double?,
+      isOrdered: fields[22] as bool?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StockModel obj) {
     writer
-      ..writeByte(22)
+      ..writeByte(23)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -89,7 +90,9 @@ class StockModelAdapter extends TypeAdapter<StockModel> {
       ..writeByte(20)
       ..write(obj.modifiedDate)
       ..writeByte(21)
-      ..write(obj.quantity);
+      ..write(obj.quantity)
+      ..writeByte(22)
+      ..write(obj.isOrdered);
   }
 
   @override

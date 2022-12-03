@@ -13,7 +13,7 @@ class AppColors {
   /// Primary
   static const Color primary = Color(0xFF056EB4);
   static const Color secondary = Color(0xFF198CDC);
-  static const Color disabledButton = Color(0xFF5CA0CD);
+  static const Color disabledButton = Color(0xFFCECECE);
   static const Color onSecondary = Color(0xFFB5C6D1);
   static const Color tertiary = Color(0xFF495057);
   static const Color onTertiary = Color(0xFF7892AD);
@@ -25,6 +25,7 @@ class AppColors {
   static const Color onSecondaryContainer = Color(0xFFADB5BD);
   static const Color onboardingText = Color(0xff717171);
   static const Color headerGrey = Color(0xff7E8289);
+  static const Color inactiveButton = Color(0xffCECECE);
   static const Color subtleGrey = Color(0xffDCDCDC);
   static const Color outline = Color(0xFF28A745);
   static const Color warningOrange = Color(0xFFFFB443);

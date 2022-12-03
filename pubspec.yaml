@@ -73,7 +73,7 @@ dependencies:
   fluttertoast: ^8.1.1
   filesystem_picker: ^3.0.0
   json_annotation: ^4.6.0
-
+  share_plus: any
 
   ## Testing and Development
   alice_lightweight: ^3.0.0

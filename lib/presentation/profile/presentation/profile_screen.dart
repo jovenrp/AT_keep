@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:keep/core/domain/utils/string_extensions.dart';
@@ -20,7 +22,9 @@ class ProfileScreen extends StatefulWidget {
   final ApplicationConfig? config;
   final String? type;
 
-  static ModalRoute<ProfileScreen> route({ApplicationConfig? config, String? type}) => MaterialPageRoute<ProfileScreen>(
+  static ModalRoute<ProfileScreen> route(
+          {ApplicationConfig? config, String? type}) =>
+      MaterialPageRoute<ProfileScreen>(
         settings: const RouteSettings(name: routeName),
         builder: (_) => ProfileScreen(
           config: config,
@@ -149,18 +153,22 @@ class _ProfileScreen extends State<ProfileScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               behavior: SnackBarBehavior.floating,
-              content: Text('${widget.type.toString().capitalizeFirstofEach()} information is ${state.isSaved == true ? 'saved' : 'updated'}.' ?? ''),
+              content: Text(
+                  '${widget.type.toString().capitalizeFirstofEach()} information is ${state.isSaved == true ? 'saved' : 'updated'}.' ??
+                      ''),
               duration: const Duration(seconds: 1),
             ),
           );
         }
-        if ((widget.type == 'profile' && state.isProfileExisting) || (widget.type == 'vendor') && state.isVendorExisiting) {
+        if ((widget.type == 'profile' && state.isProfileExisting) ||
+            (widget.type == 'vendor') && state.isVendorExisiting) {
           showDialog(
             context: context,
             builder: (BuildContext context) => Dialog(
               child: Container(
                 height: MediaQuery.of(context).size.height * .4,
-                padding: const EdgeInsets.only(left: 18, right: 18, top: 30, bottom: 30),
+                padding: const EdgeInsets.only(
+                    left: 18, right: 18, top: 30, bottom: 30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -174,7 +182,8 @@ class _ProfileScreen extends State<ProfileScreen> {
                       height: 5,
                     ),
                     ATText(
-                      text: 'Are you sure you want to update the existing ${widget.type}?',
+                      text:
+                          'Are you sure you want to update the existing ${widget.type}?',
                       fontColor: AppColors.tertiary,
                       fontSize: 16,
                     ),
@@ -242,7 +251,9 @@ class _ProfileScreen extends State<ProfileScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       ATText(
-                        text: widget.type == 'profile' ? 'User Profile' : 'Vendor Profile',
+                        text: widget.type == 'profile'
+                            ? 'User Profile'
+                            : 'Vendor Profile',
                         fontSize: 20,
                         fontColor: AppColors.tertiary,
                         weight: FontWeight.bold,
@@ -336,7 +347,8 @@ class _ProfileScreen extends State<ProfileScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   behavior: SnackBarBehavior.floating,
-                                  content: Text('Please fill up all the fields.'),
+                                  content:
+                                      Text('Please fill up all the fields.'),
                                   duration: Duration(seconds: 1),
                                 ),
                               );

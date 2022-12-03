@@ -10,14 +10,11 @@ import 'package:keep/presentation/registration/domain/repositories/registration_
 import 'package:provider/single_child_widget.dart';
 
 import '../../core/data/services/persistence_service.dart';
-import '../../presentation/login/bloc/loginscreen_bloc.dart';
-import '../../presentation/login/data/services/login_api_service.dart';
-import '../../presentation/login/domain/repositories/login_repository_impl.dart';
 import '../../presentation/manage_stock/bloc/manage_stock_bloc.dart';
 import '../../presentation/profile/bloc/profile_bloc.dart';
 import '../../presentation/splash/bloc/splashscreen_bloc.dart';
 import '../domain/bloc/application_bloc.dart';
-import '../domain/repositories/base_storage_repository_impl.dart';
+import '../../presentation/manage_stock/domain/repositories/stock_order_repository_impl.dart';
 
 class BlocsProvider {
   static List<SingleChildWidget> provide({
@@ -47,7 +44,8 @@ class BlocsProvider {
         ),
         BlocProvider<ManageStockBloc>(
           create: (_) => ManageStockBloc(
-              baseStorageRepository: BaseStorageRepositoryImpl(),
+              stockOrderRepository: StockOrderRepositoryImpl(),
+              profileRepository: ProfileRepositoryImpl(),
               persistenceService: persistenceService),
         ),
         BlocProvider<RegistrationBloc>(

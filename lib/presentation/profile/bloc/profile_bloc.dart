@@ -66,12 +66,16 @@ class ProfileBloc extends Cubit<ProfileState> {
         //already has a profile saved
         isExist = true;
         emit(state.copyWith(
-            isLoading: false, isProfileExisting: true, isInit: true));
+          isLoading: false,
+          isProfileExisting: true,
+        ));
       } else if (item.type == 'vendor' && type == 'vendor') {
         isExist = true;
         //already has a vendor saved
         emit(state.copyWith(
-            isLoading: false, isVendorExisiting: true, isInit: true));
+          isLoading: false,
+          isVendorExisiting: true,
+        ));
       }
     }
     if (!isExist) {
@@ -107,7 +111,7 @@ class ProfileBloc extends Cubit<ProfileState> {
         isVendorExisiting: false,
         isUpdated: false,
         isSaved: false));
-    log('12312312');
+
     Box box = await profileRepository.openBox();
     List<ProfileModel> profileList = profileRepository.getProfile(box);
 

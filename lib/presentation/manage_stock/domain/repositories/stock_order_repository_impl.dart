@@ -6,10 +6,10 @@ import 'package:hive_flutter/adapters.dart';
 
 import 'package:keep/presentation/manage_stock/data/models/stocks_model.dart';
 
-import 'base_storage_repository.dart';
+import 'stock_order_repository.dart';
 
-class BaseStorageRepositoryImpl implements BaseStorageRepository {
-  BaseStorageRepositoryImpl();
+class StockOrderRepositoryImpl implements StockOrderRepository {
+  StockOrderRepositoryImpl();
 
   String boxName = 'stocks_box';
 
@@ -32,6 +32,11 @@ class BaseStorageRepositoryImpl implements BaseStorageRepository {
   @override
   Future<void> updateStock(Box box, int index, StockModel stockModel) async {
     await box.put(stockModel.id, stockModel);
+  }
+
+  @override
+  Future<void> clearStock(Box box) async {
+    await box.clear();
   }
 
   @override

@@ -140,7 +140,7 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
                             isEnabled: !state.isLoading,
                             onPressed: () => Navigator.of(context)
                                 .push(ManageStockScreen.route()),
-                            text: 'Manage',
+                            text: 'Stock List',
                           ),
                         ),
                         const SizedBox(height: 10),

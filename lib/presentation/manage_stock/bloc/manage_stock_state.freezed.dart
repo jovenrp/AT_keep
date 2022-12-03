@@ -24,7 +24,10 @@ class _$ManageStockStateTearOff {
       String? errorMessage,
       List<StockModel>? stocksList,
       FormModel? formResponse,
+      ProfileModel? user,
+      ProfileModel? vendor,
       bool isAdded = false,
+      bool isPdfGenerated = false,
       UserProfileModel? userProfileModel}) {
     return _ManageStockState(
       isLoading: isLoading,
@@ -33,7 +36,10 @@ class _$ManageStockStateTearOff {
       errorMessage: errorMessage,
       stocksList: stocksList,
       formResponse: formResponse,
+      user: user,
+      vendor: vendor,
       isAdded: isAdded,
+      isPdfGenerated: isPdfGenerated,
       userProfileModel: userProfileModel,
     );
   }
@@ -50,7 +56,10 @@ mixin _$ManageStockState {
   String? get errorMessage => throw _privateConstructorUsedError;
   List<StockModel>? get stocksList => throw _privateConstructorUsedError;
   FormModel? get formResponse => throw _privateConstructorUsedError;
+  ProfileModel? get user => throw _privateConstructorUsedError;
+  ProfileModel? get vendor => throw _privateConstructorUsedError;
   bool get isAdded => throw _privateConstructorUsedError;
+  bool get isPdfGenerated => throw _privateConstructorUsedError;
   UserProfileModel? get userProfileModel => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -70,7 +79,10 @@ abstract class $ManageStockStateCopyWith<$Res> {
       String? errorMessage,
       List<StockModel>? stocksList,
       FormModel? formResponse,
+      ProfileModel? user,
+      ProfileModel? vendor,
       bool isAdded,
+      bool isPdfGenerated,
       UserProfileModel? userProfileModel});
 }
 
@@ -91,7 +103,10 @@ class _$ManageStockStateCopyWithImpl<$Res>
     Object? errorMessage = freezed,
     Object? stocksList = freezed,
     Object? formResponse = freezed,
+    Object? user = freezed,
+    Object? vendor = freezed,
     Object? isAdded = freezed,
+    Object? isPdfGenerated = freezed,
     Object? userProfileModel = freezed,
   }) {
     return _then(_value.copyWith(
@@ -119,9 +134,21 @@ class _$ManageStockStateCopyWithImpl<$Res>
           ? _value.formResponse
           : formResponse // ignore: cast_nullable_to_non_nullable
               as FormModel?,
+      user: user == freezed
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as ProfileModel?,
+      vendor: vendor == freezed
+          ? _value.vendor
+          : vendor // ignore: cast_nullable_to_non_nullable
+              as ProfileModel?,
       isAdded: isAdded == freezed
           ? _value.isAdded
           : isAdded // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isPdfGenerated: isPdfGenerated == freezed
+          ? _value.isPdfGenerated
+          : isPdfGenerated // ignore: cast_nullable_to_non_nullable
               as bool,
       userProfileModel: userProfileModel == freezed
           ? _value.userProfileModel
@@ -145,7 +172,10 @@ abstract class _$ManageStockStateCopyWith<$Res>
       String? errorMessage,
       List<StockModel>? stocksList,
       FormModel? formResponse,
+      ProfileModel? user,
+      ProfileModel? vendor,
       bool isAdded,
+      bool isPdfGenerated,
       UserProfileModel? userProfileModel});
 }
 
@@ -168,7 +198,10 @@ class __$ManageStockStateCopyWithImpl<$Res>
     Object? errorMessage = freezed,
     Object? stocksList = freezed,
     Object? formResponse = freezed,
+    Object? user = freezed,
+    Object? vendor = freezed,
     Object? isAdded = freezed,
+    Object? isPdfGenerated = freezed,
     Object? userProfileModel = freezed,
   }) {
     return _then(_ManageStockState(
@@ -196,9 +229,21 @@ class __$ManageStockStateCopyWithImpl<$Res>
           ? _value.formResponse
           : formResponse // ignore: cast_nullable_to_non_nullable
               as FormModel?,
+      user: user == freezed
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as ProfileModel?,
+      vendor: vendor == freezed
+          ? _value.vendor
+          : vendor // ignore: cast_nullable_to_non_nullable
+              as ProfileModel?,
       isAdded: isAdded == freezed
           ? _value.isAdded
           : isAdded // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isPdfGenerated: isPdfGenerated == freezed
+          ? _value.isPdfGenerated
+          : isPdfGenerated // ignore: cast_nullable_to_non_nullable
               as bool,
       userProfileModel: userProfileModel == freezed
           ? _value.userProfileModel
@@ -218,7 +263,10 @@ class _$_ManageStockState implements _ManageStockState {
       this.errorMessage,
       this.stocksList,
       this.formResponse,
+      this.user,
+      this.vendor,
       this.isAdded = false,
+      this.isPdfGenerated = false,
       this.userProfileModel});
 
   @JsonKey(defaultValue: false)
@@ -236,15 +284,22 @@ class _$_ManageStockState implements _ManageStockState {
   final List<StockModel>? stocksList;
   @override
   final FormModel? formResponse;
+  @override
+  final ProfileModel? user;
+  @override
+  final ProfileModel? vendor;
   @JsonKey(defaultValue: false)
   @override
   final bool isAdded;
+  @JsonKey(defaultValue: false)
+  @override
+  final bool isPdfGenerated;
   @override
   final UserProfileModel? userProfileModel;
 
   @override
   String toString() {
-    return 'ManageStockState(isLoading: $isLoading, isAdding: $isAdding, hasError: $hasError, errorMessage: $errorMessage, stocksList: $stocksList, formResponse: $formResponse, isAdded: $isAdded, userProfileModel: $userProfileModel)';
+    return 'ManageStockState(isLoading: $isLoading, isAdding: $isAdding, hasError: $hasError, errorMessage: $errorMessage, stocksList: $stocksList, formResponse: $formResponse, user: $user, vendor: $vendor, isAdded: $isAdded, isPdfGenerated: $isPdfGenerated, userProfileModel: $userProfileModel)';
   }
 
   @override
@@ -269,9 +324,16 @@ class _$_ManageStockState implements _ManageStockState {
             (identical(other.formResponse, formResponse) ||
                 const DeepCollectionEquality()
                     .equals(other.formResponse, formResponse)) &&
+            (identical(other.user, user) ||
+                const DeepCollectionEquality().equals(other.user, user)) &&
+            (identical(other.vendor, vendor) ||
+                const DeepCollectionEquality().equals(other.vendor, vendor)) &&
             (identical(other.isAdded, isAdded) ||
                 const DeepCollectionEquality()
                     .equals(other.isAdded, isAdded)) &&
+            (identical(other.isPdfGenerated, isPdfGenerated) ||
+                const DeepCollectionEquality()
+                    .equals(other.isPdfGenerated, isPdfGenerated)) &&
             (identical(other.userProfileModel, userProfileModel) ||
                 const DeepCollectionEquality()
                     .equals(other.userProfileModel, userProfileModel)));
@@ -286,7 +348,10 @@ class _$_ManageStockState implements _ManageStockState {
       const DeepCollectionEquality().hash(errorMessage) ^
       const DeepCollectionEquality().hash(stocksList) ^
       const DeepCollectionEquality().hash(formResponse) ^
+      const DeepCollectionEquality().hash(user) ^
+      const DeepCollectionEquality().hash(vendor) ^
       const DeepCollectionEquality().hash(isAdded) ^
+      const DeepCollectionEquality().hash(isPdfGenerated) ^
       const DeepCollectionEquality().hash(userProfileModel);
 
   @JsonKey(ignore: true)
@@ -303,7 +368,10 @@ abstract class _ManageStockState implements ManageStockState {
       String? errorMessage,
       List<StockModel>? stocksList,
       FormModel? formResponse,
+      ProfileModel? user,
+      ProfileModel? vendor,
       bool isAdded,
+      bool isPdfGenerated,
       UserProfileModel? userProfileModel}) = _$_ManageStockState;
 
   @override
@@ -319,7 +387,13 @@ abstract class _ManageStockState implements ManageStockState {
   @override
   FormModel? get formResponse => throw _privateConstructorUsedError;
   @override
+  ProfileModel? get user => throw _privateConstructorUsedError;
+  @override
+  ProfileModel? get vendor => throw _privateConstructorUsedError;
+  @override
   bool get isAdded => throw _privateConstructorUsedError;
+  @override
+  bool get isPdfGenerated => throw _privateConstructorUsedError;
   @override
   UserProfileModel? get userProfileModel => throw _privateConstructorUsedError;
   @override

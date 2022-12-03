@@ -56,9 +56,10 @@ class KeepElevatedButton extends StatelessWidget {
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),
               )
-            : disableText ?? const ATLoadingIndicator(
-                color: AppColors.background,
-              ),
+            : disableText ??
+                const ATLoadingIndicator(
+                  color: AppColors.background,
+                ),
       ),
     );
   }

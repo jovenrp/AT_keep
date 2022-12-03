@@ -27,6 +27,7 @@ class StockModel {
     this.createdDate,
     this.modifiedDate,
     this.quantity = 0,
+    this.isOrdered = false,
   });
 
   @HiveField(0)
@@ -95,6 +96,9 @@ class StockModel {
   @HiveField(21)
   double? quantity;
 
+  @HiveField(22)
+  bool? isOrdered;
+
   void setName(String name) {
     this.name = name;
   }
@@ -129,5 +133,9 @@ class StockModel {
 
   void setQuantity(double quantity) {
     this.quantity = quantity;
+  }
+
+  void setIsOrdered(bool isOrdered) {
+    this.isOrdered = isOrdered;
   }
 }
