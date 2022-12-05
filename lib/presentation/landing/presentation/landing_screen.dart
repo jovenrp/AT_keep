@@ -9,6 +9,7 @@ import 'package:keep/presentation/landing/bloc/landing_screen_bloc.dart';
 import 'package:keep/presentation/landing/bloc/landing_screen_state.dart';
 import 'package:keep/presentation/landing/presentation/landing_drawer.dart';
 import 'package:keep/presentation/manage_stock/presentation/order_stock_screen.dart';
+import 'package:keep/presentation/order_history/presentation/order_history_screen.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../../core/presentation/widgets/keep_elevated_button.dart';
@@ -151,6 +152,16 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
                             onPressed: () => Navigator.of(context)
                                 .push(OrderStockScreen.route()),
                             text: 'Order',
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          width: double.infinity,
+                          child: KeepElevatedButton(
+                            isEnabled: !state.isLoading,
+                            onPressed: () => Navigator.of(context)
+                                .push(OrderHistoryScreen.route()),
+                            text: 'History',
                           ),
                         ),
                         const SizedBox(

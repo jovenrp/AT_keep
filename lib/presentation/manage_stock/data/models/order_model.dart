@@ -1,5 +1,7 @@
 import 'package:hive/hive.dart';
 
+import 'order_line_model.dart';
+
 part 'order_model.g.dart';
 
 @HiveType(typeId: 2)
@@ -12,6 +14,7 @@ class OrderModel {
     this.status,
     this.createdDate,
     this.modifiedDate,
+    this.orderLineList,
   });
 
   @HiveField(0)
@@ -35,6 +38,8 @@ class OrderModel {
   @HiveField(6)
   String? modifiedDate;
 
+  List<OrderLineModel>? orderLineList;
+
   void setName(String name) {
     this.name = name;
   }
@@ -45,5 +50,9 @@ class OrderModel {
 
   void setSource(String source) {
     this.source = source;
+  }
+
+  void setOrderLineList(List<OrderLineModel> orderLines) {
+    orderLineList = orderLines;
   }
 }

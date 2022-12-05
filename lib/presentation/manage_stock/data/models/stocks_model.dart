@@ -138,4 +138,8 @@ class StockModel {
   void setIsOrdered(bool isOrdered) {
     this.isOrdered = isOrdered;
   }
+
+  void setIsActive(String isActive) {
+    this.isActive = isActive;
+  }
 }

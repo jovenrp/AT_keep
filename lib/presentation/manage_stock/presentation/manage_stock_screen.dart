@@ -292,185 +292,190 @@ class _ManageStockScreen extends State<ManageStockScreen>
                       child: ListView.builder(
                           itemCount: state.stocksList?.length,
                           itemBuilder: (BuildContext context, index) {
-                            return Slidable(
-                              key: ValueKey<int>(index),
-                              startActionPane: ActionPane(
-                                  motion: const ScrollMotion(),
-                                  extentRatio: 0.2,
-                                  children: <Widget>[
-                                    SlidableAction(
-                                      onPressed: (BuildContext navContext) =>
-                                          openBottomModal(
-                                              state: state,
-                                              index: index,
-                                              isFloatingButton: false),
-                                      backgroundColor: AppColors.secondary,
-                                      foregroundColor: AppColors.white,
-                                      icon: Icons.edit,
-                                    ),
-                                  ]),
-                              endActionPane: ActionPane(
-                                  motion: const ScrollMotion(),
-                                  extentRatio: 0.2,
-                                  children: <Widget>[
-                                    SlidableAction(
-                                      onPressed: (BuildContext navContext) {
-                                        context
-                                            .read<ManageStockBloc>()
-                                            .deleteStock(
-                                                state.stocksList?[index], index)
-                                            .then((_) => context
-                                                .read<ManageStockBloc>()
-                                                .getStocks());
-                                      },
-                                      backgroundColor: AppColors.criticalRed,
-                                      foregroundColor: AppColors.white,
-                                      icon: Icons.delete_forever_outlined,
-                                    ),
-                                  ]),
-                              child: GestureDetector(
-                                onTap: () async {
-                                  await showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    builder: (context) {
-                                      adjustController.text = '';
-                                      adjustController.selection =
-                                          TextSelection.fromPosition(
-                                              TextPosition(
-                                                  offset: adjustController
-                                                      .text.length));
+                            return Visibility(
+                              visible: state.stocksList?[index].isActive
+                                      ?.toLowerCase() ==
+                                  'y',
+                              child: Slidable(
+                                key: ValueKey<int>(index),
+                                startActionPane: ActionPane(
+                                    motion: const ScrollMotion(),
+                                    extentRatio: 0.2,
+                                    children: <Widget>[
+                                      SlidableAction(
+                                        onPressed: (BuildContext navContext) =>
+                                            openBottomModal(
+                                                state: state,
+                                                index: index,
+                                                isFloatingButton: false),
+                                        backgroundColor: AppColors.secondary,
+                                        foregroundColor: AppColors.white,
+                                        icon: Icons.edit,
+                                      ),
+                                    ]),
+                                endActionPane: ActionPane(
+                                    motion: const ScrollMotion(),
+                                    extentRatio: 0.2,
+                                    children: <Widget>[
+                                      SlidableAction(
+                                        onPressed: (BuildContext navContext) {
+                                          context
+                                              .read<ManageStockBloc>()
+                                              .deleteStock(
+                                                  state.stocksList?[index],
+                                                  index)
+                                              .then((_) => context
+                                                  .read<ManageStockBloc>()
+                                                  .getStocks());
+                                        },
+                                        backgroundColor: AppColors.criticalRed,
+                                        foregroundColor: AppColors.white,
+                                        icon: Icons.delete_forever_outlined,
+                                      ),
+                                    ]),
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    await showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      builder: (context) {
+                                        adjustController.text = '';
+                                        adjustController.selection =
+                                            TextSelection.fromPosition(
+                                                TextPosition(
+                                                    offset: adjustController
+                                                        .text.length));
 
-                                      Future<void>.delayed(
-                                          const Duration(milliseconds: 200),
-                                          () => adjustNode.requestFocus());
+                                        Future<void>.delayed(
+                                            const Duration(milliseconds: 200),
+                                            () => adjustNode.requestFocus());
 
-                                      return Container(
-                                        padding: EdgeInsets.only(
-                                            left: 20,
-                                            right: 20,
-                                            top: 20,
-                                            bottom: MediaQuery.of(context)
-                                                    .viewInsets
-                                                    .bottom +
-                                                30),
-                                        child: Wrap(
-                                          children: <Widget>[
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                const Padding(
-                                                  padding: EdgeInsets.only(
-                                                      bottom: 10),
-                                                  child: ATText(
-                                                    text: 'Adjust Stock Item',
-                                                    fontColor: AppColors
-                                                        .onboardingText,
-                                                    fontSize: 18,
-                                                    weight: FontWeight.bold,
+                                        return Container(
+                                          padding: EdgeInsets.only(
+                                              left: 20,
+                                              right: 20,
+                                              top: 20,
+                                              bottom: MediaQuery.of(context)
+                                                      .viewInsets
+                                                      .bottom +
+                                                  30),
+                                          child: Wrap(
+                                            children: <Widget>[
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  const Padding(
+                                                    padding: EdgeInsets.only(
+                                                        bottom: 10),
+                                                    child: ATText(
+                                                      text: 'Adjust Stock Item',
+                                                      fontColor: AppColors
+                                                          .onboardingText,
+                                                      fontSize: 18,
+                                                      weight: FontWeight.bold,
+                                                    ),
                                                   ),
-                                                ),
-                                                Table(
-                                                  columnWidths: const {
-                                                    0: FlexColumnWidth(3),
-                                                    1: FlexColumnWidth(2),
-                                                    2: FlexColumnWidth(2),
-                                                    3: FlexColumnWidth(2),
-                                                    //4: FlexColumnWidth(2),
-                                                  },
-                                                  children: <TableRow>[
-                                                    TableRow(
-                                                      children: <Widget>[
-                                                        Container(
-                                                          color: AppColors
-                                                              .headerGrey,
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 5,
-                                                                  top: 5,
-                                                                  bottom: 5),
-                                                          alignment: Alignment
-                                                              .centerLeft,
-                                                          child: const ATText(
-                                                            text: 'SKU',
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: AppColors
-                                                                    .white),
+                                                  Table(
+                                                    columnWidths: const {
+                                                      0: FlexColumnWidth(3),
+                                                      1: FlexColumnWidth(2),
+                                                      2: FlexColumnWidth(2),
+                                                      3: FlexColumnWidth(2),
+                                                      //4: FlexColumnWidth(2),
+                                                    },
+                                                    children: <TableRow>[
+                                                      TableRow(
+                                                        children: <Widget>[
+                                                          Container(
+                                                            color: AppColors
+                                                                .headerGrey,
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 5,
+                                                                    top: 5,
+                                                                    bottom: 5),
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: const ATText(
+                                                              text: 'SKU',
+                                                              style: TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: AppColors
+                                                                      .white),
+                                                            ),
                                                           ),
-                                                        ),
-                                                        Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 8,
-                                                                  top: 5,
-                                                                  bottom: 5),
-                                                          color: AppColors
-                                                              .headerGrey,
-                                                          alignment: Alignment
-                                                              .centerRight,
-                                                          child: const ATText(
-                                                            text: 'Min',
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: AppColors
-                                                                    .white),
+                                                          Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    right: 8,
+                                                                    top: 5,
+                                                                    bottom: 5),
+                                                            color: AppColors
+                                                                .headerGrey,
+                                                            alignment: Alignment
+                                                                .centerRight,
+                                                            child: const ATText(
+                                                              text: 'Min',
+                                                              style: TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: AppColors
+                                                                      .white),
+                                                            ),
                                                           ),
-                                                        ),
-                                                        Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 8,
-                                                                  top: 5,
-                                                                  bottom: 5),
-                                                          alignment: Alignment
-                                                              .centerRight,
-                                                          color: AppColors
-                                                              .headerGrey,
-                                                          child: const ATText(
-                                                            text: 'Max',
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: AppColors
-                                                                    .white),
+                                                          Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    right: 8,
+                                                                    top: 5,
+                                                                    bottom: 5),
+                                                            alignment: Alignment
+                                                                .centerRight,
+                                                            color: AppColors
+                                                                .headerGrey,
+                                                            child: const ATText(
+                                                              text: 'Max',
+                                                              style: TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: AppColors
+                                                                      .white),
+                                                            ),
                                                           ),
-                                                        ),
-                                                        Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 8,
-                                                                  top: 5,
-                                                                  bottom: 5),
-                                                          alignment: Alignment
-                                                              .centerRight,
-                                                          color: AppColors
-                                                              .headerGrey,
-                                                          child: const ATText(
-                                                            text: 'OnHand',
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: AppColors
-                                                                    .white),
+                                                          Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    right: 8,
+                                                                    top: 5,
+                                                                    bottom: 5),
+                                                            alignment: Alignment
+                                                                .centerRight,
+                                                            color: AppColors
+                                                                .headerGrey,
+                                                            child: const ATText(
+                                                              text: 'OnHand',
+                                                              style: TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: AppColors
+                                                                      .white),
+                                                            ),
                                                           ),
-                                                        ),
-                                                        /*Container(
+                                                          /*Container(
                                                           padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
                                                           alignment: Alignment.centerRight,
                                                           color: AppColors.headerGrey,
@@ -479,124 +484,124 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.white),
                                                           ),
                                                         ),*/
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                                Table(
-                                                  columnWidths: const {
-                                                    0: FlexColumnWidth(3),
-                                                    1: FlexColumnWidth(2),
-                                                    2: FlexColumnWidth(2),
-                                                    3: FlexColumnWidth(2),
-                                                    4: FlexColumnWidth(2),
-                                                  },
-                                                  children: <TableRow>[
-                                                    TableRow(
-                                                      children: <Widget>[
-                                                        Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 8,
-                                                                  top: 5,
-                                                                  bottom: 5),
-                                                          alignment: Alignment
-                                                              .centerLeft,
-                                                          child: ATText(
-                                                            text: state
-                                                                .stocksList?[
-                                                                    index]
-                                                                .sku,
-                                                            fontColor: AppColors
-                                                                .onboardingText,
-                                                            fontSize: 16,
-                                                            weight:
-                                                                FontWeight.bold,
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Table(
+                                                    columnWidths: const {
+                                                      0: FlexColumnWidth(3),
+                                                      1: FlexColumnWidth(2),
+                                                      2: FlexColumnWidth(2),
+                                                      3: FlexColumnWidth(2),
+                                                      4: FlexColumnWidth(2),
+                                                    },
+                                                    children: <TableRow>[
+                                                      TableRow(
+                                                        children: <Widget>[
+                                                          Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    right: 8,
+                                                                    top: 5,
+                                                                    bottom: 5),
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: ATText(
+                                                              text: state
+                                                                  .stocksList?[
+                                                                      index]
+                                                                  .sku,
+                                                              fontColor: AppColors
+                                                                  .onboardingText,
+                                                              fontSize: 16,
+                                                              weight: FontWeight
+                                                                  .bold,
+                                                            ),
                                                           ),
-                                                        ),
-                                                        Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 8,
-                                                                  top: 5,
-                                                                  bottom: 5),
-                                                          alignment: Alignment
-                                                              .centerRight,
-                                                          child: ATText(
-                                                            text: state
-                                                                    .stocksList?[
-                                                                        index]
-                                                                    .minQuantity
-                                                                    .toString()
-                                                                    .removeDecimalZeroFormat(state
-                                                                            .stocksList?[index]
-                                                                            .minQuantity ??
-                                                                        0) ??
-                                                                '',
-                                                            fontColor: AppColors
-                                                                .onboardingText,
-                                                            fontSize: 16,
-                                                            weight:
-                                                                FontWeight.bold,
+                                                          Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    right: 8,
+                                                                    top: 5,
+                                                                    bottom: 5),
+                                                            alignment: Alignment
+                                                                .centerRight,
+                                                            child: ATText(
+                                                              text: state
+                                                                      .stocksList?[
+                                                                          index]
+                                                                      .minQuantity
+                                                                      .toString()
+                                                                      .removeDecimalZeroFormat(state
+                                                                              .stocksList?[index]
+                                                                              .minQuantity ??
+                                                                          0) ??
+                                                                  '',
+                                                              fontColor: AppColors
+                                                                  .onboardingText,
+                                                              fontSize: 16,
+                                                              weight: FontWeight
+                                                                  .bold,
+                                                            ),
                                                           ),
-                                                        ),
-                                                        Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 8,
-                                                                  top: 5,
-                                                                  bottom: 5),
-                                                          alignment: Alignment
-                                                              .centerRight,
-                                                          child: ATText(
-                                                            text: state
-                                                                    .stocksList?[
-                                                                        index]
-                                                                    .maxQuantity
-                                                                    .toString()
-                                                                    .removeDecimalZeroFormat(state
-                                                                            .stocksList?[index]
-                                                                            .maxQuantity ??
-                                                                        0) ??
-                                                                '',
-                                                            fontColor: AppColors
-                                                                .onboardingText,
-                                                            fontSize: 16,
-                                                            weight:
-                                                                FontWeight.bold,
+                                                          Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    right: 8,
+                                                                    top: 5,
+                                                                    bottom: 5),
+                                                            alignment: Alignment
+                                                                .centerRight,
+                                                            child: ATText(
+                                                              text: state
+                                                                      .stocksList?[
+                                                                          index]
+                                                                      .maxQuantity
+                                                                      .toString()
+                                                                      .removeDecimalZeroFormat(state
+                                                                              .stocksList?[index]
+                                                                              .maxQuantity ??
+                                                                          0) ??
+                                                                  '',
+                                                              fontColor: AppColors
+                                                                  .onboardingText,
+                                                              fontSize: 16,
+                                                              weight: FontWeight
+                                                                  .bold,
+                                                            ),
                                                           ),
-                                                        ),
-                                                        Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 8,
-                                                                  top: 5,
-                                                                  bottom: 5),
-                                                          alignment: Alignment
-                                                              .centerRight,
-                                                          child: ATText(
-                                                            text: state
-                                                                    .stocksList?[
-                                                                        index]
-                                                                    .onHand
-                                                                    .toString()
-                                                                    .removeDecimalZeroFormat(state
-                                                                            .stocksList?[index]
-                                                                            .onHand ??
-                                                                        0) ??
-                                                                '',
-                                                            fontColor: AppColors
-                                                                .onboardingText,
-                                                            fontSize: 16,
-                                                            weight:
-                                                                FontWeight.bold,
+                                                          Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    right: 8,
+                                                                    top: 5,
+                                                                    bottom: 5),
+                                                            alignment: Alignment
+                                                                .centerRight,
+                                                            child: ATText(
+                                                              text: state
+                                                                      .stocksList?[
+                                                                          index]
+                                                                      .onHand
+                                                                      .toString()
+                                                                      .removeDecimalZeroFormat(state
+                                                                              .stocksList?[index]
+                                                                              .onHand ??
+                                                                          0) ??
+                                                                  '',
+                                                              fontColor: AppColors
+                                                                  .onboardingText,
+                                                              fontSize: 16,
+                                                              weight: FontWeight
+                                                                  .bold,
+                                                            ),
                                                           ),
-                                                        ),
-                                                        /*Container(
+                                                          /*Container(
                                                           padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
                                                           alignment: Alignment.centerRight,
                                                           child: ATText(
@@ -609,284 +614,284 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                                             weight: FontWeight.bold,
                                                           ),
                                                         ),*/
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          bottom: 10),
-                                                  child: ATText(
-                                                    text: state
-                                                        .stocksList?[index]
-                                                        .name,
-                                                    fontColor: AppColors
-                                                        .onboardingText,
-                                                    fontSize: 14,
+                                                        ],
+                                                      ),
+                                                    ],
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 20),
-                                              child: ATTextfield(
-                                                hintText: 'Adjust',
-                                                textEditingController:
-                                                    adjustController,
-                                                focusNode: adjustNode,
-                                                textAlign: TextAlign.center,
-                                                textInputAction:
-                                                    TextInputAction.next,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 5,
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 10),
-                                              child: SizedBox(
-                                                width: double.infinity,
-                                                child: KeepElevatedButton(
-                                                  isEnabled: !state.isLoading,
-                                                  color: AppColors.successGreen,
-                                                  onPressed: () {
-                                                    if (adjustController.text
-                                                        .trim()
-                                                        .isNotEmpty) {
-                                                      context
-                                                          .read<
-                                                              ManageStockBloc>()
-                                                          .adjustStock(
-                                                              stockModel: state
-                                                                      .stocksList?[
-                                                                  index],
-                                                              index: index,
-                                                              isIn: true,
-                                                              quantity: double.parse(
-                                                                  adjustController
-                                                                      .text))
-                                                          .then((_) {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        context
-                                                            .read<
-                                                                ManageStockBloc>()
-                                                            .getStocks();
-                                                      });
-                                                    } else {
-                                                      context
-                                                          .read<
-                                                              ManageStockBloc>()
-                                                          .displayErrorMessage(
-                                                              FormModel(
-                                                                  error: true,
-                                                                  message:
-                                                                      'Adjust quantity cannot be empty on In.'));
-                                                    }
-                                                  },
-                                                  text: 'In',
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.only(top: 5),
-                                              child: SizedBox(
-                                                width: double.infinity,
-                                                child: KeepElevatedButton(
-                                                  color: AppColors.criticalRed,
-                                                  isEnabled: !state.isLoading,
-                                                  onPressed: () {
-                                                    if (adjustController.text
-                                                        .trim()
-                                                        .isNotEmpty) {
-                                                      context
-                                                          .read<
-                                                              ManageStockBloc>()
-                                                          .adjustStock(
-                                                              stockModel: state
-                                                                      .stocksList?[
-                                                                  index],
-                                                              index: index,
-                                                              isIn: false,
-                                                              quantity: double.parse(
-                                                                  adjustController
-                                                                      .text))
-                                                          .then((_) {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        context
-                                                            .read<
-                                                                ManageStockBloc>()
-                                                            .getStocks();
-                                                      });
-                                                    } else {
-                                                      context
-                                                          .read<
-                                                              ManageStockBloc>()
-                                                          .displayErrorMessage(
-                                                              FormModel(
-                                                                  error: true,
-                                                                  message:
-                                                                      'Adjust quantity cannot be empty on Out.'));
-                                                    }
-                                                  },
-                                                  text: 'Out',
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      left: BorderSide(
-                                          width: 10.0,
-                                          color: state.stocksList?[index]
-                                                      .maxQuantity ==
-                                                  0
-                                              ? AppColors.subtleGrey
-                                              : double.parse(state
-                                                              .stocksList?[
-                                                                  index]
-                                                              .maxQuantity
-                                                              .toString() ??
-                                                          '0') <=
-                                                      double.parse(state
-                                                              .stocksList?[
-                                                                  index]
-                                                              .onHand
-                                                              .toString() ??
-                                                          '0')
-                                                  ? AppColors.successGreen
-                                                  : state.stocksList?[index]
-                                                              .onHand ==
-                                                          0
-                                                      ? AppColors.criticalRed
-                                                      : AppColors
-                                                          .warningOrange),
-                                    ),
-                                  ),
-                                  child: Container(
-                                    padding: const EdgeInsets.only(top: 10),
-                                    color: index % 2 == 1
-                                        ? AppColors.lightBlue
-                                        : AppColors.white,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Table(
-                                          columnWidths: const {
-                                            0: FlexColumnWidth(3),
-                                            1: FlexColumnWidth(2),
-                                            2: FlexColumnWidth(2),
-                                            3: FlexColumnWidth(2),
-                                            4: FlexColumnWidth(2),
-                                          },
-                                          children: <TableRow>[
-                                            TableRow(
-                                              children: <Widget>[
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 8),
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: ATText(
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 10),
+                                                    child: ATText(
                                                       text: state
                                                           .stocksList?[index]
-                                                          .sku,
+                                                          .name,
+                                                      fontColor: AppColors
+                                                          .onboardingText,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 20),
+                                                child: ATTextfield(
+                                                  hintText: 'Adjust',
+                                                  textEditingController:
+                                                      adjustController,
+                                                  focusNode: adjustNode,
+                                                  textAlign: TextAlign.center,
+                                                  textInputAction:
+                                                      TextInputAction.next,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 10),
+                                                child: SizedBox(
+                                                  width: double.infinity,
+                                                  child: KeepElevatedButton(
+                                                    isEnabled: !state.isLoading,
+                                                    color:
+                                                        AppColors.successGreen,
+                                                    onPressed: () {
+                                                      if (adjustController.text
+                                                          .trim()
+                                                          .isNotEmpty) {
+                                                        context
+                                                            .read<
+                                                                ManageStockBloc>()
+                                                            .adjustStock(
+                                                                stockModel:
+                                                                    state.stocksList?[
+                                                                        index],
+                                                                index: index,
+                                                                isIn: true,
+                                                                quantity: double.parse(
+                                                                    adjustController
+                                                                        .text))
+                                                            .then((_) {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                          context
+                                                              .read<
+                                                                  ManageStockBloc>()
+                                                              .getStocks();
+                                                        });
+                                                      } else {
+                                                        context
+                                                            .read<
+                                                                ManageStockBloc>()
+                                                            .displayErrorMessage(
+                                                                FormModel(
+                                                                    error: true,
+                                                                    message:
+                                                                        'Adjust quantity cannot be empty on In.'));
+                                                      }
+                                                    },
+                                                    text: 'In',
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 5),
+                                                child: SizedBox(
+                                                  width: double.infinity,
+                                                  child: KeepElevatedButton(
+                                                    color:
+                                                        AppColors.criticalRed,
+                                                    isEnabled: !state.isLoading,
+                                                    onPressed: () {
+                                                      if (adjustController.text
+                                                          .trim()
+                                                          .isNotEmpty) {
+                                                        context
+                                                            .read<
+                                                                ManageStockBloc>()
+                                                            .adjustStock(
+                                                                stockModel:
+                                                                    state.stocksList?[
+                                                                        index],
+                                                                index: index,
+                                                                isIn: false,
+                                                                quantity: double.parse(
+                                                                    adjustController
+                                                                        .text))
+                                                            .then((_) {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                          context
+                                                              .read<
+                                                                  ManageStockBloc>()
+                                                              .getStocks();
+                                                        });
+                                                      } else {
+                                                        context
+                                                            .read<
+                                                                ManageStockBloc>()
+                                                            .displayErrorMessage(
+                                                                FormModel(
+                                                                    error: true,
+                                                                    message:
+                                                                        'Adjust quantity cannot be empty on Out.'));
+                                                      }
+                                                    },
+                                                    text: 'Out',
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        left: BorderSide(
+                                            width: 10.0,
+                                            color: state.stocksList?[index]
+                                                        .maxQuantity ==
+                                                    0
+                                                ? AppColors.subtleGrey
+                                                : double.parse(state
+                                                                .stocksList?[
+                                                                    index]
+                                                                .maxQuantity
+                                                                .toString() ??
+                                                            '0') <=
+                                                        double.parse(state
+                                                                .stocksList?[
+                                                                    index]
+                                                                .onHand
+                                                                .toString() ??
+                                                            '0')
+                                                    ? AppColors.successGreen
+                                                    : state.stocksList?[index]
+                                                                .onHand ==
+                                                            0
+                                                        ? AppColors.criticalRed
+                                                        : AppColors
+                                                            .warningOrange),
+                                      ),
+                                    ),
+                                    child: Container(
+                                      padding: const EdgeInsets.only(top: 10),
+                                      color: index % 2 == 1
+                                          ? AppColors.lightBlue
+                                          : AppColors.white,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Table(
+                                            columnWidths: const {
+                                              0: FlexColumnWidth(3),
+                                              1: FlexColumnWidth(2),
+                                              2: FlexColumnWidth(2),
+                                              3: FlexColumnWidth(2),
+                                              4: FlexColumnWidth(2),
+                                            },
+                                            children: <TableRow>[
+                                              TableRow(
+                                                children: <Widget>[
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 8),
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: ATText(
+                                                        text: state
+                                                            .stocksList?[index]
+                                                            .sku,
+                                                        style: const TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: AppColors
+                                                                .tertiary)),
+                                                  ),
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 8),
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    child: ATText(
+                                                      text: state
+                                                          .stocksList?[index]
+                                                          .minQuantity
+                                                          .toString()
+                                                          .removeDecimalZeroFormat(state
+                                                                  .stocksList?[
+                                                                      index]
+                                                                  .minQuantity ??
+                                                              0),
                                                       style: const TextStyle(
                                                           fontSize: 18,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                           color: AppColors
-                                                              .tertiary)),
-                                                ),
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          right: 8),
-                                                  alignment:
-                                                      Alignment.centerRight,
-                                                  child: ATText(
-                                                    text: state
-                                                        .stocksList?[index]
-                                                        .minQuantity
-                                                        .toString()
-                                                        .removeDecimalZeroFormat(
-                                                            state
-                                                                    .stocksList?[
-                                                                        index]
-                                                                    .minQuantity ??
-                                                                0),
-                                                    style: const TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color:
-                                                            AppColors.tertiary),
+                                                              .tertiary),
+                                                    ),
                                                   ),
-                                                ),
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          right: 8),
-                                                  alignment:
-                                                      Alignment.centerRight,
-                                                  child: ATText(
-                                                    text: state
-                                                        .stocksList?[index]
-                                                        .maxQuantity
-                                                        .toString()
-                                                        .removeDecimalZeroFormat(
-                                                            state
-                                                                    .stocksList?[
-                                                                        index]
-                                                                    .maxQuantity ??
-                                                                0),
-                                                    style: const TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color:
-                                                            AppColors.tertiary),
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 8),
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    child: ATText(
+                                                      text: state
+                                                          .stocksList?[index]
+                                                          .maxQuantity
+                                                          .toString()
+                                                          .removeDecimalZeroFormat(state
+                                                                  .stocksList?[
+                                                                      index]
+                                                                  .maxQuantity ??
+                                                              0),
+                                                      style: const TextStyle(
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: AppColors
+                                                              .tertiary),
+                                                    ),
                                                   ),
-                                                ),
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          right: 8),
-                                                  alignment:
-                                                      Alignment.centerRight,
-                                                  child: ATText(
-                                                    text: state
-                                                        .stocksList?[index]
-                                                        .onHand
-                                                        .toString()
-                                                        .removeDecimalZeroFormat(
-                                                            state
-                                                                    .stocksList?[
-                                                                        index]
-                                                                    .onHand ??
-                                                                0),
-                                                    style: const TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color:
-                                                            AppColors.tertiary),
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 8),
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    child: ATText(
+                                                      text: state
+                                                          .stocksList?[index]
+                                                          .onHand
+                                                          .toString()
+                                                          .removeDecimalZeroFormat(
+                                                              state
+                                                                      .stocksList?[
+                                                                          index]
+                                                                      .onHand ??
+                                                                  0),
+                                                      style: const TextStyle(
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: AppColors
+                                                              .tertiary),
+                                                    ),
                                                   ),
-                                                ),
-                                                /*Container(
+                                                  /*Container(
                                                   padding: const EdgeInsets.only(right: 8),
                                                   alignment: Alignment.centerRight,
                                                   child: ATText(
@@ -896,22 +901,23 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.tertiary),
                                                   ),
                                                 ),*/
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.only(
-                                              left: 8, right: 8, top: 5),
-                                          alignment: Alignment.centerLeft,
-                                          child: ATText(
-                                              text:
-                                                  state.stocksList?[index].name,
-                                              style: const TextStyle(
-                                                  fontSize: 18,
-                                                  color: AppColors.tertiary)),
-                                        )
-                                      ],
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.only(
+                                                left: 8, right: 8, top: 5),
+                                            alignment: Alignment.centerLeft,
+                                            child: ATText(
+                                                text: state
+                                                    .stocksList?[index].name,
+                                                style: const TextStyle(
+                                                    fontSize: 18,
+                                                    color: AppColors.tertiary)),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

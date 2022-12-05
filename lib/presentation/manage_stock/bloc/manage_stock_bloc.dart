@@ -1,38 +1,45 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
-import 'package:keep/presentation/manage_stock/domain/repositories/stock_order_repository.dart';
 import 'package:keep/core/data/services/persistence_service.dart';
 import 'package:keep/core/domain/utils/string_extensions.dart';
 import 'package:keep/presentation/manage_stock/data/models/form_model.dart';
+import 'package:keep/presentation/manage_stock/data/models/order_line_model.dart';
 import 'package:keep/presentation/manage_stock/data/models/stocks_model.dart';
+import 'package:keep/presentation/order_history/domain/repositories/order_repository.dart';
+import 'package:keep/presentation/manage_stock/domain/repositories/stock_order_repository.dart';
 import 'package:keep/presentation/profile/domain/repositories/profile_repository.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:share_plus/share_plus.dart';
 
-import '../../../core/domain/utils/constants/app_colors.dart' as pc;
 import '../../../core/domain/utils/constants/app_colors.dart';
-import '../../../core/presentation/widgets/at_text.dart';
+import '../../order_history/domain/repositories/order_line_repository.dart';
 import '../../profile/data/models/profile_model.dart';
+import '../data/models/order_model.dart';
 import '../domain/repositories/stock_order_repository.dart';
 import 'manage_stock_state.dart';
 
 class ManageStockBloc extends Cubit<ManageStockState> {
   ManageStockBloc({
     required this.stockOrderRepository,
+    required this.orderRepository,
+    required this.orderLineRepository,
     required this.profileRepository,
     required this.persistenceService,
   }) : super(ManageStockState());
 
   final StockOrderRepository stockOrderRepository;
+  final OrderRepository orderRepository;
+  final OrderLineRepository orderLineRepository;
   final ProfileRepository profileRepository;
   final PersistenceService persistenceService;
 
@@ -57,15 +64,10 @@ class ManageStockBloc extends Cubit<ManageStockState> {
       String? maxQuantity,
       String? order}) async {
     emit(state.copyWith(isAdding: true));
-    Box box = await stockOrderRepository.openBox();
-    List<StockModel> stockList = stockOrderRepository.getStockList(box);
 
+    Box box = await stockOrderRepository.openBox();
     StockModel stock = StockModel(
-      id: stockList.isNotEmpty
-          ? (int.parse(stockList[stockList.length - 1].id ?? '0') + 1)
-              .toString()
-              .padLeft(5, '0')
-          : '00001',
+      id: generateUniqueId(),
       sku: sku,
       name: name ?? '',
       num: num ?? '',
@@ -174,14 +176,46 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     emit(state.copyWith(isLoading: true));
 
     Box box = await stockOrderRepository.openBox();
-    stockOrderRepository.deleteStock(box, stockModel ?? StockModel(), index);
+    stockModel?.setIsActive('n');
+    stockOrderRepository.updateStock(box, index, stockModel ?? StockModel());
+    stockOrderRepository.clearStock(box);
   }
 
   Future<void> clearStocks({required List<StockModel> stockList}) async {
     emit(state.copyWith(isLoading: true));
 
+    Box ordBox = await orderRepository.openBox();
+    List<OrderModel> orders = orderRepository.getOrderList(ordBox);
+    String orderUniqueId = generateUniqueId();
+    OrderModel orderModel = OrderModel(
+      id: orderUniqueId,
+      num: 'TRK01-${orders.isEmpty ? '0001' : (orders.length + 1).toString().padLeft(4, '0')}',
+      name: 'Order TRK01-${orders.isEmpty ? '0001' : (orders.length + 1).toString().padLeft(4, '0')}',
+      source:
+          '${state.vendor?.firstname} ${state.vendor?.lastname}, ${state.vendor?.email}, ${state.vendor?.phoneNumber}, ${state.vendor?.address}',
+      status: 'processing',
+      createdDate: DateTime.now().toIso8601String(),
+    );
+
+    await orderRepository.addOrder(ordBox, orderModel);
+
+    Box ordLineBox = await orderLineRepository.openBox();
     for (StockModel item in stockList) {
-      item.setIsOrdered(true);
+      if (item.isOrdered == false) {
+        item.setIsOrdered(true);
+
+        OrderLineModel orderLineModel = OrderLineModel(
+          id: generateUniqueId(),
+          orderId: orderUniqueId,
+          stockId: item.id,
+          lineNum: ordLineBox.isEmpty
+              ? '000001'
+              : (ordLineBox.length + 1).toString().padLeft(6, '0'),
+          quantity: double.parse(getQuantity(item)),
+          createdDate: DateTime.now().toIso8601String(),
+        );
+        await orderLineRepository.addOrderLine(ordLineBox, orderLineModel);
+      }
     }
 
     emit(state.copyWith(isPdfGenerated: true));
@@ -530,7 +564,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     String appDocPath = appDocDir.path;
     final file = File(appDocPath + '/' + 'StockOrder.pdf');
-    log('Save as file ${file.path} ...');
+    //log('Save as file ${file.path} ...');
     await file.writeAsBytes(await pdf.save());
 
     if (action == 'share') {
@@ -544,5 +578,11 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     } else {
       await OpenFile.open(file.path);
     }
+  }
+
+  String generateUniqueId() {
+    Random value = Random();
+    int uniqueId = value.nextInt(900000) + 100000;
+    return uniqueId.toString().padLeft(6, '0');
   }
 }

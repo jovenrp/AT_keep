@@ -6,17 +6,17 @@ part of 'order_line_model.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class OrderModelAdapter extends TypeAdapter<OrderModel> {
+class OrderLineModelAdapter extends TypeAdapter<OrderLineModel> {
   @override
   final int typeId = 3;
 
   @override
-  OrderModel read(BinaryReader reader) {
+  OrderLineModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return OrderModel(
+    return OrderLineModel(
       id: fields[0] as String?,
       orderId: fields[1] as String?,
       stockId: fields[2] as String?,
@@ -28,7 +28,7 @@ class OrderModelAdapter extends TypeAdapter<OrderModel> {
   }
 
   @override
-  void write(BinaryWriter writer, OrderModel obj) {
+  void write(BinaryWriter writer, OrderLineModel obj) {
     writer
       ..writeByte(7)
       ..writeByte(0)
@@ -53,7 +53,7 @@ class OrderModelAdapter extends TypeAdapter<OrderModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is OrderModelAdapter &&
+      other is OrderLineModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

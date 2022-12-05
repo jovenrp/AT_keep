@@ -110,6 +110,7 @@ class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
         return SafeArea(
           child: WillPopScope(
             onWillPop: () async {
+              ScaffoldMessenger.of(context).clearSnackBars();
               return true;
             },
             child: Scaffold(
@@ -465,15 +466,18 @@ class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
                           itemCount: state.stocksList?.length,
                           itemBuilder: (BuildContext context, index) {
                             return Visibility(
-                              visible:
-                                  state.stocksList?[index].isOrdered != true &&
-                                      (isShowAll == true ||
-                                          (double.parse(context
-                                                  .read<ManageStockBloc>()
-                                                  .getQuantity(
-                                                      state.stocksList?[index])
-                                                  .toString()) >
-                                              0)),
+                              visible: state.stocksList?[index].isOrdered !=
+                                      true &&
+                                  state.stocksList?[index].isActive
+                                          ?.toLowerCase() ==
+                                      'y' &&
+                                  (isShowAll == true ||
+                                      (double.parse(context
+                                              .read<ManageStockBloc>()
+                                              .getQuantity(
+                                                  state.stocksList?[index])
+                                              .toString()) >
+                                          0)),
                               child: Slidable(
                                 key: ValueKey<int>(index),
                                 child: GestureDetector(

@@ -1,10 +1,11 @@
 import 'package:hive/hive.dart';
+import 'package:keep/presentation/manage_stock/data/models/stocks_model.dart';
 
 part 'order_line_model.g.dart';
 
 @HiveType(typeId: 3)
-class OrderModel {
-  OrderModel({
+class OrderLineModel {
+  OrderLineModel({
     this.id,
     this.orderId,
     this.stockId,
@@ -12,6 +13,7 @@ class OrderModel {
     this.quantity = 0,
     this.createdDate,
     this.modifiedDate,
+    this.stockModel,
   });
 
   @HiveField(0)
@@ -35,7 +37,13 @@ class OrderModel {
   @HiveField(6)
   String? modifiedDate;
 
+  StockModel? stockModel;
+
   void setModifiedDate(String modifiedDate) {
     this.modifiedDate = modifiedDate;
+  }
+
+  void setStock(StockModel stock) {
+    stockModel = stock;
   }
 }
