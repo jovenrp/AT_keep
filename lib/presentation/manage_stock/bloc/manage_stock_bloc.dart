@@ -1,8 +1,6 @@
-import 'dart:developer';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -10,11 +8,11 @@ import 'package:intl/intl.dart';
 import 'package:keep/core/data/services/persistence_service.dart';
 import 'package:keep/core/domain/utils/string_extensions.dart';
 import 'package:keep/presentation/manage_stock/data/models/form_model.dart';
-import 'package:keep/presentation/manage_stock/data/models/order_line_model.dart';
 import 'package:keep/presentation/manage_stock/data/models/stocks_model.dart';
-import 'package:keep/presentation/order_history/domain/repositories/order_repository.dart';
 import 'package:keep/presentation/manage_stock/domain/repositories/stock_order_repository.dart';
+import 'package:keep/presentation/order_history/domain/repositories/order_repository.dart';
 import 'package:keep/presentation/profile/domain/repositories/profile_repository.dart';
+import 'package:location/location.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -22,9 +20,10 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/domain/utils/constants/app_colors.dart';
+import '../../order_history/data/models/order_line_model.dart';
+import '../../order_history/data/models/order_model.dart';
 import '../../order_history/domain/repositories/order_line_repository.dart';
 import '../../profile/data/models/profile_model.dart';
-import '../data/models/order_model.dart';
 import '../domain/repositories/stock_order_repository.dart';
 import 'manage_stock_state.dart';
 
@@ -100,8 +99,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     stockModel?.setorder(double.parse(order ?? '0'));
     stockModel?.setIsOrdered(false);
 
-    await stockOrderRepository.updateStock(
-        box, index, stockModel ?? StockModel());
+    await stockOrderRepository.updateStock(box, stockModel ?? StockModel());
     emit(state.copyWith(isAdding: false));
   }
 
@@ -157,7 +155,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
 
     stockModel?.setonHand(qty);
     stockModel?.setIsOrdered(false);
-    stockOrderRepository.updateStock(box, index, stockModel ?? StockModel());
+    stockOrderRepository.updateStock(box, stockModel ?? StockModel());
   }
 
   Future<void> orderStock(
@@ -169,7 +167,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
 
     stockModel?.setQuantity(quantity);
     stockModel?.setIsOrdered(false);
-    stockOrderRepository.updateStock(box, index, stockModel ?? StockModel());
+    stockOrderRepository.updateStock(box, stockModel ?? StockModel());
   }
 
   Future<void> deleteStock(StockModel? stockModel, int index) async {
@@ -177,32 +175,40 @@ class ManageStockBloc extends Cubit<ManageStockState> {
 
     Box box = await stockOrderRepository.openBox();
     stockModel?.setIsActive('n');
-    stockOrderRepository.updateStock(box, index, stockModel ?? StockModel());
-    stockOrderRepository.clearStock(box);
+    stockOrderRepository.updateStock(box, stockModel ?? StockModel());
+    //stockOrderRepository.clearStock(box);
   }
 
-  Future<void> clearStocks({required List<StockModel> stockList}) async {
+  Future<void> clearStocks(
+      {required List<StockModel> stockList, String? orderName}) async {
     emit(state.copyWith(isLoading: true));
 
     Box ordBox = await orderRepository.openBox();
     List<OrderModel> orders = orderRepository.getOrderList(ordBox);
+    LocationData? locationData = state.locationData;
     String orderUniqueId = generateUniqueId();
+
     OrderModel orderModel = OrderModel(
       id: orderUniqueId,
-      num: 'TRK01-${orders.isEmpty ? '0001' : (orders.length + 1).toString().padLeft(4, '0')}',
-      name: 'Order TRK01-${orders.isEmpty ? '0001' : (orders.length + 1).toString().padLeft(4, '0')}',
+      num: orderName,
+      name: orderName,
       source:
           '${state.vendor?.firstname} ${state.vendor?.lastname}, ${state.vendor?.email}, ${state.vendor?.phoneNumber}, ${state.vendor?.address}',
       status: 'processing',
       createdDate: DateTime.now().toIso8601String(),
+      longitude: locationData?.longitude ?? 0,
+      latitude: locationData?.latitude ?? 0,
+      accuracy: locationData?.accuracy ?? 0,
     );
 
     await orderRepository.addOrder(ordBox, orderModel);
 
     Box ordLineBox = await orderLineRepository.openBox();
+    Box stockBox = await stockOrderRepository.openBox();
     for (StockModel item in stockList) {
       if (item.isOrdered == false) {
         item.setIsOrdered(true);
+        stockOrderRepository.updateStock(stockBox, item ?? StockModel());
 
         OrderLineModel orderLineModel = OrderLineModel(
           id: generateUniqueId(),
@@ -234,7 +240,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     double onHand = stockModel?.onHand ?? 0;
     double qtyOrder = stockModel?.quantity ?? 0;
 
-    if (qtyOrder >= 0 && min == 0 && max == 0 && onHand == 0) {
+    if (qtyOrder > 0) {
       quantity = qtyOrder;
     } else {
       if ((onHand < min) || (onHand == 0) && min == 0) {
@@ -298,7 +304,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
   }
 
   Future<void> generatePdfOrder(
-      {required List<StockModel>? stockList,
+      {required List<StockModel>? stockModel,
       required ProfileModel user,
       required ProfileModel vendor,
       required String? action}) async {
@@ -306,11 +312,12 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     String? orderNumber = '1000';
     final pdf = pw.Document();
 
-    final image = pw.MemoryImage(
-      (await rootBundle.load('assets/images/applogo.jpeg'))
-          .buffer
-          .asUint8List(),
-    );
+    List<StockModel> stockList = <StockModel>[];
+    for (StockModel item in stockModel ?? <StockModel>[]) {
+      if (double.parse(getQuantity(item)) > 0 && item.isOrdered == false) {
+        stockList.add(item);
+      }
+    }
 
     pdf.addPage(pw.Page(build: (pw.Context context) {
       return pw.Column(
@@ -406,9 +413,92 @@ class ManageStockBloc extends Cubit<ManageStockState> {
             pw.SizedBox(height: 20),
             pw.Divider(height: 1),
             pw.SizedBox(height: 20),
+            pw.Padding(
+              padding: const pw.EdgeInsets.only(left: 0),
+              child: pw.Table(
+                columnWidths: const {
+                  0: pw.FlexColumnWidth(3),
+                  1: pw.FlexColumnWidth(2),
+                  2: pw.FlexColumnWidth(2),
+                  3: pw.FlexColumnWidth(2),
+                  4: pw.FlexColumnWidth(2),
+                },
+                children: <pw.TableRow>[
+                  pw.TableRow(
+                    children: <pw.Widget>[
+                      pw.Container(
+                        color: PdfColor.fromInt(AppColors.headerGrey.value),
+                        padding: const pw.EdgeInsets.only(
+                            left: 18, top: 5, bottom: 5),
+                        alignment: pw.Alignment.centerLeft,
+                        child: pw.Text(
+                          'SKU',
+                          style: pw.TextStyle(
+                              fontSize: 18,
+                              fontWeight: pw.FontWeight.bold,
+                              color: PdfColor.fromInt(AppColors.white.value)),
+                        ),
+                      ),
+                      pw.Container(
+                        padding: const pw.EdgeInsets.only(
+                            right: 8, top: 5, bottom: 5),
+                        color: PdfColor.fromInt(AppColors.headerGrey.value),
+                        alignment: pw.Alignment.centerRight,
+                        child: pw.Text(
+                          'Min',
+                          style: pw.TextStyle(
+                              fontSize: 18,
+                              fontWeight: pw.FontWeight.bold,
+                              color: PdfColor.fromInt(AppColors.white.value)),
+                        ),
+                      ),
+                      pw.Container(
+                        padding: const pw.EdgeInsets.only(
+                            right: 8, top: 5, bottom: 5),
+                        alignment: pw.Alignment.centerRight,
+                        color: PdfColor.fromInt(AppColors.headerGrey.value),
+                        child: pw.Text(
+                          'Max',
+                          style: pw.TextStyle(
+                              fontSize: 18,
+                              fontWeight: pw.FontWeight.bold,
+                              color: PdfColor.fromInt(AppColors.white.value)),
+                        ),
+                      ),
+                      pw.Container(
+                        padding: const pw.EdgeInsets.only(
+                            right: 8, top: 5, bottom: 5),
+                        alignment: pw.Alignment.centerRight,
+                        color: PdfColor.fromInt(AppColors.headerGrey.value),
+                        child: pw.Text(
+                          'OnHand',
+                          style: pw.TextStyle(
+                              fontSize: 18,
+                              fontWeight: pw.FontWeight.bold,
+                              color: PdfColor.fromInt(AppColors.white.value)),
+                        ),
+                      ),
+                      pw.Container(
+                        padding: const pw.EdgeInsets.only(
+                            right: 8, top: 5, bottom: 5),
+                        alignment: pw.Alignment.centerRight,
+                        color: PdfColor.fromInt(AppColors.headerGrey.value),
+                        child: pw.Text(
+                          'Qty',
+                          style: pw.TextStyle(
+                              fontSize: 18,
+                              fontWeight: pw.FontWeight.bold,
+                              color: PdfColor.fromInt(AppColors.white.value)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
             pw.Expanded(
               child: pw.ListView.builder(
-                  itemCount: stockList?.length ?? 0,
+                  itemCount: stockList.length,
                   itemBuilder: (pw.Context context, index) {
                     return pw.Container(
                       /*decoration: pw.BoxDecoration(
@@ -448,8 +538,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
                                       padding:
                                           const pw.EdgeInsets.only(left: 8),
                                       alignment: pw.Alignment.centerLeft,
-                                      child: pw.Text(
-                                          stockList?[index].sku ?? '',
+                                      child: pw.Text(stockList[index].sku ?? '',
                                           style: pw.TextStyle(
                                               fontSize: 18,
                                               fontWeight: pw.FontWeight.bold,
@@ -543,7 +632,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
                                   left: 8, right: 8, top: 5),
                               alignment: pw.Alignment.centerLeft,
                               child: pw.Text(
-                                stockList?[index].name ?? '',
+                                stockList[index].name ?? '',
                                 style: pw.TextStyle(
                                   fontSize: 15,
                                   color: PdfColor.fromInt(
@@ -563,21 +652,31 @@ class ManageStockBloc extends Cubit<ManageStockState> {
 
     Directory appDocDir = await getApplicationDocumentsDirectory();
     String appDocPath = appDocDir.path;
-    final file = File(appDocPath + '/' + 'StockOrder.pdf');
+    String orderNameFile = await createOrderName();
+    final file = File(appDocPath + '/' + 'Ord_$orderNameFile.pdf');
     //log('Save as file ${file.path} ...');
     await file.writeAsBytes(await pdf.save());
 
     if (action == 'share') {
-      ShareResult result = await Share.shareFilesWithResult(
-          ['$appDocPath/StockOrder.pdf'],
-          subject: 'Stock Order');
+      ShareResult result =
+          await Share.shareFilesWithResult([file.path], subject: 'Stock Order');
 
       if (result.status.name == 'success') {
-        clearStocks(stockList: stockList ?? <StockModel>[]);
+        clearStocks(stockList: stockList, orderName: orderNameFile);
       }
     } else {
       await OpenFile.open(file.path);
     }
+  }
+
+  Future<String> createOrderName() async {
+    Box ordBox = await orderRepository.openBox();
+    List<OrderModel> orders = orderRepository.getOrderList(ordBox);
+    return '${state.user?.orderCode == null || state.user?.orderCode?.trim().isEmpty == true ? 'DFLT-' : state.user?.orderCode}${orders.isEmpty ? '0001' : (orders.length + 1).toString().padLeft(4, '0')}';
+  }
+
+  Future<void> emitLocationData({LocationData? locationData}) async {
+    emit(state.copyWith(locationData: locationData));
   }
 
   String generateUniqueId() {

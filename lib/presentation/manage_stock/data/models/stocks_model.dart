@@ -40,16 +40,16 @@ class StockModel {
   String? description;
 
   @HiveField(3)
-  double minQuantity;
+  double? minQuantity;
 
   @HiveField(4)
-  double maxQuantity;
+  double? maxQuantity;
 
   @HiveField(5)
-  double order;
+  double? order;
 
   @HiveField(6)
-  double onHand;
+  double? onHand;
 
   @HiveField(7)
   String? sku;
@@ -141,5 +141,67 @@ class StockModel {
 
   void setIsActive(String isActive) {
     this.isActive = isActive;
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id.toString(),
+        'name': name.toString(),
+        'description': description.toString(),
+        'minQuantity': minQuantity.toString(),
+        'maxQuantity': maxQuantity.toString(),
+        'order': order.toString(),
+        'onHand': onHand.toString(),
+        'sku': sku.toString(),
+        'isActive': isActive.toString(),
+        'num': num.toString(),
+        'isLot': isLot.toString(),
+        'isSerial': isSerial.toString(),
+        'shortDescription': shortDescription.toString(),
+        'imagePath': imagePath.toString(),
+        'category': category.toString(),
+        'uom': uom.toString(),
+        'quantityUnit': quantityUnit.toString(),
+        'cost': cost.toString(),
+        'price': price.toString(),
+        'createdDate': createdDate.toString(),
+        'modifiedDate': modifiedDate.toString(),
+        'quantity': quantity.toString(),
+        'isOrdered': isOrdered.toString(),
+      };
+
+  StockModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    description = json['description'];
+    minQuantity = double.parse(json['minQuantity'] ?? '0');
+    maxQuantity = double.parse(json['maxQuantity'] ?? '0');
+    order = double.parse(json['order'] ?? '0');
+    onHand = double.parse(json['onHand'] ?? '0');
+    sku = json['sku'];
+    isActive = json['isActive'];
+    num = json['num'];
+    isLot = parseBool(json['isLot'] ?? 'false');
+    isSerial = parseBool(json['isSerial'] ?? 'false');
+    shortDescription = json['shortDescription'];
+    imagePath = json['imagePath'];
+    category = json['category'];
+    uom = json['uom'];
+    quantityUnit = json['quantityUnit'];
+    cost = json['cost'];
+    price = json['price'];
+    createdDate = json['createdDate'];
+    modifiedDate = json['modifiedDate'];
+    quantity = double.parse(json['quantity'] ?? '0');
+    isOrdered = parseBool(json['isOrdered'] ?? 'false');
+  }
+
+  bool parseBool(String value) {
+    if (value.toLowerCase() == 'true') {
+      return true;
+    } else if (value.toLowerCase() == 'false') {
+      return false;
+    }
+
+    throw '"$this" can not be parsed to boolean.';
   }
 }

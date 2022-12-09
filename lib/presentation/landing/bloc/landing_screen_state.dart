@@ -15,6 +15,7 @@ class LandingScreenState with _$LandingScreenState {
       String? apiUrl,
       String? appVersion,
       String? url,
+      String? databaseStatus,
       @Default(false) bool isLoggedIn,
       @Default(false) bool didFinish,
       LoginResponseModel? loginResponseModel,

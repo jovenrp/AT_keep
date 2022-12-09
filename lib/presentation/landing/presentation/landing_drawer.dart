@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:keep/core/presentation/widgets/at_text.dart';
+import 'package:keep/presentation/landing/bloc/landing_screen_bloc.dart';
 import 'package:keep/presentation/profile/presentation/profile_screen.dart';
 
 import '../../../core/domain/utils/constants/app_colors.dart';
 
 class LandingDrawer extends StatelessWidget {
-  const LandingDrawer({Key? key}) : super(key: key);
+  const LandingDrawer({Key? key, required this.landingBloc}) : super(key: key);
 
+  final LandingScreenBloc landingBloc;
   @override
   Widget build(BuildContext context) => Drawer(
         child: SingleChildScrollView(
@@ -67,21 +69,20 @@ class LandingDrawer extends StatelessWidget {
             title: const ATText(
               text: 'Backup Database',
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pop();
+              landingBloc.backupStocks();
+            },
           ),
           ListTile(
-            leading: const Icon(Icons.store_mall_directory_outlined),
+            leading: const Icon(Icons.storage_outlined),
             title: const ATText(
-              text: 'Settings 4',
+              text: 'Restore Database',
             ),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const ATText(
-              text: 'Settings 5',
-            ),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pop();
+              landingBloc.restoreDatabase();
+            },
           ),
         ],
       );

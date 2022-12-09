@@ -12,7 +12,7 @@ void main() async {
         isUiDebuggerEnabled: true,
         isProxyEnabled: true,
         baseContentUrl: 'http://actiontrak.ddns.net:5555',
-        appVersion: '0.0.9',
-        buildNumber: '0.0.9'),
+        appVersion: '0.0.12',
+        buildNumber: '0.0.12'),
   );
 }

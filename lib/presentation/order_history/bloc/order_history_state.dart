@@ -1,8 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:keep/core/domain/models/user_profile_model.dart';
 
-import '../../manage_stock/data/models/order_line_model.dart';
-import '../../manage_stock/data/models/order_model.dart';
+import '../data/models/order_line_model.dart';
+import '../data/models/order_model.dart';
 
 part 'order_history_state.freezed.dart';
 

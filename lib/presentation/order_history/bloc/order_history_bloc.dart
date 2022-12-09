@@ -1,12 +1,10 @@
-import 'dart:developer';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
-import 'package:keep/presentation/manage_stock/data/models/order_model.dart';
 import 'package:keep/presentation/manage_stock/data/models/stocks_model.dart';
 import 'package:keep/presentation/order_history/bloc/order_history_state.dart';
 
-import '../../manage_stock/data/models/order_line_model.dart';
+import '../data/models/order_line_model.dart';
+import '../data/models/order_model.dart';
 import '../domain/repositories/order_line_repository.dart';
 import '../domain/repositories/order_repository.dart';
 import '../../manage_stock/domain/repositories/stock_order_repository.dart';
@@ -34,7 +32,8 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
 
     Box orderLineBox = await orderLineRepository.openBox();
     for (OrderModel item in orderList) {
-      List<OrderLineModel> orderLineList = orderLineRepository.getOrderLineList(orderLineBox);
+      List<OrderLineModel> orderLineList =
+          orderLineRepository.getOrderLineList(orderLineBox);
       List<OrderLineModel> orderLine = <OrderLineModel>[];
 
       Box stockBox = await stockOrderRepository.openBox();
@@ -55,7 +54,6 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
           }
         }
       }
-
 
       /*item.setOrderLineList(orderLineList);
       Box stockBox = await stockOrderRepository.openBox();
@@ -80,13 +78,13 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
     );
 
     Box box = await orderLineRepository.openBox();
-    List<OrderLineModel> orderLineList = orderLineRepository.getOrderLineList(box);
+    List<OrderLineModel> orderLineList =
+        orderLineRepository.getOrderLineList(box);
     List<OrderLineModel> returnLine = <OrderLineModel>[];
 
     for (OrderLineModel item in orderLineList) {
       Box stockBox = await stockOrderRepository.openBox();
       List<StockModel> stockList = stockOrderRepository.getStockList(stockBox);
-
 
       for (StockModel stkModel in stockList) {
         if (item.stockId == stkModel.id && item.orderId == order?.id) {
@@ -94,7 +92,6 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
           returnLine.add(item);
         }
       }
-
     }
     emit(state.copyWith(
         isLoading: false, hasError: false, orderLineList: returnLine));

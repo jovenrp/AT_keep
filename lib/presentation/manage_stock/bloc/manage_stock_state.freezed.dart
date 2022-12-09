@@ -26,6 +26,7 @@ class _$ManageStockStateTearOff {
       FormModel? formResponse,
       ProfileModel? user,
       ProfileModel? vendor,
+      LocationData? locationData,
       bool isAdded = false,
       bool isPdfGenerated = false,
       UserProfileModel? userProfileModel}) {
@@ -38,6 +39,7 @@ class _$ManageStockStateTearOff {
       formResponse: formResponse,
       user: user,
       vendor: vendor,
+      locationData: locationData,
       isAdded: isAdded,
       isPdfGenerated: isPdfGenerated,
       userProfileModel: userProfileModel,
@@ -58,6 +60,7 @@ mixin _$ManageStockState {
   FormModel? get formResponse => throw _privateConstructorUsedError;
   ProfileModel? get user => throw _privateConstructorUsedError;
   ProfileModel? get vendor => throw _privateConstructorUsedError;
+  LocationData? get locationData => throw _privateConstructorUsedError;
   bool get isAdded => throw _privateConstructorUsedError;
   bool get isPdfGenerated => throw _privateConstructorUsedError;
   UserProfileModel? get userProfileModel => throw _privateConstructorUsedError;
@@ -81,6 +84,7 @@ abstract class $ManageStockStateCopyWith<$Res> {
       FormModel? formResponse,
       ProfileModel? user,
       ProfileModel? vendor,
+      LocationData? locationData,
       bool isAdded,
       bool isPdfGenerated,
       UserProfileModel? userProfileModel});
@@ -105,6 +109,7 @@ class _$ManageStockStateCopyWithImpl<$Res>
     Object? formResponse = freezed,
     Object? user = freezed,
     Object? vendor = freezed,
+    Object? locationData = freezed,
     Object? isAdded = freezed,
     Object? isPdfGenerated = freezed,
     Object? userProfileModel = freezed,
@@ -142,6 +147,10 @@ class _$ManageStockStateCopyWithImpl<$Res>
           ? _value.vendor
           : vendor // ignore: cast_nullable_to_non_nullable
               as ProfileModel?,
+      locationData: locationData == freezed
+          ? _value.locationData
+          : locationData // ignore: cast_nullable_to_non_nullable
+              as LocationData?,
       isAdded: isAdded == freezed
           ? _value.isAdded
           : isAdded // ignore: cast_nullable_to_non_nullable
@@ -174,6 +183,7 @@ abstract class _$ManageStockStateCopyWith<$Res>
       FormModel? formResponse,
       ProfileModel? user,
       ProfileModel? vendor,
+      LocationData? locationData,
       bool isAdded,
       bool isPdfGenerated,
       UserProfileModel? userProfileModel});
@@ -200,6 +210,7 @@ class __$ManageStockStateCopyWithImpl<$Res>
     Object? formResponse = freezed,
     Object? user = freezed,
     Object? vendor = freezed,
+    Object? locationData = freezed,
     Object? isAdded = freezed,
     Object? isPdfGenerated = freezed,
     Object? userProfileModel = freezed,
@@ -237,6 +248,10 @@ class __$ManageStockStateCopyWithImpl<$Res>
           ? _value.vendor
           : vendor // ignore: cast_nullable_to_non_nullable
               as ProfileModel?,
+      locationData: locationData == freezed
+          ? _value.locationData
+          : locationData // ignore: cast_nullable_to_non_nullable
+              as LocationData?,
       isAdded: isAdded == freezed
           ? _value.isAdded
           : isAdded // ignore: cast_nullable_to_non_nullable
@@ -265,6 +280,7 @@ class _$_ManageStockState implements _ManageStockState {
       this.formResponse,
       this.user,
       this.vendor,
+      this.locationData,
       this.isAdded = false,
       this.isPdfGenerated = false,
       this.userProfileModel});
@@ -288,6 +304,8 @@ class _$_ManageStockState implements _ManageStockState {
   final ProfileModel? user;
   @override
   final ProfileModel? vendor;
+  @override
+  final LocationData? locationData;
   @JsonKey(defaultValue: false)
   @override
   final bool isAdded;
@@ -299,7 +317,7 @@ class _$_ManageStockState implements _ManageStockState {
 
   @override
   String toString() {
-    return 'ManageStockState(isLoading: $isLoading, isAdding: $isAdding, hasError: $hasError, errorMessage: $errorMessage, stocksList: $stocksList, formResponse: $formResponse, user: $user, vendor: $vendor, isAdded: $isAdded, isPdfGenerated: $isPdfGenerated, userProfileModel: $userProfileModel)';
+    return 'ManageStockState(isLoading: $isLoading, isAdding: $isAdding, hasError: $hasError, errorMessage: $errorMessage, stocksList: $stocksList, formResponse: $formResponse, user: $user, vendor: $vendor, locationData: $locationData, isAdded: $isAdded, isPdfGenerated: $isPdfGenerated, userProfileModel: $userProfileModel)';
   }
 
   @override
@@ -328,6 +346,9 @@ class _$_ManageStockState implements _ManageStockState {
                 const DeepCollectionEquality().equals(other.user, user)) &&
             (identical(other.vendor, vendor) ||
                 const DeepCollectionEquality().equals(other.vendor, vendor)) &&
+            (identical(other.locationData, locationData) ||
+                const DeepCollectionEquality()
+                    .equals(other.locationData, locationData)) &&
             (identical(other.isAdded, isAdded) ||
                 const DeepCollectionEquality()
                     .equals(other.isAdded, isAdded)) &&
@@ -350,6 +371,7 @@ class _$_ManageStockState implements _ManageStockState {
       const DeepCollectionEquality().hash(formResponse) ^
       const DeepCollectionEquality().hash(user) ^
       const DeepCollectionEquality().hash(vendor) ^
+      const DeepCollectionEquality().hash(locationData) ^
       const DeepCollectionEquality().hash(isAdded) ^
       const DeepCollectionEquality().hash(isPdfGenerated) ^
       const DeepCollectionEquality().hash(userProfileModel);
@@ -370,6 +392,7 @@ abstract class _ManageStockState implements ManageStockState {
       FormModel? formResponse,
       ProfileModel? user,
       ProfileModel? vendor,
+      LocationData? locationData,
       bool isAdded,
       bool isPdfGenerated,
       UserProfileModel? userProfileModel}) = _$_ManageStockState;
@@ -390,6 +413,8 @@ abstract class _ManageStockState implements ManageStockState {
   ProfileModel? get user => throw _privateConstructorUsedError;
   @override
   ProfileModel? get vendor => throw _privateConstructorUsedError;
+  @override
+  LocationData? get locationData => throw _privateConstructorUsedError;
   @override
   bool get isAdded => throw _privateConstructorUsedError;
   @override

@@ -1,50 +1,59 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'order_line_model.dart';
+part of 'order_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class OrderLineModelAdapter extends TypeAdapter<OrderLineModel> {
+class OrderModelAdapter extends TypeAdapter<OrderModel> {
   @override
-  final int typeId = 3;
+  final int typeId = 2;
 
   @override
-  OrderLineModel read(BinaryReader reader) {
+  OrderModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return OrderLineModel(
+    return OrderModel(
       id: fields[0] as String?,
-      orderId: fields[1] as String?,
-      stockId: fields[2] as String?,
-      lineNum: fields[3] as String?,
-      quantity: fields[4] as double,
+      num: fields[1] as String?,
+      name: fields[2] as String?,
+      source: fields[3] as String?,
+      status: fields[4] as String?,
       createdDate: fields[5] as String?,
       modifiedDate: fields[6] as String?,
+      longitude: fields[7] as double?,
+      latitude: fields[8] as double?,
+      accuracy: fields[9] as double?,
     );
   }
 
   @override
-  void write(BinaryWriter writer, OrderLineModel obj) {
+  void write(BinaryWriter writer, OrderModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.orderId)
+      ..write(obj.num)
       ..writeByte(2)
-      ..write(obj.stockId)
+      ..write(obj.name)
       ..writeByte(3)
-      ..write(obj.lineNum)
+      ..write(obj.source)
       ..writeByte(4)
-      ..write(obj.quantity)
+      ..write(obj.status)
       ..writeByte(5)
       ..write(obj.createdDate)
       ..writeByte(6)
-      ..write(obj.modifiedDate);
+      ..write(obj.modifiedDate)
+      ..writeByte(7)
+      ..write(obj.longitude)
+      ..writeByte(8)
+      ..write(obj.latitude)
+      ..writeByte(9)
+      ..write(obj.accuracy);
   }
 
   @override
@@ -53,7 +62,7 @@ class OrderLineModelAdapter extends TypeAdapter<OrderLineModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is OrderLineModelAdapter &&
+      other is OrderModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import '../../../manage_stock/data/models/order_model.dart';
+import '../../data/models/order_model.dart';
 import 'order_repository.dart';
 
 class OrderRepositoryImpl implements OrderRepository {

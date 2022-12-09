@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:keep/core/domain/models/user_profile_model.dart';
 import 'package:keep/presentation/manage_stock/data/models/stocks_model.dart';
 import 'package:keep/presentation/profile/data/models/profile_model.dart';
+import 'package:location/location.dart';
 
 import '../data/models/form_model.dart';
 
@@ -18,6 +19,7 @@ class ManageStockState with _$ManageStockState {
       FormModel? formResponse,
       ProfileModel? user,
       ProfileModel? vendor,
+      LocationData? locationData,
       @Default(false) bool isAdded,
       @Default(false) bool isPdfGenerated,
       UserProfileModel? userProfileModel}) = _ManageStockState;

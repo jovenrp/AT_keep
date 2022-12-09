@@ -25,6 +25,7 @@ class _$LandingScreenStateTearOff {
       String? apiUrl,
       String? appVersion,
       String? url,
+      String? databaseStatus,
       bool isLoggedIn = false,
       bool didFinish = false,
       LoginResponseModel? loginResponseModel,
@@ -37,6 +38,7 @@ class _$LandingScreenStateTearOff {
       apiUrl: apiUrl,
       appVersion: appVersion,
       url: url,
+      databaseStatus: databaseStatus,
       isLoggedIn: isLoggedIn,
       didFinish: didFinish,
       loginResponseModel: loginResponseModel,
@@ -57,6 +59,7 @@ mixin _$LandingScreenState {
   String? get apiUrl => throw _privateConstructorUsedError;
   String? get appVersion => throw _privateConstructorUsedError;
   String? get url => throw _privateConstructorUsedError;
+  String? get databaseStatus => throw _privateConstructorUsedError;
   bool get isLoggedIn => throw _privateConstructorUsedError;
   bool get didFinish => throw _privateConstructorUsedError;
   LoginResponseModel? get loginResponseModel =>
@@ -81,6 +84,7 @@ abstract class $LandingScreenStateCopyWith<$Res> {
       String? apiUrl,
       String? appVersion,
       String? url,
+      String? databaseStatus,
       bool isLoggedIn,
       bool didFinish,
       LoginResponseModel? loginResponseModel,
@@ -105,6 +109,7 @@ class _$LandingScreenStateCopyWithImpl<$Res>
     Object? apiUrl = freezed,
     Object? appVersion = freezed,
     Object? url = freezed,
+    Object? databaseStatus = freezed,
     Object? isLoggedIn = freezed,
     Object? didFinish = freezed,
     Object? loginResponseModel = freezed,
@@ -138,6 +143,10 @@ class _$LandingScreenStateCopyWithImpl<$Res>
       url: url == freezed
           ? _value.url
           : url // ignore: cast_nullable_to_non_nullable
+              as String?,
+      databaseStatus: databaseStatus == freezed
+          ? _value.databaseStatus
+          : databaseStatus // ignore: cast_nullable_to_non_nullable
               as String?,
       isLoggedIn: isLoggedIn == freezed
           ? _value.isLoggedIn
@@ -174,6 +183,7 @@ abstract class _$LandingScreenStateCopyWith<$Res>
       String? apiUrl,
       String? appVersion,
       String? url,
+      String? databaseStatus,
       bool isLoggedIn,
       bool didFinish,
       LoginResponseModel? loginResponseModel,
@@ -200,6 +210,7 @@ class __$LandingScreenStateCopyWithImpl<$Res>
     Object? apiUrl = freezed,
     Object? appVersion = freezed,
     Object? url = freezed,
+    Object? databaseStatus = freezed,
     Object? isLoggedIn = freezed,
     Object? didFinish = freezed,
     Object? loginResponseModel = freezed,
@@ -234,6 +245,10 @@ class __$LandingScreenStateCopyWithImpl<$Res>
           ? _value.url
           : url // ignore: cast_nullable_to_non_nullable
               as String?,
+      databaseStatus: databaseStatus == freezed
+          ? _value.databaseStatus
+          : databaseStatus // ignore: cast_nullable_to_non_nullable
+              as String?,
       isLoggedIn: isLoggedIn == freezed
           ? _value.isLoggedIn
           : isLoggedIn // ignore: cast_nullable_to_non_nullable
@@ -265,6 +280,7 @@ class _$_LandingScreenState implements _LandingScreenState {
       this.apiUrl,
       this.appVersion,
       this.url,
+      this.databaseStatus,
       this.isLoggedIn = false,
       this.didFinish = false,
       this.loginResponseModel,
@@ -286,6 +302,8 @@ class _$_LandingScreenState implements _LandingScreenState {
   final String? appVersion;
   @override
   final String? url;
+  @override
+  final String? databaseStatus;
   @JsonKey(defaultValue: false)
   @override
   final bool isLoggedIn;
@@ -299,7 +317,7 @@ class _$_LandingScreenState implements _LandingScreenState {
 
   @override
   String toString() {
-    return 'LandingScreenState(isLoading: $isLoading, hasError: $hasError, errorCode: $errorCode, errorMessage: $errorMessage, apiUrl: $apiUrl, appVersion: $appVersion, url: $url, isLoggedIn: $isLoggedIn, didFinish: $didFinish, loginResponseModel: $loginResponseModel, userProfileModel: $userProfileModel)';
+    return 'LandingScreenState(isLoading: $isLoading, hasError: $hasError, errorCode: $errorCode, errorMessage: $errorMessage, apiUrl: $apiUrl, appVersion: $appVersion, url: $url, databaseStatus: $databaseStatus, isLoggedIn: $isLoggedIn, didFinish: $didFinish, loginResponseModel: $loginResponseModel, userProfileModel: $userProfileModel)';
   }
 
   @override
@@ -325,6 +343,9 @@ class _$_LandingScreenState implements _LandingScreenState {
                     .equals(other.appVersion, appVersion)) &&
             (identical(other.url, url) ||
                 const DeepCollectionEquality().equals(other.url, url)) &&
+            (identical(other.databaseStatus, databaseStatus) ||
+                const DeepCollectionEquality()
+                    .equals(other.databaseStatus, databaseStatus)) &&
             (identical(other.isLoggedIn, isLoggedIn) ||
                 const DeepCollectionEquality()
                     .equals(other.isLoggedIn, isLoggedIn)) &&
@@ -349,6 +370,7 @@ class _$_LandingScreenState implements _LandingScreenState {
       const DeepCollectionEquality().hash(apiUrl) ^
       const DeepCollectionEquality().hash(appVersion) ^
       const DeepCollectionEquality().hash(url) ^
+      const DeepCollectionEquality().hash(databaseStatus) ^
       const DeepCollectionEquality().hash(isLoggedIn) ^
       const DeepCollectionEquality().hash(didFinish) ^
       const DeepCollectionEquality().hash(loginResponseModel) ^
@@ -369,6 +391,7 @@ abstract class _LandingScreenState implements LandingScreenState {
       String? apiUrl,
       String? appVersion,
       String? url,
+      String? databaseStatus,
       bool isLoggedIn,
       bool didFinish,
       LoginResponseModel? loginResponseModel,
@@ -388,6 +411,8 @@ abstract class _LandingScreenState implements LandingScreenState {
   String? get appVersion => throw _privateConstructorUsedError;
   @override
   String? get url => throw _privateConstructorUsedError;
+  @override
+  String? get databaseStatus => throw _privateConstructorUsedError;
   @override
   bool get isLoggedIn => throw _privateConstructorUsedError;
   @override

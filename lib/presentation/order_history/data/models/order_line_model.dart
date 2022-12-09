@@ -29,7 +29,7 @@ class OrderLineModel {
   String? lineNum;
 
   @HiveField(4)
-  double quantity;
+  double? quantity;
 
   @HiveField(5)
   String? createdDate;
@@ -38,6 +38,26 @@ class OrderLineModel {
   String? modifiedDate;
 
   StockModel? stockModel;
+
+  Map<String, dynamic> toJson() => {
+        'id': id.toString(),
+        'orderId': orderId.toString(),
+        'stockId': stockId.toString(),
+        'lineNum': lineNum.toString(),
+        'quantity': quantity.toString(),
+        'createdDate': createdDate.toString(),
+        'modifiedDate': modifiedDate.toString(),
+      };
+
+  OrderLineModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    orderId = json['orderId'];
+    stockId = json['stockId'];
+    lineNum = json['lineNum'];
+    quantity = double.parse(json['quantity']);
+    createdDate = json['createdDate'];
+    modifiedDate = json['modifiedDate'];
+  }
 
   void setModifiedDate(String modifiedDate) {
     this.modifiedDate = modifiedDate;

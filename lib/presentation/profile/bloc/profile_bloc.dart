@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:keep/core/data/services/persistence_service.dart';
@@ -22,6 +20,7 @@ class ProfileBloc extends Cubit<ProfileState> {
     ProfileModel profileModel = ProfileModel();
     bool isProfileExist = false;
     bool isVendorExist = false;
+
     for (ProfileModel item in profileList) {
       if (item.type == 'profile' && type == 'profile') {
         profileModel = item;
@@ -44,12 +43,7 @@ class ProfileBloc extends Cubit<ProfileState> {
   }
 
   Future<void> checkProfile(
-      {String? email,
-      String? firstname,
-      String? lastname,
-      String? phone,
-      String? address,
-      String? type}) async {
+      {String? email, String? firstname, String? lastname, String? phone, String? address, String? type, String? orderCode, String? company}) async {
     emit(state.copyWith(
       isLoading: false,
       isProfileExisting: false,
@@ -80,17 +74,15 @@ class ProfileBloc extends Cubit<ProfileState> {
     }
     if (!isExist) {
       ProfileModel profile = ProfileModel(
-        id: profileList.isNotEmpty
-            ? (int.parse(profileList[profileList.length - 1].id ?? '0') + 1)
-                .toString()
-                .padLeft(5, '0')
-            : '00001',
-        firstname: firstname,
-        lastname: lastname,
-        email: email,
-        address: address,
-        phoneNumber: phone,
-        type: type,
+          id: profileList.isNotEmpty ? (int.parse(profileList[profileList.length - 1].id ?? '0') + 1).toString().padLeft(5, '0') : '00001',
+          firstname: firstname,
+          lastname: lastname,
+          email: email,
+          address: address,
+          phoneNumber: phone,
+          type: type,
+          orderCode: orderCode,
+        company: company,
       );
 
       await profileRepository.addProfile(box, profile);
@@ -98,35 +90,31 @@ class ProfileBloc extends Cubit<ProfileState> {
     }
   }
 
-  Future<void> saveProfile(
-      {String? email,
-      String? firstname,
-      String? lastname,
-      String? phone,
-      String? address,
-      String? type}) async {
-    emit(state.copyWith(
-        isLoading: false,
-        isProfileExisting: false,
-        isVendorExisiting: false,
-        isUpdated: false,
-        isSaved: false));
+  Future<void> saveProfile({
+    String? email,
+    String? firstname,
+    String? lastname,
+    String? phone,
+    String? address,
+    String? type,
+    String? orderCode,
+    String? company,
+  }) async {
+    emit(state.copyWith(isLoading: false, isProfileExisting: false, isVendorExisiting: false, isUpdated: false, isSaved: false));
 
     Box box = await profileRepository.openBox();
     List<ProfileModel> profileList = profileRepository.getProfile(box);
 
     ProfileModel profile = ProfileModel(
-      id: profileList.isNotEmpty
-          ? (int.parse(profileList[profileList.length - 1].id ?? '0') + 1)
-              .toString()
-              .padLeft(5, '0')
-          : '00001',
+      id: profileList.isNotEmpty ? (int.parse(profileList[profileList.length - 1].id ?? '0') + 1).toString().padLeft(5, '0') : '00001',
       firstname: firstname,
       lastname: lastname,
       email: email,
       address: address,
       phoneNumber: phone,
       type: type,
+      orderCode: orderCode,
+      company: company,
     );
 
     await profileRepository.addProfile(box, profile);

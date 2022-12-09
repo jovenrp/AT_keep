@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:keep/core/domain/utils/string_extensions.dart';
@@ -22,9 +20,7 @@ class ProfileScreen extends StatefulWidget {
   final ApplicationConfig? config;
   final String? type;
 
-  static ModalRoute<ProfileScreen> route(
-          {ApplicationConfig? config, String? type}) =>
-      MaterialPageRoute<ProfileScreen>(
+  static ModalRoute<ProfileScreen> route({ApplicationConfig? config, String? type}) => MaterialPageRoute<ProfileScreen>(
         settings: const RouteSettings(name: routeName),
         builder: (_) => ProfileScreen(
           config: config,
@@ -42,35 +38,51 @@ class _ProfileScreen extends State<ProfileScreen> {
   TextEditingController lastnameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  TextEditingController prefixController = TextEditingController();
+  TextEditingController companyController = TextEditingController();
   FocusNode emailNode = FocusNode();
   FocusNode firstnameNode = FocusNode();
   FocusNode lastnameNode = FocusNode();
   FocusNode phoneNode = FocusNode();
   FocusNode addressNode = FocusNode();
+  FocusNode prefixNode = FocusNode();
+  FocusNode companyNode = FocusNode();
   String emailOriginal = '';
   String firstnameOriginal = '';
   String lastnameOriginal = '';
   String phoneOriginal = '';
   String addressOriginal = '';
+  String prefixOriginal = '';
+  String companyOriginal = '';
   bool isProfileUpdated = false;
 
   @override
   void initState() {
     super.initState();
     Future<void>.delayed(const Duration(milliseconds: 200), () {
-      context.read<ProfileBloc>().getProfile(type: widget.type);
+      context.read<ProfileBloc>().getProfile(type: widget.type).then((value) {
+        emailController.text = context.read<ProfileBloc>().state.profileModel?.email ?? '';
+        firstnameController.text = context.read<ProfileBloc>().state.profileModel?.firstname ?? '';
+        lastnameController.text = context.read<ProfileBloc>().state.profileModel?.lastname ?? '';
+        phoneController.text = context.read<ProfileBloc>().state.profileModel?.phoneNumber ?? '';
+        addressController.text = context.read<ProfileBloc>().state.profileModel?.address ?? '';
+        prefixController.text = context.read<ProfileBloc>().state.profileModel?.orderCode ?? '';
+        companyController.text = context.read<ProfileBloc>().state.profileModel?.company ?? '';
+      });
     });
 
     emailNode.addListener(() {
       setState(() {
         if (emailNode.hasFocus) {
           emailOriginal = emailController.text;
-          emailController.clear();
+          emailController.selection = TextSelection(baseOffset: 0, extentOffset: emailController.text.length);
         } else {
           if (emailController.text.isEmpty) {
             emailController.text = emailOriginal;
           } else {
-            isProfileUpdated = true;
+            if (emailOriginal != emailController.text) {
+              isProfileUpdated = true;
+            }
           }
         }
       });
@@ -80,12 +92,14 @@ class _ProfileScreen extends State<ProfileScreen> {
       setState(() {
         if (firstnameNode.hasFocus) {
           firstnameOriginal = firstnameController.text;
-          firstnameController.clear();
+          firstnameController.selection = TextSelection(baseOffset: 0, extentOffset: firstnameController.text.length);
         } else {
           if (firstnameController.text.isEmpty) {
             firstnameController.text = firstnameOriginal;
           } else {
-            isProfileUpdated = true;
+            if (firstnameOriginal != firstnameController.text) {
+              isProfileUpdated = true;
+            }
           }
         }
       });
@@ -95,12 +109,14 @@ class _ProfileScreen extends State<ProfileScreen> {
       setState(() {
         if (lastnameNode.hasFocus) {
           lastnameOriginal = lastnameController.text;
-          lastnameController.clear();
+          lastnameController.selection = TextSelection(baseOffset: 0, extentOffset: lastnameController.text.length);
         } else {
           if (lastnameController.text.isEmpty) {
             lastnameController.text = lastnameOriginal;
           } else {
-            isProfileUpdated = true;
+            if (lastnameOriginal != lastnameController.text) {
+              isProfileUpdated = true;
+            }
           }
         }
       });
@@ -110,12 +126,14 @@ class _ProfileScreen extends State<ProfileScreen> {
       setState(() {
         if (phoneNode.hasFocus) {
           phoneOriginal = phoneController.text;
-          phoneController.clear();
+          phoneController.selection = TextSelection(baseOffset: 0, extentOffset: phoneController.text.length);
         } else {
           if (phoneController.text.isEmpty) {
             phoneController.text = phoneOriginal;
           } else {
-            isProfileUpdated = true;
+            if (phoneOriginal != phoneController.text) {
+              isProfileUpdated = true;
+            }
           }
         }
       });
@@ -125,12 +143,48 @@ class _ProfileScreen extends State<ProfileScreen> {
       setState(() {
         if (addressNode.hasFocus) {
           addressOriginal = addressController.text;
-          addressController.clear();
+          addressController.selection = TextSelection(baseOffset: 0, extentOffset: addressController.text.length);
         } else {
           if (addressController.text.isEmpty) {
             addressController.text = addressOriginal;
           } else {
-            isProfileUpdated = true;
+            if (addressOriginal != addressController.text) {
+              isProfileUpdated = true;
+            }
+          }
+        }
+      });
+    });
+
+    prefixNode.addListener(() {
+      setState(() {
+        if (prefixNode.hasFocus) {
+          prefixOriginal = prefixController.text;
+          prefixController.selection = TextSelection(baseOffset: 0, extentOffset: prefixController.text.length);
+        } else {
+          if (prefixController.text.isEmpty) {
+            prefixController.text = prefixOriginal;
+          } else {
+            if (prefixOriginal != prefixController.text) {
+              isProfileUpdated = true;
+            }
+          }
+        }
+      });
+    });
+
+    companyNode.addListener(() {
+      setState(() {
+        if (companyNode.hasFocus) {
+          companyOriginal = companyController.text;
+          companyController.selection = TextSelection(baseOffset: 0, extentOffset: companyController.text.length);
+        } else {
+          if (companyController.text.isEmpty) {
+            companyController.text = companyOriginal;
+          } else {
+            if (companyOriginal != companyController.text) {
+              isProfileUpdated = true;
+            }
           }
         }
       });
@@ -141,34 +195,22 @@ class _ProfileScreen extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (BuildContext context, ProfileState state) {
-        if (state.isInit) {
-          emailController.text = state.profileModel?.email ?? '';
-          firstnameController.text = state.profileModel?.firstname ?? '';
-          lastnameController.text = state.profileModel?.lastname ?? '';
-          phoneController.text = state.profileModel?.phoneNumber ?? '';
-          addressController.text = state.profileModel?.address ?? '';
-        }
-
         if (state.isSaved || state.isUpdated) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               behavior: SnackBarBehavior.floating,
-              content: Text(
-                  '${widget.type.toString().capitalizeFirstofEach()} information is ${state.isSaved == true ? 'saved' : 'updated'}.' ??
-                      ''),
+              content: Text('${widget.type.toString().capitalizeFirstofEach()} information is ${state.isSaved == true ? 'saved' : 'updated'}.'),
               duration: const Duration(seconds: 1),
             ),
           );
         }
-        if ((widget.type == 'profile' && state.isProfileExisting) ||
-            (widget.type == 'vendor') && state.isVendorExisiting) {
+        if ((widget.type == 'profile' && state.isProfileExisting) || (widget.type == 'vendor') && state.isVendorExisiting) {
           showDialog(
             context: context,
             builder: (BuildContext context) => Dialog(
               child: Container(
                 height: MediaQuery.of(context).size.height * .4,
-                padding: const EdgeInsets.only(
-                    left: 18, right: 18, top: 30, bottom: 30),
+                padding: const EdgeInsets.only(left: 18, right: 18, top: 30, bottom: 30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -182,8 +224,7 @@ class _ProfileScreen extends State<ProfileScreen> {
                       height: 5,
                     ),
                     ATText(
-                      text:
-                          'Are you sure you want to update the existing ${widget.type}?',
+                      text: 'Are you sure you want to update the existing ${widget.type}?',
                       fontColor: AppColors.tertiary,
                       fontSize: 16,
                     ),
@@ -197,12 +238,15 @@ class _ProfileScreen extends State<ProfileScreen> {
                         onPressed: () => context
                             .read<ProfileBloc>()
                             .saveProfile(
-                                email: emailController.text,
-                                firstname: firstnameController.text,
-                                lastname: lastnameController.text,
-                                phone: phoneController.text,
-                                address: addressController.text,
-                                type: widget.type)
+                              email: emailController.text,
+                              firstname: firstnameController.text,
+                              lastname: lastnameController.text,
+                              phone: phoneController.text,
+                              address: addressController.text,
+                              type: widget.type,
+                              orderCode: prefixController.text,
+                              company: companyController.text,
+                            )
                             .then((_) => Navigator.of(context).pop()),
                         text: 'Update',
                         color: AppColors.successGreen,
@@ -251,9 +295,7 @@ class _ProfileScreen extends State<ProfileScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       ATText(
-                        text: widget.type == 'profile'
-                            ? 'User Profile'
-                            : 'Vendor Profile',
+                        text: widget.type == 'profile' ? 'User Profile' : 'Vendor Profile',
                         fontSize: 20,
                         fontColor: AppColors.tertiary,
                         weight: FontWeight.bold,
@@ -314,6 +356,29 @@ class _ProfileScreen extends State<ProfileScreen> {
                         isSuffixIcon: true,
                       ),
                       const SizedBox(
+                        height: 10,
+                      ),
+                      Visibility(
+                        visible: widget.type == 'profile',
+                        child: ATTextfield(
+                          hintText: 'Order # Prefix',
+                          focusNode: prefixNode,
+                          textEditingController: prefixController,
+                          textAlign: TextAlign.start,
+                          isSuffixIcon: true,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      ATTextfield(
+                        hintText: 'Company',
+                        focusNode: companyNode,
+                        textEditingController: companyController,
+                        textAlign: TextAlign.start,
+                        isSuffixIcon: true,
+                      ),
+                      const SizedBox(
                         height: 20,
                       ),
                       SizedBox(
@@ -347,8 +412,7 @@ class _ProfileScreen extends State<ProfileScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   behavior: SnackBarBehavior.floating,
-                                  content:
-                                      Text('Please fill up all the fields.'),
+                                  content: Text('Please fill up all the fields.'),
                                   duration: Duration(seconds: 1),
                                 ),
                               );
@@ -359,7 +423,10 @@ class _ProfileScreen extends State<ProfileScreen> {
                                   lastname: lastnameController.text,
                                   phone: phoneController.text,
                                   address: addressController.text,
-                                  type: widget.type);
+                                  type: widget.type,
+                                  orderCode: prefixController.text.trim().isEmpty == true ? 'DFLT' : prefixController.text,
+                                company: companyController.text,
+                              );
                             }
                           },
                           text: widget.type == 'profile'

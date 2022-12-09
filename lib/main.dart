@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:keep/core/domain/utils/string_extensions.dart';
-import 'package:keep/presentation/manage_stock/data/models/order_line_model.dart';
-import 'package:keep/presentation/manage_stock/data/models/order_model.dart';
 import 'package:keep/presentation/manage_stock/data/models/stocks_model.dart';
+import 'package:keep/presentation/order_history/data/models/order_line_model.dart';
+import 'package:keep/presentation/order_history/data/models/order_model.dart';
 import 'package:keep/presentation/profile/data/models/profile_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

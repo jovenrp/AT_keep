@@ -13,24 +13,26 @@ import '../../../application/domain/models/application_config.dart';
 import '../../../core/domain/utils/constants/app_colors.dart';
 import '../../../core/presentation/widgets/at_text.dart';
 import '../../../core/presentation/widgets/at_textfield.dart';
-import '../../manage_stock/data/models/order_line_model.dart';
-import '../../manage_stock/data/models/order_model.dart';
+import '../data/models/order_model.dart';
 
 class OrderLineHistoryScreen extends StatefulWidget {
-  const OrderLineHistoryScreen({Key? key, this.config, this.order}) : super(key: key);
+  const OrderLineHistoryScreen({Key? key, this.config, this.order})
+      : super(key: key);
   static const String routeName = '/orderLineHistory';
   static const String screenName = 'orderLineHistoryScreen';
 
   final ApplicationConfig? config;
   final OrderModel? order;
 
-  static ModalRoute<OrderLineHistoryScreen> route({ApplicationConfig? config, OrderModel? order}) => MaterialPageRoute<OrderLineHistoryScreen>(
-    settings: const RouteSettings(name: routeName),
-    builder: (_) => OrderLineHistoryScreen(
-      config: config,
-      order: order,
-    ),
-  );
+  static ModalRoute<OrderLineHistoryScreen> route(
+          {ApplicationConfig? config, OrderModel? order}) =>
+      MaterialPageRoute<OrderLineHistoryScreen>(
+        settings: const RouteSettings(name: routeName),
+        builder: (_) => OrderLineHistoryScreen(
+          config: config,
+          order: order,
+        ),
+      );
 
   @override
   _OrderLineHistoryScreen createState() => _OrderLineHistoryScreen();
@@ -71,7 +73,8 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 0),
+                      padding: const EdgeInsets.only(
+                          left: 20, right: 20, top: 20, bottom: 0),
                       child: ATTextfield(
                         hintText: 'Search Item',
                         textEditingController: searchController,
@@ -81,7 +84,9 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                               .searchStocks(search: value ?? '');*/
                         },
                         onChanged: (String value) {
-                          EasyDebounce.debounce('deebouncer1', const Duration(milliseconds: 500), () {
+                          EasyDebounce.debounce(
+                              'deebouncer1', const Duration(milliseconds: 500),
+                              () {
                             /*context
                                     .read<ManageStockBloc>()
                                     .searchStocks(search: value);*/
@@ -103,31 +108,59 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                 child: Column(
                                   children: [
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         Container(
-                                          padding: const EdgeInsets.only(left: 16, top: 16),
+                                          padding: const EdgeInsets.only(
+                                              left: 16, top: 16),
                                           alignment: Alignment.centerLeft,
-                                          child: ATText(text: state.orderLineList?[index].stockModel?.sku.toString(), weight: FontWeight.bold, fontSize: 18,),
+                                          child: ATText(
+                                            text: state.orderLineList?[index]
+                                                .stockModel?.sku
+                                                .toString(),
+                                            weight: FontWeight.bold,
+                                            fontSize: 18,
+                                          ),
                                         ),
                                         Container(
-                                          padding: const EdgeInsets.only(top: 16, right: 16),
+                                          padding: const EdgeInsets.only(
+                                              top: 16, right: 16),
                                           alignment: Alignment.centerLeft,
-                                          child: ATText(text: 'QTY: ${context.read<ManageStockBloc>().getQuantity(state.orderLineList?[index].stockModel)}', weight: FontWeight.bold, fontSize: 18,),
+                                          child: ATText(
+                                            text:
+                                                'QTY: ${context.read<ManageStockBloc>().getQuantity(state.orderLineList?[index].stockModel)}',
+                                            weight: FontWeight.bold,
+                                            fontSize: 18,
+                                          ),
                                         ),
                                       ],
                                     ),
                                     Container(
                                       padding: const EdgeInsets.only(left: 16),
                                       alignment: Alignment.centerLeft,
-                                      child: ATText(text: state.orderLineList?[index].stockModel?.name, fontSize: 18,),
+                                      child: ATText(
+                                        text: state.orderLineList?[index]
+                                            .stockModel?.name,
+                                        fontSize: 18,
+                                      ),
                                     ),
-                                    Container(
+                                    /*Container(
                                       padding: const EdgeInsets.only(left: 16),
                                       alignment: Alignment.centerLeft,
-                                      child: ATText(text: DateFormat("MMM y dd HH:mm").add_jm().format(DateTime.parse(state.orderLineList?[index].createdDate ?? '')), fontSize: 14,),
+                                      child: ATText(
+                                        text: DateFormat("MMM y dd HH:mm")
+                                            .add_jm()
+                                            .format(DateTime.parse(state
+                                                    .orderLineList?[index]
+                                                    .createdDate ??
+                                                '')),
+                                        fontSize: 14,
+                                      ),
+                                    ),*/
+                                    const SizedBox(
+                                      height: 20,
                                     ),
-                                    const SizedBox(height: 20,),
                                   ],
                                 ));
                           },

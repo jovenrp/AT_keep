@@ -13,6 +13,7 @@ import 'package:keep/presentation/order_history/presentation/order_history_scree
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../../core/presentation/widgets/keep_elevated_button.dart';
+import '../../../core/presentation/widgets/at_loading_indicator.dart';
 import '../../manage_stock/presentation/manage_stock_screen.dart';
 
 class LandingScreen extends StatefulWidget {
@@ -45,8 +46,6 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
     super.initState();
     usernameController = TextEditingController();
     passwordController = TextEditingController();
-
-    context.read<LandingScreenBloc>().init();
   }
 
   @override
@@ -61,6 +60,67 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
               username: usernameController.text));
           //Navigator.of(context).pushReplacement(StockAdjustScreen.route());
         }*/
+      }
+
+      if (state.databaseStatus == 'saving stocks') {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Row(
+              children: const <Widget>[
+                Text('Database is being backed up, please wait.'),
+                ATLoadingIndicator()
+              ],
+            ),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      } else if (state.databaseStatus == 'backup done') {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const <Widget>[
+                Text('Database is now backed up!'),
+                Icon(
+                  Icons.check,
+                  color: AppColors.successGreen,
+                )
+              ],
+            ),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      } else if (state.databaseStatus == 'denied') {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text('Permission to storage is denied. cannot backup.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      } else if (state.databaseStatus == 'success') {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text('Restoring done.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      } else if (state.databaseStatus == 'incompatible') {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text('File is not a valid backup file'),
+            duration: Duration(seconds: 3),
+          ),
+        );
       }
     }, builder: (BuildContext context, LandingScreenState state) {
       return SafeArea(
@@ -93,7 +153,9 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
                     )
                   ],
                 ),
-                endDrawer: const LandingDrawer(),
+                endDrawer: LandingDrawer(
+                  landingBloc: context.read<LandingScreenBloc>(),
+                ),
                 body: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
                   child: Padding(

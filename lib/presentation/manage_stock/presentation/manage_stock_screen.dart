@@ -73,6 +73,51 @@ class _ManageStockScreen extends State<ManageStockScreen>
     super.initState();
 
     context.read<ManageStockBloc>().getStocks();
+
+    skuNode.addListener(() {
+      setState(() {
+        if (skuNode.hasFocus) {
+          skuController.selection = TextSelection(
+              baseOffset: 0, extentOffset: skuController.text.length);
+        }
+      });
+    });
+
+    numNode.addListener(() {
+      setState(() {
+        if (numNode.hasFocus) {
+          numController.selection = TextSelection(
+              baseOffset: 0, extentOffset: numController.text.length);
+        }
+      });
+    });
+
+    nameNode.addListener(() {
+      setState(() {
+        if (nameNode.hasFocus) {
+          nameController.selection = TextSelection(
+              baseOffset: 0, extentOffset: nameController.text.length);
+        }
+      });
+    });
+
+    minNode.addListener(() {
+      setState(() {
+        if (minNode.hasFocus) {
+          minController.selection = TextSelection(
+              baseOffset: 0, extentOffset: minController.text.length);
+        }
+      });
+    });
+
+    maxNode.addListener(() {
+      setState(() {
+        if (maxNode.hasFocus) {
+          maxController.selection = TextSelection(
+              baseOffset: 0, extentOffset: maxController.text.length);
+        }
+      });
+    });
   }
 
   @override
@@ -123,7 +168,7 @@ class _ManageStockScreen extends State<ManageStockScreen>
                             () {
                           context
                               .read<ManageStockBloc>()
-                              .searchStocks(search: value ?? '');
+                              .searchStocks(search: value);
                         });
                       },
                     ),
@@ -163,7 +208,7 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                     left: 18, top: 5, bottom: 5),
                                 alignment: Alignment.centerLeft,
                                 child: const ATText(
-                                  text: 'SKU',
+                                  text: 'SKU / DESC',
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
@@ -292,6 +337,10 @@ class _ManageStockScreen extends State<ManageStockScreen>
                       child: ListView.builder(
                           itemCount: state.stocksList?.length,
                           itemBuilder: (BuildContext context, index) {
+                            double maxQuantity =
+                                state.stocksList?[index].maxQuantity ?? 0;
+                            double onHand =
+                                state.stocksList?[index].onHand ?? 0;
                             return Visibility(
                               visible: state.stocksList?[index].isActive
                                       ?.toLowerCase() ==
@@ -557,15 +606,10 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: ATText(
-                                                              text: state
-                                                                      .stocksList?[
-                                                                          index]
-                                                                      .maxQuantity
+                                                              text: maxQuantity
                                                                       .toString()
-                                                                      .removeDecimalZeroFormat(state
-                                                                              .stocksList?[index]
-                                                                              .maxQuantity ??
-                                                                          0) ??
+                                                                      .removeDecimalZeroFormat(
+                                                                          maxQuantity) ??
                                                                   '',
                                                               fontColor: AppColors
                                                                   .onboardingText,
@@ -584,15 +628,10 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: ATText(
-                                                              text: state
-                                                                      .stocksList?[
-                                                                          index]
-                                                                      .onHand
+                                                              text: onHand
                                                                       .toString()
-                                                                      .removeDecimalZeroFormat(state
-                                                                              .stocksList?[index]
-                                                                              .onHand ??
-                                                                          0) ??
+                                                                      .removeDecimalZeroFormat(
+                                                                          onHand) ??
                                                                   '',
                                                               fontColor: AppColors
                                                                   .onboardingText,
@@ -756,26 +795,11 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                       border: Border(
                                         left: BorderSide(
                                             width: 10.0,
-                                            color: state.stocksList?[index]
-                                                        .maxQuantity ==
-                                                    0
+                                            color: maxQuantity == 0
                                                 ? AppColors.subtleGrey
-                                                : double.parse(state
-                                                                .stocksList?[
-                                                                    index]
-                                                                .maxQuantity
-                                                                .toString() ??
-                                                            '0') <=
-                                                        double.parse(state
-                                                                .stocksList?[
-                                                                    index]
-                                                                .onHand
-                                                                .toString() ??
-                                                            '0')
+                                                : maxQuantity <= onHand
                                                     ? AppColors.successGreen
-                                                    : state.stocksList?[index]
-                                                                .onHand ==
-                                                            0
+                                                    : onHand == 0
                                                         ? AppColors.criticalRed
                                                         : AppColors
                                                             .warningOrange),
@@ -849,15 +873,10 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                                     alignment:
                                                         Alignment.centerRight,
                                                     child: ATText(
-                                                      text: state
-                                                          .stocksList?[index]
-                                                          .maxQuantity
+                                                      text: maxQuantity
                                                           .toString()
-                                                          .removeDecimalZeroFormat(state
-                                                                  .stocksList?[
-                                                                      index]
-                                                                  .maxQuantity ??
-                                                              0),
+                                                          .removeDecimalZeroFormat(
+                                                              maxQuantity ?? 0),
                                                       style: const TextStyle(
                                                           fontSize: 18,
                                                           fontWeight:
@@ -873,16 +892,10 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                                     alignment:
                                                         Alignment.centerRight,
                                                     child: ATText(
-                                                      text: state
-                                                          .stocksList?[index]
-                                                          .onHand
+                                                      text: onHand
                                                           .toString()
                                                           .removeDecimalZeroFormat(
-                                                              state
-                                                                      .stocksList?[
-                                                                          index]
-                                                                      .onHand ??
-                                                                  0),
+                                                              onHand),
                                                       style: const TextStyle(
                                                           fontSize: 18,
                                                           fontWeight:
@@ -952,6 +965,7 @@ class _ManageStockScreen extends State<ManageStockScreen>
       context: context,
       isScrollControlled: true,
       builder: (context) {
+        //double maxQuantity = state.stocksList?[index].maxQuantity ?? 0;
         if (!skuHasFocus) {
           skuHasFocus = true;
           skuController.text =

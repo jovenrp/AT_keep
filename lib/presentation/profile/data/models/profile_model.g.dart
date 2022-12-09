@@ -24,13 +24,15 @@ class ProfileModelAdapter extends TypeAdapter<ProfileModel> {
       phoneNumber: fields[4] as String?,
       address: fields[5] as String?,
       type: fields[6] as String?,
+      orderCode: fields[7] as String?,
+      company: fields[8] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, ProfileModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,7 +46,11 @@ class ProfileModelAdapter extends TypeAdapter<ProfileModel> {
       ..writeByte(5)
       ..write(obj.address)
       ..writeByte(6)
-      ..write(obj.type);
+      ..write(obj.type)
+      ..writeByte(7)
+      ..write(obj.orderCode)
+      ..writeByte(8)
+      ..write(obj.company);
   }
 
   @override

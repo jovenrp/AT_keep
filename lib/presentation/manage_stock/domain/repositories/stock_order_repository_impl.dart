@@ -30,7 +30,8 @@ class StockOrderRepositoryImpl implements StockOrderRepository {
   }
 
   @override
-  Future<void> updateStock(Box box, int index, StockModel stockModel) async {
+  Future<void> updateStock(Box box, StockModel stockModel) async {
+    print(stockModel.id);
     await box.put(stockModel.id, stockModel);
   }
 

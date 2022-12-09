@@ -1,8 +1,6 @@
 import 'package:hive/hive.dart';
-import '../../../manage_stock/data/models/order_line_model.dart';
-import '../../../manage_stock/data/models/order_model.dart';
+import '../../data/models/order_line_model.dart';
 import 'order_line_repository.dart';
-import 'order_repository.dart';
 
 class OrderLineRepositoryImpl implements OrderLineRepository {
   OrderLineRepositoryImpl();
