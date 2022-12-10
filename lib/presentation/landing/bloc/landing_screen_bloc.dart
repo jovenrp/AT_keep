@@ -79,18 +79,17 @@ class LandingScreenBloc extends Cubit<LandingScreenState> {
 
   Future<void> restoreDatabase() async {
     Box stocksBox = await landingRepository.openStocksBox();
-    Box profileBox = await landingRepository.openProfileBox();
-    Box orderBox = await landingRepository.openOrderBox();
-    Box orderLineBox = await landingRepository.openOrderLineBox();
+    await landingRepository.openProfileBox();
+    await landingRepository.openOrderBox();
+    await landingRepository.openOrderLineBox();
     String? result = await landingRepository.restoreStocks(stocksBox);
 
-    print('ressdsd $result');
     emit(state.copyWith(databaseStatus: result));
   }
 
   Future<Directory> _getDirectory(String? formattedDate) async {
     Directory appDocDir = await getApplicationDocumentsDirectory();
-    String appDocPath = appDocDir.path;
+    //String appDocPath = appDocDir.path;
 
     String pathExt =
         'KeepBackup/$formattedDate/'; //This is the name of the folder where the backup is stored

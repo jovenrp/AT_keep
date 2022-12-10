@@ -43,7 +43,14 @@ class ProfileBloc extends Cubit<ProfileState> {
   }
 
   Future<void> checkProfile(
-      {String? email, String? firstname, String? lastname, String? phone, String? address, String? type, String? orderCode, String? company}) async {
+      {String? email,
+      String? firstname,
+      String? lastname,
+      String? phone,
+      String? address,
+      String? type,
+      String? orderCode,
+      String? company}) async {
     emit(state.copyWith(
       isLoading: false,
       isProfileExisting: false,
@@ -74,14 +81,18 @@ class ProfileBloc extends Cubit<ProfileState> {
     }
     if (!isExist) {
       ProfileModel profile = ProfileModel(
-          id: profileList.isNotEmpty ? (int.parse(profileList[profileList.length - 1].id ?? '0') + 1).toString().padLeft(5, '0') : '00001',
-          firstname: firstname,
-          lastname: lastname,
-          email: email,
-          address: address,
-          phoneNumber: phone,
-          type: type,
-          orderCode: orderCode,
+        id: profileList.isNotEmpty
+            ? (int.parse(profileList[profileList.length - 1].id ?? '0') + 1)
+                .toString()
+                .padLeft(5, '0')
+            : '00001',
+        firstname: firstname,
+        lastname: lastname,
+        email: email,
+        address: address,
+        phoneNumber: phone,
+        type: type,
+        orderCode: orderCode,
         company: company,
       );
 
@@ -100,13 +111,22 @@ class ProfileBloc extends Cubit<ProfileState> {
     String? orderCode,
     String? company,
   }) async {
-    emit(state.copyWith(isLoading: false, isProfileExisting: false, isVendorExisiting: false, isUpdated: false, isSaved: false));
+    emit(state.copyWith(
+        isLoading: false,
+        isProfileExisting: false,
+        isVendorExisiting: false,
+        isUpdated: false,
+        isSaved: false));
 
     Box box = await profileRepository.openBox();
     List<ProfileModel> profileList = profileRepository.getProfile(box);
 
     ProfileModel profile = ProfileModel(
-      id: profileList.isNotEmpty ? (int.parse(profileList[profileList.length - 1].id ?? '0') + 1).toString().padLeft(5, '0') : '00001',
+      id: profileList.isNotEmpty
+          ? (int.parse(profileList[profileList.length - 1].id ?? '0') + 1)
+              .toString()
+              .padLeft(5, '0')
+          : '00001',
       firstname: firstname,
       lastname: lastname,
       email: email,

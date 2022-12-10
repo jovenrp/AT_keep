@@ -85,7 +85,7 @@ class _QRScreen extends State<QRScreen> {
                                   );
                           },
                         ))),
-                SizedBox(width: 18),
+                const SizedBox(width: 18),
                 Ink(
                     child: InkWell(
                         onTap: () async {

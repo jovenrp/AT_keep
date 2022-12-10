@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:catcher/catcher.dart';
 import 'package:catcher/model/platform_type.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:keep/core/domain/utils/string_extensions.dart';
 import 'package:keep/presentation/manage_stock/data/models/stocks_model.dart';

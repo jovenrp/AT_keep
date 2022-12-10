@@ -11,6 +11,7 @@ class OrderLineModel {
     this.stockId,
     this.lineNum,
     this.quantity = 0,
+    this.originalQuantity = 0,
     this.createdDate,
     this.modifiedDate,
     this.stockModel,
@@ -37,6 +38,9 @@ class OrderLineModel {
   @HiveField(6)
   String? modifiedDate;
 
+  @HiveField(7)
+  double? originalQuantity;
+
   StockModel? stockModel;
 
   Map<String, dynamic> toJson() => {
@@ -47,6 +51,7 @@ class OrderLineModel {
         'quantity': quantity.toString(),
         'createdDate': createdDate.toString(),
         'modifiedDate': modifiedDate.toString(),
+        'originalQuantity': originalQuantity.toString(),
       };
 
   OrderLineModel.fromJson(Map<String, dynamic> json) {
@@ -57,6 +62,7 @@ class OrderLineModel {
     quantity = double.parse(json['quantity']);
     createdDate = json['createdDate'];
     modifiedDate = json['modifiedDate'];
+    originalQuantity = double.parse(json['originalQuantity']);
   }
 
   void setModifiedDate(String modifiedDate) {
@@ -65,5 +71,13 @@ class OrderLineModel {
 
   void setStock(StockModel stock) {
     stockModel = stock;
+  }
+
+  void setQuantity(double quantity) {
+    this.quantity = quantity;
+  }
+
+  void setOriginalQuantity(double quantity) {
+    originalQuantity = quantity;
   }
 }

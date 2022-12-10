@@ -22,6 +22,7 @@ class OrderLineModelAdapter extends TypeAdapter<OrderLineModel> {
       stockId: fields[2] as String?,
       lineNum: fields[3] as String?,
       quantity: fields[4] as double?,
+      originalQuantity: fields[7] as double?,
       createdDate: fields[5] as String?,
       modifiedDate: fields[6] as String?,
     );
@@ -30,7 +31,7 @@ class OrderLineModelAdapter extends TypeAdapter<OrderLineModel> {
   @override
   void write(BinaryWriter writer, OrderLineModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class OrderLineModelAdapter extends TypeAdapter<OrderLineModel> {
       ..writeByte(5)
       ..write(obj.createdDate)
       ..writeByte(6)
-      ..write(obj.modifiedDate);
+      ..write(obj.modifiedDate)
+      ..writeByte(7)
+      ..write(obj.originalQuantity);
   }
 
   @override

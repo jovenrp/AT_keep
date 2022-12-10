@@ -341,6 +341,8 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                 state.stocksList?[index].maxQuantity ?? 0;
                             double onHand =
                                 state.stocksList?[index].onHand ?? 0;
+                            double onOrder =
+                                state.stocksList?[index].onOrder ?? 0;
                             return Visibility(
                               visible: state.stocksList?[index].isActive
                                       ?.toLowerCase() ==
@@ -609,8 +611,7 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                                               text: maxQuantity
                                                                       .toString()
                                                                       .removeDecimalZeroFormat(
-                                                                          maxQuantity) ??
-                                                                  '',
+                                                                          maxQuantity),
                                                               fontColor: AppColors
                                                                   .onboardingText,
                                                               fontSize: 16,
@@ -631,8 +632,7 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                                               text: onHand
                                                                       .toString()
                                                                       .removeDecimalZeroFormat(
-                                                                          onHand) ??
-                                                                  '',
+                                                                          onHand),
                                                               fontColor: AppColors
                                                                   .onboardingText,
                                                               fontSize: 16,
@@ -682,7 +682,8 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                                   focusNode: adjustNode,
                                                   textAlign: TextAlign.center,
                                                   textInputAction:
-                                                      TextInputAction.next,
+                                                      TextInputAction.done,
+                                                  isNumbersOnly: true,
                                                 ),
                                               ),
                                               const SizedBox(
@@ -876,7 +877,7 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                                       text: maxQuantity
                                                           .toString()
                                                           .removeDecimalZeroFormat(
-                                                              maxQuantity ?? 0),
+                                                              maxQuantity),
                                                       style: const TextStyle(
                                                           fontSize: 18,
                                                           fontWeight:
@@ -918,16 +919,43 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                               ),
                                             ],
                                           ),
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                left: 8, right: 8, top: 5),
-                                            alignment: Alignment.centerLeft,
-                                            child: ATText(
-                                                text: state
-                                                    .stocksList?[index].name,
-                                                style: const TextStyle(
-                                                    fontSize: 18,
-                                                    color: AppColors.tertiary)),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Container(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8, right: 8, top: 5),
+                                                alignment: Alignment.centerLeft,
+                                                child: ATText(
+                                                    text: state
+                                                        .stocksList?[index]
+                                                        .name,
+                                                    style: const TextStyle(
+                                                        fontSize: 18,
+                                                        color: AppColors
+                                                            .tertiary)),
+                                              ),
+                                              Visibility(
+                                                visible: onOrder > 0,
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 8,
+                                                          right: 8,
+                                                          top: 5),
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: ATText(
+                                                      text:
+                                                          'pending: ${onOrder.toString().removeDecimalZeroFormat(onOrder)}',
+                                                      style: const TextStyle(
+                                                          fontSize: 16,
+                                                          color: AppColors
+                                                              .tertiary)),
+                                                ),
+                                              )
+                                            ],
                                           )
                                         ],
                                       ),

@@ -184,7 +184,6 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     emit(state.copyWith(isLoading: true));
 
     Box ordBox = await orderRepository.openBox();
-    List<OrderModel> orders = orderRepository.getOrderList(ordBox);
     LocationData? locationData = state.locationData;
     String orderUniqueId = generateUniqueId();
 
@@ -208,7 +207,8 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     for (StockModel item in stockList) {
       if (item.isOrdered == false) {
         item.setIsOrdered(true);
-        stockOrderRepository.updateStock(stockBox, item ?? StockModel());
+        item.setOnOrder(double.parse(getQuantity(item)));
+        stockOrderRepository.updateStock(stockBox, item);
 
         OrderLineModel orderLineModel = OrderLineModel(
           id: generateUniqueId(),
@@ -218,6 +218,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
               ? '000001'
               : (ordLineBox.length + 1).toString().padLeft(6, '0'),
           quantity: double.parse(getQuantity(item)),
+          originalQuantity: double.parse(getQuantity(item)),
           createdDate: DateTime.now().toIso8601String(),
         );
         await orderLineRepository.addOrderLine(ordLineBox, orderLineModel);

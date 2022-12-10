@@ -41,11 +41,14 @@ class DialogUtils {
               const SizedBox(
                 width: 10,
               ),
-              ATText(
-                text: message,
-                fontColor: AppColors.tertiary,
-                fontSize: 14,
-              )
+              SizedBox(
+                width: MediaQuery.of(context).size.width * .6,
+                child: ATText(
+                  text: message,
+                  fontColor: AppColors.tertiary,
+                  fontSize: 14,
+                ),
+              ),
             ],
           ),
         ));

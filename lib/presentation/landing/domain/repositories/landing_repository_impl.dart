@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:hive/hive.dart';
 import 'package:keep/presentation/landing/domain/repositories/landing_repository.dart';
 import 'package:keep/presentation/profile/data/models/profile_model.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:file_picker/file_picker.dart';
 
 import '../../../manage_stock/data/models/stocks_model.dart';
@@ -120,7 +119,8 @@ class LandingRepositoryImpl implements LandingRepository {
 
           map.forEach((key, value) {
             OrderLineModel orderLines = OrderLineModel.fromJson(value);
-            Hive.box<OrderLineModel>(orderLineBox).put(orderLines.id, orderLines);
+            Hive.box<OrderLineModel>(orderLineBox)
+                .put(orderLines.id, orderLines);
           });
         }
         return 'success';
@@ -132,6 +132,5 @@ class LandingRepositoryImpl implements LandingRepository {
       //error not a json file
       return 'incompatible';
     }
-
   }
 }

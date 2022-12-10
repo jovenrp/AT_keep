@@ -1,7 +1,7 @@
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 import 'package:keep/core/domain/utils/string_extensions.dart';
 import 'package:keep/core/presentation/widgets/at_loading_indicator.dart';
@@ -13,7 +13,6 @@ import '../../../application/domain/models/application_config.dart';
 import '../../../core/domain/utils/constants/app_colors.dart';
 import '../../../core/presentation/widgets/at_text.dart';
 import '../../../core/presentation/widgets/at_textfield.dart';
-import 'package:geocoding/geocoding.dart';
 
 class OrderHistoryScreen extends StatefulWidget {
   const OrderHistoryScreen({Key? key, this.config}) : super(key: key);
@@ -106,128 +105,140 @@ class _OrderHistoryScreen extends State<OrderHistoryScreen> {
                                           ?.split(',') ??
                                       <String>[];
                                   String vendorName = userData[0];
-                                  String vendorEmail = userData[1];
-                                  String vendorContact = userData[2];
-                                  String vendorAddress = userData[3];
+                                  //String vendorEmail = userData[1];
+                                  //String vendorContact = userData[2];
+                                  //String vendorAddress = userData[3];
 
-                                  return Card(
-                                      elevation: 4.0,
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                left: 16, top: 16),
-                                            alignment: Alignment.centerLeft,
-                                            child: ATText(
-                                              text: state.orderList?[index].num,
-                                              weight: FontWeight.bold,
-                                              fontSize: 20,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
-                                          Container(
-                                            padding:
-                                                const EdgeInsets.only(left: 16),
-                                            alignment: Alignment.centerLeft,
-                                            child: ATText(
-                                              text:
-                                                  'Vendor: ${vendorName.toString().capitalizeFirstofEach()}',
-                                              fontSize: 16,
-                                              weight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Container(
-                                            padding:
-                                                const EdgeInsets.only(left: 16),
-                                            alignment: Alignment.centerLeft,
-                                            child: ATText(
-                                              text: DateFormat("MMM y dd HH:mm")
-                                                  .add_jm()
-                                                  .format(DateTime.parse(state
-                                                          .orderList?[index]
-                                                          .createdDate ??
-                                                      '')),
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          ButtonBar(
-                                            children: [
-                                              TextButton(
-                                                child: const Text(
-                                                  'VIEW LOCATION',
+                                  return InkWell(
+                                    onTap: () => Navigator.of(context).push(
+                                        OrderLineHistoryScreen.route(
+                                            order: state.orderList?[index])),
+                                    child: Card(
+                                        elevation: 4.0,
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 16, top: 10),
+                                                  alignment: Alignment.topLeft,
+                                                  child: ATText(
+                                                    text: state
+                                                        .orderList?[index].num,
+                                                    weight: FontWeight.bold,
+                                                    fontSize: 20,
+                                                  ),
                                                 ),
-                                                onPressed: () async {
-                                                  if (state.orderList?[index]
-                                                              .latitude ==
-                                                          0 &&
-                                                      state.orderList?[index]
-                                                              .longitude ==
-                                                          0) {
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(
-                                                      const SnackBar(
-                                                        behavior:
-                                                            SnackBarBehavior
-                                                                .floating,
-                                                        content: Text(
-                                                            'Location was not captured on this order.'),
-                                                        duration: Duration(
-                                                            seconds: 2),
-                                                      ),
-                                                    );
-                                                  } else {
-                                                    await placemarkFromCoordinates(
-                                                            state
-                                                                    .orderList?[
-                                                                        index]
-                                                                    .latitude ??
-                                                                0,
-                                                            state
-                                                                    .orderList?[
-                                                                        index]
-                                                                    .longitude ??
-                                                                0)
-                                                        .then((List<Placemark>
-                                                            placeMarks) {
+                                                InkWell(
+                                                  onTap: () async {
+                                                    if (state.orderList?[index]
+                                                                .latitude ==
+                                                            0 &&
+                                                        state.orderList?[index]
+                                                                .longitude ==
+                                                            0) {
                                                       ScaffoldMessenger.of(
                                                               context)
                                                           .showSnackBar(
-                                                        SnackBar(
+                                                        const SnackBar(
                                                           behavior:
                                                               SnackBarBehavior
                                                                   .floating,
                                                           content: Text(
-                                                              '${placeMarks[0].street}, ${placeMarks[0].locality}, ${placeMarks[0].country}, ${placeMarks[0].postalCode}'),
-                                                          duration:
-                                                              const Duration(
-                                                                  seconds: 2),
+                                                              'Location was not captured on this order.'),
+                                                          duration: Duration(
+                                                              seconds: 2),
                                                         ),
                                                       );
-                                                      print(
-                                                          '${placeMarks[0].name} ${placeMarks[0].street} ${placeMarks[0].locality} ${placeMarks[0].country}');
-                                                    });
-                                                  }
-                                                },
-                                              ),
-                                              TextButton(
-                                                child: const Text(
-                                                  'VIEW STOCK ORDER',
+                                                    } else {
+                                                      await placemarkFromCoordinates(
+                                                              state
+                                                                      .orderList?[
+                                                                          index]
+                                                                      .latitude ??
+                                                                  0,
+                                                              state
+                                                                      .orderList?[
+                                                                          index]
+                                                                      .longitude ??
+                                                                  0)
+                                                          .then(
+                                                        (List<Placemark>
+                                                            placeMarks) {
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .hideCurrentSnackBar();
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .showSnackBar(
+                                                            SnackBar(
+                                                              behavior:
+                                                                  SnackBarBehavior
+                                                                      .floating,
+                                                              content: Text(
+                                                                  '${placeMarks[0].street}, ${placeMarks[0].locality}, ${placeMarks[0].country}, ${placeMarks[0].postalCode}'),
+                                                              duration:
+                                                                  const Duration(
+                                                                      seconds:
+                                                                          5),
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 16, top: 10),
+                                                    child: const Icon(
+                                                      Icons.my_location,
+                                                      size: 30,
+                                                      color: AppColors.tertiary,
+                                                    ),
+                                                  ),
                                                 ),
-                                                onPressed: () => Navigator.of(
-                                                        context)
-                                                    .push(OrderLineHistoryScreen
-                                                        .route(
-                                                            order: state
-                                                                    .orderList?[
-                                                                index])),
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      ));
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            Container(
+                                              padding: const EdgeInsets.only(
+                                                  left: 16),
+                                              alignment: Alignment.centerLeft,
+                                              child: ATText(
+                                                text:
+                                                    'Vendor: ${vendorName.toString().capitalizeFirstofEach()}',
+                                                fontSize: 16,
+                                                weight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Container(
+                                              padding: const EdgeInsets.only(
+                                                  left: 16, bottom: 10),
+                                              alignment: Alignment.centerLeft,
+                                              child: ATText(
+                                                text: DateFormat(
+                                                        "MMM y dd HH:mm a")
+                                                    .format(DateTime.parse(state
+                                                                .orderList?[
+                                                                    index]
+                                                                .createdDate ??
+                                                            '')
+                                                        .add(const Duration(
+                                                            hours: 8))),
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        )),
+                                  );
                                 },
                               ),
                       ),
