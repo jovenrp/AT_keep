@@ -226,9 +226,6 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
                             text: 'History',
                           ),
                         ),
-                        const SizedBox(
-                          height: 60,
-                        ),
                         /*SizedBox(
                           width: MediaQuery.of(context).size.width * .30,
                           child: QrImage(

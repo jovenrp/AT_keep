@@ -310,7 +310,8 @@ class ManageStockBloc extends Cubit<ManageStockState> {
       required ProfileModel vendor,
       required String? action}) async {
     String formattedDate = DateFormat.yMMMEd().format(DateTime.now());
-    String? orderNumber = '1000';
+    String orderNameFile = await createOrderName();
+    String? orderNumber = orderNameFile;
     final pdf = pw.Document();
 
     List<StockModel> stockList = <StockModel>[];
@@ -653,7 +654,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
 
     Directory appDocDir = await getApplicationDocumentsDirectory();
     String appDocPath = appDocDir.path;
-    String orderNameFile = await createOrderName();
+
     final file = File(appDocPath + '/' + 'Ord_$orderNameFile.pdf');
     //log('Save as file ${file.path} ...');
     await file.writeAsBytes(await pdf.save());

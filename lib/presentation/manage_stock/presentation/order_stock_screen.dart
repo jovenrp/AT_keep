@@ -1111,13 +1111,13 @@ class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
       context
           .read<ManageStockBloc>()
           .emitLocationData(locationData: locationData);
-      ScaffoldMessenger.of(context).showSnackBar(
+      /*ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           behavior: SnackBarBehavior.floating,
           content: Text('Location captured.'),
           duration: Duration(seconds: 2),
         ),
-      );
+      );*/
     }
   }
 

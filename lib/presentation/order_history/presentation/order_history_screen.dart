@@ -74,17 +74,17 @@ class _OrderHistoryScreen extends State<OrderHistoryScreen> {
                         hintText: 'Search Item',
                         textEditingController: searchController,
                         onFieldSubmitted: (String? value) {
-                          /*context
+                          context
                               .read<OrderHistoryBloc>()
-                              .searchStocks(search: value ?? '');*/
+                              .searchOrder(search: value ?? '');
                         },
                         onChanged: (String value) {
                           EasyDebounce.debounce(
                               'deebouncer1', const Duration(milliseconds: 500),
                               () {
-                            /*context
-                                    .read<ManageStockBloc>()
-                                    .searchStocks(search: value);*/
+                            context
+                                .read<OrderHistoryBloc>()
+                                .searchOrder(search: value);
                           });
                         },
                       ),

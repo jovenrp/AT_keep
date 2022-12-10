@@ -88,7 +88,7 @@ class _ProfileScreen extends State<ProfileScreen> {
               baseOffset: 0, extentOffset: emailController.text.length);
         } else {
           if (emailController.text.isEmpty) {
-            emailController.text = emailOriginal;
+            //emailController.text = emailOriginal;
           } else {
             if (emailOriginal != emailController.text) {
               isProfileUpdated = true;
@@ -106,7 +106,7 @@ class _ProfileScreen extends State<ProfileScreen> {
               baseOffset: 0, extentOffset: firstnameController.text.length);
         } else {
           if (firstnameController.text.isEmpty) {
-            firstnameController.text = firstnameOriginal;
+            //firstnameController.text = firstnameOriginal;
           } else {
             if (firstnameOriginal != firstnameController.text) {
               isProfileUpdated = true;
@@ -124,7 +124,7 @@ class _ProfileScreen extends State<ProfileScreen> {
               baseOffset: 0, extentOffset: lastnameController.text.length);
         } else {
           if (lastnameController.text.isEmpty) {
-            lastnameController.text = lastnameOriginal;
+            //lastnameController.text = lastnameOriginal;
           } else {
             if (lastnameOriginal != lastnameController.text) {
               isProfileUpdated = true;
@@ -142,7 +142,7 @@ class _ProfileScreen extends State<ProfileScreen> {
               baseOffset: 0, extentOffset: phoneController.text.length);
         } else {
           if (phoneController.text.isEmpty) {
-            phoneController.text = phoneOriginal;
+            //phoneController.text = phoneOriginal;
           } else {
             if (phoneOriginal != phoneController.text) {
               isProfileUpdated = true;
@@ -160,7 +160,7 @@ class _ProfileScreen extends State<ProfileScreen> {
               baseOffset: 0, extentOffset: addressController.text.length);
         } else {
           if (addressController.text.isEmpty) {
-            addressController.text = addressOriginal;
+            //addressController.text = addressOriginal;
           } else {
             if (addressOriginal != addressController.text) {
               isProfileUpdated = true;
@@ -178,7 +178,7 @@ class _ProfileScreen extends State<ProfileScreen> {
               baseOffset: 0, extentOffset: prefixController.text.length);
         } else {
           if (prefixController.text.isEmpty) {
-            prefixController.text = prefixOriginal;
+            //prefixController.text = prefixOriginal;
           } else {
             if (prefixOriginal != prefixController.text) {
               isProfileUpdated = true;
