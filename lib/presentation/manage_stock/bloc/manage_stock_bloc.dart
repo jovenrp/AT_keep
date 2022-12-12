@@ -192,8 +192,8 @@ class ManageStockBloc extends Cubit<ManageStockState> {
       num: orderName,
       name: orderName,
       source:
-          '${state.vendor?.firstname} ${state.vendor?.lastname}, ${state.vendor?.email}, ${state.vendor?.phoneNumber}, ${state.vendor?.address}',
-      status: 'processing',
+          '${state.vendor?.firstname} ${state.vendor?.lastname}|${state.vendor?.email}|${state.vendor?.phoneNumber}|${state.vendor?.address}|${state.vendor?.company}',
+      status: 'New',
       createdDate: DateTime.now().toIso8601String(),
       longitude: locationData?.longitude ?? 0,
       latitude: locationData?.latitude ?? 0,
@@ -330,34 +330,44 @@ class ManageStockBloc extends Cubit<ManageStockState> {
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 mainAxisAlignment: pw.MainAxisAlignment.start,
                 children: [
-                  /*pw.SizedBox(
-                    child: pw.Image(image, width: 100, height: 100),
-                  ),*/
                   pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     mainAxisAlignment: pw.MainAxisAlignment.start,
                     children: [
                       pw.SizedBox(height: 12),
                       pw.Text(
-                        '${vendor.firstname.toString().capitalizeFirstofEach()} ${vendor.lastname.toString().capitalizeFirstofEach()}',
+                        '${user.firstname.toString().capitalizeFirstofEach()} ${user.lastname.toString().capitalizeFirstofEach()}',
                         style: pw.TextStyle(
-                            fontSize: 24, fontWeight: pw.FontWeight.bold),
+                            fontSize: 20, fontWeight: pw.FontWeight.bold),
                       ),
                       pw.SizedBox(height: 3),
+                      pw.Text(
+                        user.email.toString(),
+                        style: const pw.TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
                       pw.Container(
                         width: 200,
                         child: pw.Text(
-                          vendor.address.toString().capitalizeFirstofEach(),
+                          user.address.toString().capitalizeFirstofEach(),
                           style: const pw.TextStyle(
-                            fontSize: 20,
+                            fontSize: 16,
                           ),
                         ),
                       ),
                       pw.SizedBox(height: 3),
                       pw.Text(
-                        vendor.phoneNumber.toString().capitalizeFirstofEach(),
+                        user.phoneNumber.toString().capitalizeFirstofEach(),
                         style: const pw.TextStyle(
-                          fontSize: 20,
+                          fontSize: 16,
+                        ),
+                      ),
+                      pw.SizedBox(height: 3),
+                      pw.Text(
+                        user.company.toString().capitalizeFirstofEach(),
+                        style: const pw.TextStyle(
+                          fontSize: 16,
                         ),
                       ),
                     ],
@@ -387,25 +397,39 @@ class ManageStockBloc extends Cubit<ManageStockState> {
                   children: [
                     pw.SizedBox(height: 12),
                     pw.Text(
-                      '${user.firstname.toString().capitalizeFirstofEach()} ${user.lastname.toString().capitalizeFirstofEach()}',
+                      '${vendor.firstname.toString().capitalizeFirstofEach()} ${vendor.lastname.toString().capitalizeFirstofEach()}',
                       style: pw.TextStyle(
-                          fontSize: 24, fontWeight: pw.FontWeight.bold),
+                          fontSize: 20, fontWeight: pw.FontWeight.bold),
+                    ),
+                    pw.SizedBox(height: 3),
+                    pw.Text(
+                      vendor.email.toString(),
+                      style: const pw.TextStyle(
+                        fontSize: 16,
+                      ),
                     ),
                     pw.SizedBox(height: 3),
                     pw.Container(
                       width: 200,
                       child: pw.Text(
-                        user.address.toString().capitalizeFirstofEach(),
+                        vendor.address.toString().capitalizeFirstofEach(),
                         style: const pw.TextStyle(
-                          fontSize: 20,
+                          fontSize: 16,
                         ),
                       ),
                     ),
                     pw.SizedBox(height: 3),
                     pw.Text(
-                      user.phoneNumber.toString().capitalizeFirstofEach(),
+                      vendor.phoneNumber.toString().capitalizeFirstofEach(),
                       style: const pw.TextStyle(
-                        fontSize: 20,
+                        fontSize: 16,
+                      ),
+                    ),
+                    pw.SizedBox(height: 3),
+                    pw.Text(
+                      vendor.company.toString().capitalizeFirstofEach(),
+                      style: const pw.TextStyle(
+                        fontSize: 16,
                       ),
                     ),
                   ],
@@ -419,10 +443,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
               padding: const pw.EdgeInsets.only(left: 0),
               child: pw.Table(
                 columnWidths: const {
-                  0: pw.FlexColumnWidth(3),
-                  1: pw.FlexColumnWidth(2),
-                  2: pw.FlexColumnWidth(2),
-                  3: pw.FlexColumnWidth(2),
+                  0: pw.FlexColumnWidth(6),
                   4: pw.FlexColumnWidth(2),
                 },
                 children: <pw.TableRow>[
@@ -434,46 +455,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
                             left: 18, top: 5, bottom: 5),
                         alignment: pw.Alignment.centerLeft,
                         child: pw.Text(
-                          'SKU',
-                          style: pw.TextStyle(
-                              fontSize: 18,
-                              fontWeight: pw.FontWeight.bold,
-                              color: PdfColor.fromInt(AppColors.white.value)),
-                        ),
-                      ),
-                      pw.Container(
-                        padding: const pw.EdgeInsets.only(
-                            right: 8, top: 5, bottom: 5),
-                        color: PdfColor.fromInt(AppColors.headerGrey.value),
-                        alignment: pw.Alignment.centerRight,
-                        child: pw.Text(
-                          'Min',
-                          style: pw.TextStyle(
-                              fontSize: 18,
-                              fontWeight: pw.FontWeight.bold,
-                              color: PdfColor.fromInt(AppColors.white.value)),
-                        ),
-                      ),
-                      pw.Container(
-                        padding: const pw.EdgeInsets.only(
-                            right: 8, top: 5, bottom: 5),
-                        alignment: pw.Alignment.centerRight,
-                        color: PdfColor.fromInt(AppColors.headerGrey.value),
-                        child: pw.Text(
-                          'Max',
-                          style: pw.TextStyle(
-                              fontSize: 18,
-                              fontWeight: pw.FontWeight.bold,
-                              color: PdfColor.fromInt(AppColors.white.value)),
-                        ),
-                      ),
-                      pw.Container(
-                        padding: const pw.EdgeInsets.only(
-                            right: 8, top: 5, bottom: 5),
-                        alignment: pw.Alignment.centerRight,
-                        color: PdfColor.fromInt(AppColors.headerGrey.value),
-                        child: pw.Text(
-                          'OnHand',
+                          'SKU / DESCRIPTION',
                           style: pw.TextStyle(
                               fontSize: 18,
                               fontWeight: pw.FontWeight.bold,
@@ -527,10 +509,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
                           children: <pw.Widget>[
                             pw.Table(
                               columnWidths: const {
-                                0: pw.FlexColumnWidth(3),
-                                1: pw.FlexColumnWidth(2),
-                                2: pw.FlexColumnWidth(2),
-                                3: pw.FlexColumnWidth(2),
+                                0: pw.FlexColumnWidth(6),
                                 4: pw.FlexColumnWidth(2),
                               },
                               children: <pw.TableRow>[
@@ -546,69 +525,6 @@ class ManageStockBloc extends Cubit<ManageStockState> {
                                               fontWeight: pw.FontWeight.bold,
                                               color: PdfColor.fromInt(
                                                   AppColors.tertiary.value))),
-                                    ),
-                                    pw.Container(
-                                      padding:
-                                          const pw.EdgeInsets.only(right: 8),
-                                      alignment: pw.Alignment.centerRight,
-                                      child: pw.Text(
-                                        state.stocksList?[index].minQuantity
-                                                .toString()
-                                                .removeDecimalZeroFormat(state
-                                                        .stocksList?[index]
-                                                        .minQuantity ??
-                                                    0) ??
-                                            '',
-                                        style: pw.TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: pw.FontWeight.bold,
-                                          color: PdfColor.fromInt(
-                                            AppColors.tertiary.value,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    pw.Container(
-                                      padding:
-                                          const pw.EdgeInsets.only(right: 8),
-                                      alignment: pw.Alignment.centerRight,
-                                      child: pw.Text(
-                                        state.stocksList?[index].maxQuantity
-                                                .toString()
-                                                .removeDecimalZeroFormat(state
-                                                        .stocksList?[index]
-                                                        .maxQuantity ??
-                                                    0) ??
-                                            '',
-                                        style: pw.TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: pw.FontWeight.bold,
-                                          color: PdfColor.fromInt(
-                                            AppColors.tertiary.value,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    pw.Container(
-                                      padding:
-                                          const pw.EdgeInsets.only(right: 18),
-                                      alignment: pw.Alignment.centerRight,
-                                      child: pw.Text(
-                                        state.stocksList?[index].onHand
-                                                .toString()
-                                                .removeDecimalZeroFormat(state
-                                                        .stocksList?[index]
-                                                        .onHand ??
-                                                    0) ??
-                                            '',
-                                        style: pw.TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: pw.FontWeight.bold,
-                                          color: PdfColor.fromInt(
-                                            AppColors.tertiary.value,
-                                          ),
-                                        ),
-                                      ),
                                     ),
                                     pw.Container(
                                       padding:

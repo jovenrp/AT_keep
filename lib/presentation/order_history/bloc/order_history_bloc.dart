@@ -53,6 +53,9 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
           orderLine.add(ordLineModel);
         }
       }
+
+      List<OrderLineModel> lines = await getOrderLines(order: item);
+      item.setLines(lines.length.toString());
     }
 
     List<OrderModel> sorted = orderList;
@@ -65,7 +68,8 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
         isLoading: false, hasError: false, orderList: orderList));
   }
 
-  Future<List<OrderLineModel>> getOrderLines({OrderModel? order}) async {
+  Future<List<OrderLineModel>> getOrderLines(
+      {OrderModel? order, bool isInOrderScreen = false}) async {
     emit(
       state.copyWith(
         isLoading: true,
@@ -91,6 +95,7 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
     }
     emit(state.copyWith(
         isLoading: false, hasError: false, orderLineList: returnLine));
+
     return returnLine;
   }
 
@@ -98,7 +103,7 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
       {required StockModel stock,
       required OrderLineModel orderLine,
       double? onOrder,
-      String? isFlipped}) async {
+      String? isFlipped, required OrderModel? orderModel}) async {
     emit(state.copyWith(isLoading: true));
 
     double onOrderVal = onOrder ?? 0;
@@ -131,7 +136,24 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
     Box orderLineBox = await orderLineRepository.openBox();
     orderLineRepository.addOrderLine(orderLineBox, orderLine);
 
+    updateOrderStatus(orderModel);
     emit(state.copyWith(isLoading: false));
+  }
+
+  void updateOrderStatus(OrderModel? order) {
+    int itemReceivedCounter = 0;
+    for (OrderLineModel item in state.orderLineList ?? <OrderLineModel>[]) {
+      if (item.status != 'partial' &&
+          item.status != 'pending' &&
+          item.status != null) {
+        itemReceivedCounter++;
+      }
+    }
+    if (itemReceivedCounter == state.orderLineList?.length) {
+      order?.setStatus('Received');
+    } else {
+      order?.setStatus('Partial');
+    }
   }
 
   Future<void> searchOrder({required String search}) async {

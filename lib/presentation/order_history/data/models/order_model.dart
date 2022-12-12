@@ -6,18 +6,20 @@ part 'order_model.g.dart';
 
 @HiveType(typeId: 2)
 class OrderModel {
-  OrderModel(
-      {this.id,
-      this.num,
-      this.name,
-      this.source,
-      this.status,
-      this.createdDate,
-      this.modifiedDate,
-      this.orderLineList,
-      this.longitude = 0,
-      this.latitude = 0,
-      this.accuracy = 0});
+  OrderModel({
+    this.id,
+    this.num,
+    this.name,
+    this.source,
+    this.status,
+    this.createdDate,
+    this.modifiedDate,
+    this.orderLineList,
+    this.longitude = 0,
+    this.latitude = 0,
+    this.accuracy = 0,
+    this.lines,
+  });
 
   @HiveField(0)
   String? id;
@@ -49,6 +51,7 @@ class OrderModel {
   @HiveField(9)
   double? accuracy;
 
+  String? lines;
   List<OrderLineModel>? orderLineList;
 
   Map<String, dynamic> toJson() => {
@@ -103,5 +106,9 @@ class OrderModel {
 
   void setAccuracy(double accuracy) {
     this.accuracy = accuracy;
+  }
+
+  void setLines(String lines) {
+    this.lines = lines;
   }
 }

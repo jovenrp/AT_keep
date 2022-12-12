@@ -314,7 +314,10 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                                                     .receieveOrder(
                                                                       stock: state.orderLineList?[index].stockModel ?? StockModel(),
                                                                       orderLine: state.orderLineList?[index] ?? OrderLineModel(),
-                                                                      onOrder: double.parse(orderController.text),
+                                                                      onOrder: double.parse(
+                                                                        orderController.text,
+                                                                      ),
+                                                                      orderModel: widget.order,
                                                                     )
                                                                     .then((value) => Navigator.of(context).pop())
                                                                 : DialogUtils.showToast(
@@ -342,6 +345,7 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                           stock: state.orderLineList?[index].stockModel ?? StockModel(),
                                           orderLine: state.orderLineList?[index] ?? OrderLineModel(),
                                           isFlipped: 'pending',
+                                          orderModel: widget.order,
                                         );
                                     _controller[index].toggleCard();
                                   },
@@ -355,12 +359,14 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                               stock: state.orderLineList?[index].stockModel ?? StockModel(),
                                               orderLine: state.orderLineList?[index] ?? OrderLineModel(),
                                               isFlipped: 'received',
+                                              orderModel: widget.order,
                                             );
                                       } else {
                                         context.read<OrderHistoryBloc>().receieveOrder(
                                               stock: state.orderLineList?[index].stockModel ?? StockModel(),
                                               orderLine: state.orderLineList?[index] ?? OrderLineModel(),
                                               isFlipped: 'pending',
+                                              orderModel: widget.order,
                                             );
                                       }
                                     },
@@ -530,6 +536,5 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
     } else {
       isCheckedAll = false;
     }
-    print('is checked $isCheckedAll');
   }
 }

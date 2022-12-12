@@ -325,15 +325,6 @@ class _ProfileScreen extends State<ProfileScreen> {
                       const SizedBox(
                         height: 30,
                       ),
-                      ATTextfield(
-                        hintText: 'Email',
-                        focusNode: emailNode,
-                        textEditingController: emailController,
-                        textInputAction: TextInputAction.next,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
                       Container(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Row(
@@ -361,9 +352,9 @@ class _ProfileScreen extends State<ProfileScreen> {
                         ),
                       ),
                       ATTextfield(
-                        hintText: 'Phone',
-                        focusNode: phoneNode,
-                        textEditingController: phoneController,
+                        hintText: 'Company',
+                        focusNode: companyNode,
+                        textEditingController: companyController,
                         textAlign: TextAlign.start,
                         isSuffixIcon: true,
                       ),
@@ -380,6 +371,25 @@ class _ProfileScreen extends State<ProfileScreen> {
                       const SizedBox(
                         height: 10,
                       ),
+                      ATTextfield(
+                        hintText: 'Phone',
+                        focusNode: phoneNode,
+                        textEditingController: phoneController,
+                        textAlign: TextAlign.start,
+                        isSuffixIcon: true,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      ATTextfield(
+                        hintText: 'Email',
+                        focusNode: emailNode,
+                        textEditingController: emailController,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       Visibility(
                         visible: widget.type == 'profile',
                         child: ATTextfield(
@@ -391,28 +401,12 @@ class _ProfileScreen extends State<ProfileScreen> {
                         ),
                       ),
                       const SizedBox(
-                        height: 10,
-                      ),
-                      ATTextfield(
-                        hintText: 'Company',
-                        focusNode: companyNode,
-                        textEditingController: companyController,
-                        textAlign: TextAlign.start,
-                        isSuffixIcon: true,
-                      ),
-                      const SizedBox(
                         height: 20,
                       ),
                       SizedBox(
                         width: double.infinity,
                         child: KeepElevatedButton(
-                          isEnabled: widget.type == 'profile'
-                              ? state.isProfileButton
-                                  ? isProfileUpdated
-                                  : true
-                              : state.isVendorButton
-                                  ? isProfileUpdated
-                                  : true,
+                          isEnabled: isProfileUpdated,
                           disableText: Text(
                             widget.type == 'profile'
                                 ? state.isProfileButton

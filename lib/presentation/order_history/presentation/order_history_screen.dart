@@ -1,18 +1,16 @@
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
-import 'package:keep/core/domain/utils/string_extensions.dart';
 import 'package:keep/core/presentation/widgets/at_loading_indicator.dart';
 import 'package:keep/presentation/order_history/bloc/order_history_bloc.dart';
 import 'package:keep/presentation/order_history/bloc/order_history_state.dart';
-import 'package:keep/presentation/order_history/presentation/order_line_history_screen.dart';
 
 import '../../../application/domain/models/application_config.dart';
 import '../../../core/domain/utils/constants/app_colors.dart';
 import '../../../core/presentation/widgets/at_text.dart';
 import '../../../core/presentation/widgets/at_textfield.dart';
+import 'order_line_history_screen.dart';
 
 class OrderHistoryScreen extends StatefulWidget {
   const OrderHistoryScreen({Key? key, this.config}) : super(key: key);
@@ -21,8 +19,7 @@ class OrderHistoryScreen extends StatefulWidget {
 
   final ApplicationConfig? config;
 
-  static ModalRoute<OrderHistoryScreen> route({ApplicationConfig? config}) =>
-      MaterialPageRoute<OrderHistoryScreen>(
+  static ModalRoute<OrderHistoryScreen> route({ApplicationConfig? config}) => MaterialPageRoute<OrderHistoryScreen>(
         settings: const RouteSettings(name: routeName),
         builder: (_) => OrderHistoryScreen(
           config: config,
@@ -68,23 +65,16 @@ class _OrderHistoryScreen extends State<OrderHistoryScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(
-                          left: 20, right: 20, top: 20, bottom: 0),
+                      padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 0),
                       child: ATTextfield(
                         hintText: 'Search Item',
                         textEditingController: searchController,
                         onFieldSubmitted: (String? value) {
-                          context
-                              .read<OrderHistoryBloc>()
-                              .searchOrder(search: value ?? '');
+                          context.read<OrderHistoryBloc>().searchOrder(search: value ?? '');
                         },
                         onChanged: (String value) {
-                          EasyDebounce.debounce(
-                              'deebouncer1', const Duration(milliseconds: 500),
-                              () {
-                            context
-                                .read<OrderHistoryBloc>()
-                                .searchOrder(search: value);
+                          EasyDebounce.debounce('deebouncer1', const Duration(milliseconds: 500), () {
+                            context.read<OrderHistoryBloc>().searchOrder(search: value);
                           });
                         },
                       ),
@@ -92,24 +82,174 @@ class _OrderHistoryScreen extends State<OrderHistoryScreen> {
                     const SizedBox(
                       height: 20,
                     ),
+                    Container(
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          left: BorderSide(
+                            width: 10.0,
+                            color: AppColors.headerGrey
+                          ),
+                        ),
+                      ),
+                      child: Table(
+                        columnWidths: const {
+                          0: FlexColumnWidth(3),
+                          1: FlexColumnWidth(2),
+                          2: FlexColumnWidth(2),
+                          3: FlexColumnWidth(2),
+                        },
+                        children: <TableRow>[
+                          TableRow(
+                            children: <Widget>[
+                              Container(
+                                padding: const EdgeInsets.only(left: 8, top: 5, bottom: 5),
+                                alignment: Alignment.centerLeft,
+                                color: AppColors.headerGrey,
+                                child: const ATText(
+                                  text: 'Order Num',
+                                  fontColor: AppColors.white,
+                                  fontSize: 16,
+                                  weight: FontWeight.bold,
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(top: 5, bottom: 5),
+                                alignment: Alignment.centerLeft,
+                                color: AppColors.headerGrey,
+                                child: const ATText(
+                                  text: 'Date',
+                                  fontColor: AppColors.white,
+                                  fontSize: 16,
+                                  weight: FontWeight.bold,
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(top: 5, bottom: 5),
+                                alignment: Alignment.centerLeft,
+                                color: AppColors.headerGrey,
+                                child: const ATText(
+                                  text: 'Status',
+                                  fontColor: AppColors.white,
+                                  fontSize: 16,
+                                  weight: FontWeight.bold,
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
+                                alignment: Alignment.centerRight,
+                                color: AppColors.headerGrey,
+                                child: const ATText(
+                                  text: 'Lines',
+                                  fontColor: AppColors.white,
+                                  fontSize: 16,
+                                  weight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 18, right: 18),
+                        padding: const EdgeInsets.only(left: 0, right: 0),
                         child: state.isLoading
                             ? const ATLoadingIndicator()
                             : ListView.builder(
                                 itemCount: state.orderList?.length,
                                 itemBuilder: (BuildContext context, index) {
-                                  List<String> userData = state
-                                          .orderList?[index].source
-                                          ?.split(',') ??
-                                      <String>[];
+                                  List<String> userData = state.orderList?[index].source?.split('|') ?? <String>[];
+
                                   String vendorName = userData[0];
-                                  //String vendorEmail = userData[1];
-                                  //String vendorContact = userData[2];
-                                  //String vendorAddress = userData[3];
+                                  String vendorEmail = userData[1];
+                                  String vendorContact = userData[2];
+                                  String vendorAddress = userData[3];
+                                  String vendorCompany = userData[4];
 
                                   return InkWell(
+                                    onTap: () => Navigator.of(context).push(OrderLineHistoryScreen.route(order: state.orderList?[index])),
+                                    child: Container(
+                                      padding: const EdgeInsets.only(bottom: 5),
+                                      decoration: BoxDecoration(
+                                        color: index % 2 == 1 ? AppColors.lightBlue : AppColors.white,
+                                        border: Border(
+                                          left: BorderSide(
+                                              width: 10.0,
+                                              color: state.orderList?[index].status?.toLowerCase() == 'new'
+                                                  ? AppColors.criticalRed
+                                                  : state.orderList?[index].status?.toLowerCase() == 'partial'
+                                                      ? AppColors.warningOrange
+                                                      : AppColors.successGreen),
+                                        ),
+                                      ),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Table(
+                                            columnWidths: const {
+                                              0: FlexColumnWidth(3),
+                                              1: FlexColumnWidth(2),
+                                              2: FlexColumnWidth(2),
+                                              3: FlexColumnWidth(2),
+                                            },
+                                            children: <TableRow>[
+                                              TableRow(
+                                                children: <Widget>[
+                                                  Container(
+                                                    padding: const EdgeInsets.only(left: 8, top: 5, bottom: 5),
+                                                    alignment: Alignment.centerLeft,
+                                                    child: ATText(
+                                                      text: state.orderList?[index].num,
+                                                      fontColor: AppColors.black,
+                                                      fontSize: 16,
+                                                      weight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    padding: const EdgeInsets.only(top: 5, bottom: 5),
+                                                    alignment: Alignment.centerLeft,
+                                                    child: ATText(
+                                                      text:
+                                                          DateFormat("MMM dd yyyy").format(DateTime.parse(state.orderList?[index].createdDate ?? '')),
+                                                      fontColor: AppColors.onboardingText,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    padding: const EdgeInsets.only(top: 5, bottom: 5),
+                                                    alignment: Alignment.centerLeft,
+                                                    child: ATText(
+                                                      text: state.orderList?[index].status,
+                                                      fontColor: AppColors.onboardingText,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
+                                                    alignment: Alignment.centerRight,
+                                                    child: ATText(
+                                                      text: state.orderList?[index].lines,
+                                                      fontColor: AppColors.onboardingText,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.only(left: 8),
+                                            alignment: Alignment.centerLeft,
+                                            child: ATText(
+                                              text: vendorCompany.toString(),
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                  /*return InkWell(
                                     onTap: () => Navigator.of(context).push(
                                         OrderLineHistoryScreen.route(
                                             order: state.orderList?[index])),
@@ -238,7 +378,7 @@ class _OrderHistoryScreen extends State<OrderHistoryScreen> {
                                             ),
                                           ],
                                         )),
-                                  );
+                                  );*/
                                 },
                               ),
                       ),
