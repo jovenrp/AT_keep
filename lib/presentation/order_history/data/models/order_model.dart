@@ -52,6 +52,7 @@ class OrderModel {
   double? accuracy;
 
   String? lines;
+  String? address;
   List<OrderLineModel>? orderLineList;
 
   Map<String, dynamic> toJson() => {
@@ -110,5 +111,9 @@ class OrderModel {
 
   void setLines(String lines) {
     this.lines = lines;
+  }
+
+  void setAddress(String address) {
+    this.address = address;
   }
 }

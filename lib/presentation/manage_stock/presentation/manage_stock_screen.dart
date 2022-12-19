@@ -676,115 +676,144 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                                 padding: const EdgeInsets.only(
                                                     bottom: 20),
                                                 child: ATTextfield(
-                                                  hintText: 'Adjust',
+                                                  hintText: 'Quantity',
                                                   textEditingController:
                                                       adjustController,
                                                   focusNode: adjustNode,
                                                   textAlign: TextAlign.center,
                                                   textInputAction:
                                                       TextInputAction.done,
-                                                  isNumbersOnly: true,
+                                                  isNumbersOnly: false,
+                                                  textInputType:
+                                                      TextInputType.number,
                                                 ),
                                               ),
                                               const SizedBox(
                                                 height: 5,
                                               ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 10),
-                                                child: SizedBox(
-                                                  width: double.infinity,
-                                                  child: KeepElevatedButton(
-                                                    isEnabled: !state.isLoading,
-                                                    color:
-                                                        AppColors.successGreen,
-                                                    onPressed: () {
-                                                      if (adjustController.text
-                                                          .trim()
-                                                          .isNotEmpty) {
-                                                        context
-                                                            .read<
-                                                                ManageStockBloc>()
-                                                            .adjustStock(
-                                                                stockModel:
-                                                                    state.stocksList?[
-                                                                        index],
-                                                                index: index,
-                                                                isIn: true,
-                                                                quantity: double.parse(
-                                                                    adjustController
-                                                                        .text))
-                                                            .then((_) {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                          context
-                                                              .read<
-                                                                  ManageStockBloc>()
-                                                              .getStocks();
-                                                        });
-                                                      } else {
-                                                        context
-                                                            .read<
-                                                                ManageStockBloc>()
-                                                            .displayErrorMessage(
-                                                                FormModel(
-                                                                    error: true,
-                                                                    message:
-                                                                        'Adjust quantity cannot be empty on In.'));
-                                                      }
-                                                    },
-                                                    text: 'In',
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 0),
+                                                    child: SizedBox(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              .4,
+                                                      child: KeepElevatedButton(
+                                                        isEnabled:
+                                                            !state.isLoading,
+                                                        color: AppColors
+                                                            .successGreen,
+                                                        onPressed: () {
+                                                          if (adjustController
+                                                              .text
+                                                              .trim()
+                                                              .isNotEmpty) {
+                                                            context
+                                                                .read<
+                                                                    ManageStockBloc>()
+                                                                .adjustStock(
+                                                                    stockModel:
+                                                                        state.stocksList?[
+                                                                            index],
+                                                                    index:
+                                                                        index,
+                                                                    isIn: true,
+                                                                    quantity: double.parse(
+                                                                        adjustController
+                                                                            .text))
+                                                                .then((_) {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                              context
+                                                                  .read<
+                                                                      ManageStockBloc>()
+                                                                  .getStocks();
+                                                            });
+                                                          } else {
+                                                            context
+                                                                .read<
+                                                                    ManageStockBloc>()
+                                                                .displayErrorMessage(
+                                                                    FormModel(
+                                                                        error:
+                                                                            true,
+                                                                        message:
+                                                                            'Adjust quantity cannot be empty on In.'));
+                                                          }
+                                                        },
+                                                        text: 'In',
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 5),
-                                                child: SizedBox(
-                                                  width: double.infinity,
-                                                  child: KeepElevatedButton(
-                                                    color:
-                                                        AppColors.criticalRed,
-                                                    isEnabled: !state.isLoading,
-                                                    onPressed: () {
-                                                      if (adjustController.text
-                                                          .trim()
-                                                          .isNotEmpty) {
-                                                        context
-                                                            .read<
-                                                                ManageStockBloc>()
-                                                            .adjustStock(
-                                                                stockModel:
-                                                                    state.stocksList?[
-                                                                        index],
-                                                                index: index,
-                                                                isIn: false,
-                                                                quantity: double.parse(
-                                                                    adjustController
-                                                                        .text))
-                                                            .then((_) {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                          context
-                                                              .read<
-                                                                  ManageStockBloc>()
-                                                              .getStocks();
-                                                        });
-                                                      } else {
-                                                        context
-                                                            .read<
-                                                                ManageStockBloc>()
-                                                            .displayErrorMessage(
-                                                                FormModel(
-                                                                    error: true,
-                                                                    message:
-                                                                        'Adjust quantity cannot be empty on Out.'));
-                                                      }
-                                                    },
-                                                    text: 'Out',
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 0),
+                                                    child: SizedBox(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              .4,
+                                                      child: KeepElevatedButton(
+                                                        color: AppColors
+                                                            .criticalRed,
+                                                        isEnabled:
+                                                            !state.isLoading,
+                                                        onPressed: () {
+                                                          if (adjustController
+                                                              .text
+                                                              .trim()
+                                                              .isNotEmpty) {
+                                                            context
+                                                                .read<
+                                                                    ManageStockBloc>()
+                                                                .adjustStock(
+                                                                    stockModel:
+                                                                        state.stocksList?[
+                                                                            index],
+                                                                    index:
+                                                                        index,
+                                                                    isIn: false,
+                                                                    quantity: double.parse(
+                                                                        adjustController
+                                                                            .text))
+                                                                .then((_) {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                              context
+                                                                  .read<
+                                                                      ManageStockBloc>()
+                                                                  .getStocks();
+                                                            });
+                                                          } else {
+                                                            context
+                                                                .read<
+                                                                    ManageStockBloc>()
+                                                                .displayErrorMessage(
+                                                                    FormModel(
+                                                                        error:
+                                                                            true,
+                                                                        message:
+                                                                            'Adjust quantity cannot be empty on Out.'));
+                                                          }
+                                                        },
+                                                        text: 'Out',
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
+                                                ],
+                                              )
                                             ],
                                           ),
                                         );
@@ -1110,7 +1139,8 @@ class _ManageStockScreen extends State<ManageStockScreen>
                         focusNode: minNode,
                         textAlign: TextAlign.center,
                         textInputAction: TextInputAction.next,
-                        isNumbersOnly: true,
+                        isNumbersOnly: false,
+                        textInputType: TextInputType.number,
                       ),
                     ),
                     const SizedBox(
@@ -1123,7 +1153,8 @@ class _ManageStockScreen extends State<ManageStockScreen>
                         focusNode: maxNode,
                         textAlign: TextAlign.center,
                         textInputAction: TextInputAction.next,
-                        isNumbersOnly: true,
+                        isNumbersOnly: false,
+                        textInputType: TextInputType.number,
                       ),
                     ),
                     /*const SizedBox(
@@ -1136,7 +1167,7 @@ class _ManageStockScreen extends State<ManageStockScreen>
                         textAlign: TextAlign.center,
                         focusNode: orderNode,
                         textInputAction: TextInputAction.done,
-                        isNumbersOnly: true,
+                        isNumbersOnly: false,
                         onFieldSubmitted: (String? value) =>
                             addOrder(state, index, isFloatingButton),
                       ),

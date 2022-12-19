@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:keep/presentation/manage_stock/data/models/stocks_model.dart';
@@ -24,7 +25,7 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
   Future<void> getOrders() async {
     emit(
       state.copyWith(
-        isLoading: true,
+        isScreenLoading: true,
       ),
     );
 
@@ -56,6 +57,20 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
 
       List<OrderLineModel> lines = await getOrderLines(order: item);
       item.setLines(lines.length.toString());
+
+      String address = '';
+      if (item.latitude == 0 && item.longitude == 0) {
+        address = 'Location was not captured on this order.';
+      } else {
+        await placemarkFromCoordinates(item.latitude ?? 0, item.longitude ?? 0)
+            .then(
+          (List<Placemark> placeMarks) {
+            address =
+                '${placeMarks[0].street}, ${placeMarks[0].locality}, ${placeMarks[0].country}, ${placeMarks[0].postalCode}';
+          },
+        );
+      }
+      item.setAddress(address);
     }
 
     List<OrderModel> sorted = orderList;
@@ -64,8 +79,9 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
       String bb = b?.createdDate ?? '';
       return bb.toLowerCase().compareTo(aa.toLowerCase());
     });
+
     emit(state.copyWith(
-        isLoading: false, hasError: false, orderList: orderList));
+        isScreenLoading: false, hasError: false, orderList: orderList));
   }
 
   Future<List<OrderLineModel>> getOrderLines(
@@ -103,7 +119,8 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
       {required StockModel stock,
       required OrderLineModel orderLine,
       double? onOrder,
-      String? isFlipped, required OrderModel? orderModel}) async {
+      String? isFlipped,
+      required OrderModel? orderModel}) async {
     emit(state.copyWith(isLoading: true));
 
     double onOrderVal = onOrder ?? 0;
@@ -125,7 +142,7 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
       double onOrderValue = quantity - onOrderVal;
       stock.setonHand(onHandValue);
       stock.setOnOrder(onOrderValue);
-      orderLine.setQuantity(onOrderValue);
+      orderLine.setQuantity(onOrderValue < 0 ? 0 : onOrderValue);
       orderLine.setStatus(
           onHandValue == orderLine.originalQuantity ? 'received' : 'partial');
     }
@@ -136,11 +153,11 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
     Box orderLineBox = await orderLineRepository.openBox();
     orderLineRepository.addOrderLine(orderLineBox, orderLine);
 
-    updateOrderStatus(orderModel);
+    updateOrderStatus(orderModel ?? OrderModel());
     emit(state.copyWith(isLoading: false));
   }
 
-  void updateOrderStatus(OrderModel? order) {
+  Future<void> updateOrderStatus(OrderModel order) async {
     int itemReceivedCounter = 0;
     for (OrderLineModel item in state.orderLineList ?? <OrderLineModel>[]) {
       if (item.status != 'partial' &&
@@ -150,10 +167,12 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
       }
     }
     if (itemReceivedCounter == state.orderLineList?.length) {
-      order?.setStatus('Received');
+      order.setStatus('Received');
     } else {
-      order?.setStatus('Partial');
+      order.setStatus('Partial');
     }
+    Box orderBox = await orderRepository.openBox();
+    orderRepository.addOrder(orderBox, order);
   }
 
   Future<void> searchOrder({required String search}) async {
@@ -263,4 +282,24 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
     emit(state.copyWith(
         isLoading: false, hasError: false, orderLineList: values));
   }
+
+/*Future<void> getLocation(int index) async {
+    String address = '';
+    if (state.orderList?[index].latitude == 0 &&
+        state.orderList?[index].longitude == 0) {
+      address = 'Location was not captured on this order.';
+    } else {
+      await placemarkFromCoordinates(state.orderList?[index].latitude ?? 0,
+              state.orderList?[index].longitude ?? 0)
+          .then(
+        (List<Placemark> placeMarks) {
+          address =
+              '${placeMarks[0].street}, ${placeMarks[0].locality}, ${placeMarks[0].country}, ${placeMarks[0].postalCode}';
+        },
+      );
+    }
+    state.orderList?[index].setAddress(address);
+
+    emit(state.copyWith(orderList: state.orderList));
+  }*/
 }

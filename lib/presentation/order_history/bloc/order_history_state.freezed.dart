@@ -20,6 +20,7 @@ class _$OrderHistoryStateTearOff {
   _OrderHistoryState call(
       {bool isLoading = false,
       bool isAdding = false,
+      bool isScreenLoading = false,
       bool hasError = false,
       String? errorMessage,
       List<OrderModel>? orderList,
@@ -28,6 +29,7 @@ class _$OrderHistoryStateTearOff {
     return _OrderHistoryState(
       isLoading: isLoading,
       isAdding: isAdding,
+      isScreenLoading: isScreenLoading,
       hasError: hasError,
       errorMessage: errorMessage,
       orderList: orderList,
@@ -44,6 +46,7 @@ const $OrderHistoryState = _$OrderHistoryStateTearOff();
 mixin _$OrderHistoryState {
   bool get isLoading => throw _privateConstructorUsedError;
   bool get isAdding => throw _privateConstructorUsedError;
+  bool get isScreenLoading => throw _privateConstructorUsedError;
   bool get hasError => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
   List<OrderModel>? get orderList => throw _privateConstructorUsedError;
@@ -63,6 +66,7 @@ abstract class $OrderHistoryStateCopyWith<$Res> {
   $Res call(
       {bool isLoading,
       bool isAdding,
+      bool isScreenLoading,
       bool hasError,
       String? errorMessage,
       List<OrderModel>? orderList,
@@ -83,6 +87,7 @@ class _$OrderHistoryStateCopyWithImpl<$Res>
   $Res call({
     Object? isLoading = freezed,
     Object? isAdding = freezed,
+    Object? isScreenLoading = freezed,
     Object? hasError = freezed,
     Object? errorMessage = freezed,
     Object? orderList = freezed,
@@ -97,6 +102,10 @@ class _$OrderHistoryStateCopyWithImpl<$Res>
       isAdding: isAdding == freezed
           ? _value.isAdding
           : isAdding // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isScreenLoading: isScreenLoading == freezed
+          ? _value.isScreenLoading
+          : isScreenLoading // ignore: cast_nullable_to_non_nullable
               as bool,
       hasError: hasError == freezed
           ? _value.hasError
@@ -132,6 +141,7 @@ abstract class _$OrderHistoryStateCopyWith<$Res>
   $Res call(
       {bool isLoading,
       bool isAdding,
+      bool isScreenLoading,
       bool hasError,
       String? errorMessage,
       List<OrderModel>? orderList,
@@ -154,6 +164,7 @@ class __$OrderHistoryStateCopyWithImpl<$Res>
   $Res call({
     Object? isLoading = freezed,
     Object? isAdding = freezed,
+    Object? isScreenLoading = freezed,
     Object? hasError = freezed,
     Object? errorMessage = freezed,
     Object? orderList = freezed,
@@ -168,6 +179,10 @@ class __$OrderHistoryStateCopyWithImpl<$Res>
       isAdding: isAdding == freezed
           ? _value.isAdding
           : isAdding // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isScreenLoading: isScreenLoading == freezed
+          ? _value.isScreenLoading
+          : isScreenLoading // ignore: cast_nullable_to_non_nullable
               as bool,
       hasError: hasError == freezed
           ? _value.hasError
@@ -199,6 +214,7 @@ class _$_OrderHistoryState implements _OrderHistoryState {
   _$_OrderHistoryState(
       {this.isLoading = false,
       this.isAdding = false,
+      this.isScreenLoading = false,
       this.hasError = false,
       this.errorMessage,
       this.orderList,
@@ -213,6 +229,9 @@ class _$_OrderHistoryState implements _OrderHistoryState {
   final bool isAdding;
   @JsonKey(defaultValue: false)
   @override
+  final bool isScreenLoading;
+  @JsonKey(defaultValue: false)
+  @override
   final bool hasError;
   @override
   final String? errorMessage;
@@ -225,7 +244,7 @@ class _$_OrderHistoryState implements _OrderHistoryState {
 
   @override
   String toString() {
-    return 'OrderHistoryState(isLoading: $isLoading, isAdding: $isAdding, hasError: $hasError, errorMessage: $errorMessage, orderList: $orderList, orderLineList: $orderLineList, userProfileModel: $userProfileModel)';
+    return 'OrderHistoryState(isLoading: $isLoading, isAdding: $isAdding, isScreenLoading: $isScreenLoading, hasError: $hasError, errorMessage: $errorMessage, orderList: $orderList, orderLineList: $orderLineList, userProfileModel: $userProfileModel)';
   }
 
   @override
@@ -238,6 +257,9 @@ class _$_OrderHistoryState implements _OrderHistoryState {
             (identical(other.isAdding, isAdding) ||
                 const DeepCollectionEquality()
                     .equals(other.isAdding, isAdding)) &&
+            (identical(other.isScreenLoading, isScreenLoading) ||
+                const DeepCollectionEquality()
+                    .equals(other.isScreenLoading, isScreenLoading)) &&
             (identical(other.hasError, hasError) ||
                 const DeepCollectionEquality()
                     .equals(other.hasError, hasError)) &&
@@ -260,6 +282,7 @@ class _$_OrderHistoryState implements _OrderHistoryState {
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(isLoading) ^
       const DeepCollectionEquality().hash(isAdding) ^
+      const DeepCollectionEquality().hash(isScreenLoading) ^
       const DeepCollectionEquality().hash(hasError) ^
       const DeepCollectionEquality().hash(errorMessage) ^
       const DeepCollectionEquality().hash(orderList) ^
@@ -276,6 +299,7 @@ abstract class _OrderHistoryState implements OrderHistoryState {
   factory _OrderHistoryState(
       {bool isLoading,
       bool isAdding,
+      bool isScreenLoading,
       bool hasError,
       String? errorMessage,
       List<OrderModel>? orderList,
@@ -286,6 +310,8 @@ abstract class _OrderHistoryState implements OrderHistoryState {
   bool get isLoading => throw _privateConstructorUsedError;
   @override
   bool get isAdding => throw _privateConstructorUsedError;
+  @override
+  bool get isScreenLoading => throw _privateConstructorUsedError;
   @override
   bool get hasError => throw _privateConstructorUsedError;
   @override

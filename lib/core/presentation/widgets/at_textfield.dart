@@ -17,6 +17,7 @@ class ATTextfield extends StatefulWidget {
     this.textInputAction = TextInputAction.done,
     this.textAlign = TextAlign.left,
     this.textEditingController,
+    this.textInputType,
     this.focusNode,
   }) : super(key: key);
 
@@ -25,6 +26,7 @@ class ATTextfield extends StatefulWidget {
   final bool isSuffixIcon;
   final TextAlign? textAlign;
   final TextInputAction? textInputAction;
+  final TextInputType? textInputType;
   final Function(String?)? onFieldSubmitted;
   final ValueChanged<String>? onChanged;
   final Function()? onPressed;
@@ -49,6 +51,7 @@ class _ATTextfield extends State<ATTextfield> {
         onChanged: widget.onChanged,
         textAlign: widget.textAlign ?? TextAlign.center,
         textInputAction: widget.textInputAction,
+        keyboardType: widget.textInputType ?? TextInputType.text,
         inputFormatters: widget.isNumbersOnly
             ? [
                 FilteringTextInputFormatter.allow(RegExp(r'[.\-0-9]')),

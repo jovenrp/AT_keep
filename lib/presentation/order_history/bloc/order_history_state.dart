@@ -11,6 +11,7 @@ class OrderHistoryState with _$OrderHistoryState {
   factory OrderHistoryState(
       {@Default(false) bool isLoading,
       @Default(false) bool isAdding,
+      @Default(false) bool isScreenLoading,
       @Default(false) bool hasError,
       String? errorMessage,
       List<OrderModel>? orderList,

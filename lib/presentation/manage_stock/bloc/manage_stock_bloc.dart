@@ -577,7 +577,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
 
     if (action == 'share') {
       ShareResult result =
-          await Share.shareFilesWithResult([file.path], subject: 'Stock Order');
+          await Share.shareFilesWithResult([file.path], subject: orderNameFile);
 
       if (result.status.name == 'success') {
         clearStocks(stockList: stockList, orderName: orderNameFile);

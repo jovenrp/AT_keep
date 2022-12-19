@@ -212,14 +212,17 @@ class _ProfileScreen extends State<ProfileScreen> {
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (BuildContext context, ProfileState state) {
         if (state.isSaved || state.isUpdated) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              behavior: SnackBarBehavior.floating,
-              content: Text(
-                  '${widget.type.toString().capitalizeFirstofEach()} information is ${state.isSaved == true ? 'saved' : 'updated'}.'),
-              duration: const Duration(seconds: 1),
-            ),
-          );
+          ScaffoldMessenger.of(context)
+              .showSnackBar(
+                SnackBar(
+                  behavior: SnackBarBehavior.floating,
+                  content: Text(
+                      '${widget.type.toString().capitalizeFirstofEach()} information is ${state.isSaved == true ? 'saved' : 'updated'}. Will go back in 2 sec.'),
+                  duration: const Duration(seconds: 2),
+                ),
+              )
+              .closed
+              .then((value) => Navigator.of(context).pop());
         }
         if ((widget.type == 'profile' && state.isProfileExisting) ||
             (widget.type == 'vendor') && state.isVendorExisiting) {

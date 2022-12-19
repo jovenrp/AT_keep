@@ -85,10 +85,7 @@ class _OrderHistoryScreen extends State<OrderHistoryScreen> {
                     Container(
                       decoration: const BoxDecoration(
                         border: Border(
-                          left: BorderSide(
-                            width: 10.0,
-                            color: AppColors.headerGrey
-                          ),
+                          left: BorderSide(width: 10.0, color: AppColors.headerGrey),
                         ),
                       ),
                       child: Table(
@@ -150,22 +147,33 @@ class _OrderHistoryScreen extends State<OrderHistoryScreen> {
                         ],
                       ),
                     ),
-
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(left: 0, right: 0),
-                        child: state.isLoading
-                            ? const ATLoadingIndicator()
+                        child: state.isScreenLoading
+                            ? const Center(
+                                child: ATLoadingIndicator(
+                                  width: 30,
+                                  height: 30,
+                                ),
+                              )
                             : ListView.builder(
                                 itemCount: state.orderList?.length,
                                 itemBuilder: (BuildContext context, index) {
                                   List<String> userData = state.orderList?[index].source?.split('|') ?? <String>[];
 
-                                  String vendorName = userData[0];
-                                  String vendorEmail = userData[1];
-                                  String vendorContact = userData[2];
-                                  String vendorAddress = userData[3];
-                                  String vendorCompany = userData[4];
+                                  String vendorName = '';
+                                  String vendorEmail = '';
+                                  String vendorContact = '';
+                                  String vendorAddress = '';
+                                  String vendorCompany = '';
+                                  if (userData.isNotEmpty) {
+                                    vendorName = userData[0];
+                                    vendorEmail = userData[1];
+                                    vendorContact = userData[2];
+                                    vendorAddress = userData[3];
+                                    vendorCompany = userData[4];
+                                  }
 
                                   return InkWell(
                                     onTap: () => Navigator.of(context).push(OrderLineHistoryScreen.route(order: state.orderList?[index])),
@@ -237,14 +245,32 @@ class _OrderHistoryScreen extends State<OrderHistoryScreen> {
                                               ),
                                             ],
                                           ),
-                                          Container(
-                                            padding: const EdgeInsets.only(left: 8),
-                                            alignment: Alignment.centerLeft,
-                                            child: ATText(
-                                              text: vendorCompany.toString(),
-                                              fontSize: 14,
-                                            ),
-                                          ),
+                                          const SizedBox(height: 5,),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Container(
+                                                padding: const EdgeInsets.only(left: 8),
+                                                alignment: Alignment.topLeft,
+                                                child: ATText(
+                                                  text: vendorCompany.toString(),
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              Container(
+                                                padding: const EdgeInsets.only(right: 8),
+                                                width: MediaQuery.of(context).size.width * .7,
+                                                alignment: Alignment.centerRight,
+                                                child: ATText(
+                                                  text: state.orderList?[index].address,
+                                                  fontSize: 14,
+                                                  textAlign: TextAlign.right,
+                                                  fontColor: AppColors.tertiary,
+                                                ),
+                                              ),
+                                            ],
+                                          )
                                         ],
                                       ),
                                     ),

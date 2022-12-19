@@ -491,13 +491,17 @@ class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
                                       isScrollControlled: true,
                                       builder: (context) {
                                         orderController.text = '';
-                                        orderController.selection =
-                                            TextSelection.fromPosition(
-                                                TextPosition(
-                                                    offset: orderController
-                                                        .text.length));
+                                        Future.delayed(
+                                            const Duration(milliseconds: 100),
+                                            () {
+                                          orderController.selection =
+                                              TextSelection.fromPosition(
+                                                  TextPosition(
+                                                      offset: orderController
+                                                          .text.length));
 
-                                        orderNode.requestFocus();
+                                          orderNode.requestFocus();
+                                        });
 
                                         return Container(
                                           padding: EdgeInsets.only(
@@ -814,7 +818,9 @@ class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
                                                   textEditingController:
                                                       orderController,
                                                   textAlign: TextAlign.center,
-                                                  isNumbersOnly: true,
+                                                  isNumbersOnly: false,
+                                                  textInputType:
+                                                      TextInputType.number,
                                                   textInputAction:
                                                       TextInputAction.done,
                                                 ),
@@ -863,9 +869,14 @@ class _OrderStockScreen extends State<OrderStockScreen> with BackPressedMixin {
                                                     color:
                                                         AppColors.criticalRed,
                                                     isEnabled: !state.isLoading,
-                                                    onPressed: () =>
-                                                        Navigator.of(context)
-                                                            .pop(),
+                                                    onPressed: () {
+                                                      /*orderController.text = '0';
+                                                      Future.delayed(const Duration(milliseconds: 100), () {
+                                                        orderNode.requestFocus();
+                                                      });*/
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
                                                     text: 'Cancel',
                                                   ),
                                                 ),
