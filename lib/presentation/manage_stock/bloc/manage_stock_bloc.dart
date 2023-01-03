@@ -208,6 +208,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
       if (item.isOrdered == false) {
         item.setIsOrdered(true);
         item.setorder(0);
+        item.setOriginalOnHand(item.onHand ?? 0);
         item.setOnOrder(double.parse(getQuantity(item)));
         stockOrderRepository.updateStock(stockBox, item);
 

@@ -12,6 +12,7 @@ class StockModel {
     this.maxQuantity = 0,
     this.order = 0,
     this.onHand = 0,
+    this.originalOnHand = 0,
     this.sku,
     this.isActive = 'Y',
     this.num,
@@ -111,6 +112,9 @@ class StockModel {
   @HiveField(25)
   bool? isChecked;
 
+  @HiveField(26)
+  double? originalOnHand;
+
   void setName(String name) {
     this.name = name;
   }
@@ -133,6 +137,10 @@ class StockModel {
 
   void setonHand(double quantity) {
     onHand = quantity;
+  }
+
+  void setOriginalOnHand(double originalOnHand) {
+    this.originalOnHand = originalOnHand;
   }
 
   void setorder(double quantity) {
@@ -194,6 +202,7 @@ class StockModel {
         'onOrder': onOrder.toString(),
         'isOrderReceive': isOrderReceive.toString(),
         'isChecked': isChecked.toString(),
+        'originalOnHand': originalOnHand.toString(),
       };
 
   StockModel.fromJson(Map<String, dynamic> json) {
@@ -223,6 +232,7 @@ class StockModel {
     onOrder = double.parse(json['onOrder'] ?? '0');
     isOrderReceive = parseBool(json['isOrderReceive'] ?? '0');
     isChecked = parseBool(json['isChecked'] ?? 'false');
+    originalOnHand = double.parse(json['originalOnHand'] ?? '0');
   }
 
   bool parseBool(String value) {

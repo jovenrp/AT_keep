@@ -49,7 +49,7 @@ class LandingScreenBloc extends Cubit<LandingScreenState> {
           .replaceAll('.', '-')
           .replaceAll(' ', '-')
           .replaceAll(':', '-');
-      Directory dir = await _getDirectory(formattedDate);
+      Directory dir = await _getBackupDirectory(formattedDate);
       String stocksPath =
           '${dir.path}Stocks_$formattedDate.json'; //Change .json to your desired file format(like .barbackup or .hive).
       File stocksFile = File(stocksPath);
@@ -87,12 +87,56 @@ class LandingScreenBloc extends Cubit<LandingScreenState> {
     emit(state.copyWith(databaseStatus: result));
   }
 
-  Future<Directory> _getDirectory(String? formattedDate) async {
+  Future<Directory> _getBackupDirectory(String? formattedDate) async {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     //String appDocPath = appDocDir.path;
 
     String pathExt =
         'KeepBackup/$formattedDate/'; //This is the name of the folder where the backup is stored
+    //Directory newDirectory = Directory('$appDocPath' + pathExt);
+    Directory newDirectory = Directory('/storage/emulated/0/' + pathExt);
+    if (await newDirectory.exists() == false) {
+      return newDirectory.create(recursive: true);
+    }
+    return newDirectory;
+  }
+
+  Future<void> createStockCSV() async {
+    emit(state.copyWith(databaseStatus: 'saving stocks'));
+
+    Box stocksBox = await landingRepository.openStocksBox();
+    Map<String, dynamic> stocksMap =
+        await landingRepository.backupStocks(stocksBox);
+    String stocksJson = jsonEncode(stocksMap);
+
+    var decode = base64.decode(stocksJson);
+    var csvStr = utf8.decode(decode);
+
+    PermissionStatus permissionStatus = await Permission.storage.request();
+    if (permissionStatus.isGranted) {
+      String formattedDate = DateFormat('MM-dd-yyyy HH:mm')
+          .format(DateTime.now())
+          .toString()
+          .replaceAll('.', '-')
+          .replaceAll(' ', '-')
+          .replaceAll(':', '-');
+      Directory dir = await _getCSVDirectory(formattedDate);
+      String stocksPath =
+          '${dir.path}Stocks_CSV_$formattedDate.csv'; //Change .json to your desired file format(like .barbackup or .hive).
+      File stocksFile = File(stocksPath);
+      await stocksFile.writeAsString(csvStr);
+    } else {
+      //permission denied
+      emit(state.copyWith(databaseStatus: 'denied'));
+    }
+  }
+
+  Future<Directory> _getCSVDirectory(String? formattedDate) async {
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    //String appDocPath = appDocDir.path;
+
+    String pathExt =
+        'KeepCSV/$formattedDate/'; //This is the name of the folder where the backup is stored
     //Directory newDirectory = Directory('$appDocPath' + pathExt);
     Directory newDirectory = Directory('/storage/emulated/0/' + pathExt);
     if (await newDirectory.exists() == false) {

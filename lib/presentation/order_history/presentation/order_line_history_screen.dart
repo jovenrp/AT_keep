@@ -166,6 +166,7 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                             itemCount: state.orderLineList?.length,
                             itemBuilder: (BuildContext context, index) {
                               bool checkboxValue = state.orderLineList?[index].isChecked ?? false;
+                              print('${state.orderLineList?[index].quantity} ${state.orderLineList?[index].ordered}');
                               return Slidable(
                                 closeOnScroll: true,
                                 startActionPane: ActionPane(
@@ -395,12 +396,12 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                           padding: const EdgeInsets.only(left: 0, right: 16, top: 0, bottom: 0),
                                           width: double.infinity,
                                           color: !isOrderReceived
-                                              ? double.parse(state.orderLineList?[index].stockModel?.onHand.toString() ?? '0') > 0 &&
-                                                      double.parse(state.orderLineList?[index].stockModel?.onHand.toString() ?? '0') <
-                                                          double.parse(state.orderLineList?[index].originalQuantity.toString() ?? '0')
+                                              ? double.parse(state.orderLineList?[index].quantity.toString() ?? '0') > 0 &&
+                                                      double.parse(state.orderLineList?[index].quantity.toString() ?? '0') <
+                                                          double.parse(state.orderLineList?[index].ordered.toString() ?? '0')
                                                   ? AppColors.warningOrange
-                                                  : double.parse(state.orderLineList?[index].stockModel?.onOrder.toString() ?? '0') <=
-                                                          double.parse(state.orderLineList?[index].stockModel?.order.toString() ?? '0')
+                                                  : double.parse(state.orderLineList?[index].ordered.toString() ?? '0') <=
+                                                          double.parse(state.orderLineList?[index].quantity.toString() ?? '0')
                                                       ? AppColors.successGreen
                                                       : AppColors.criticalRed
                                               : AppColors.successGreen,

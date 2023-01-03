@@ -124,27 +124,26 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
     emit(state.copyWith(isLoading: true));
 
     double onOrderVal = onOrder ?? 0;
-    double onHand = stock.onHand ?? 0;
+    double originalOnHand = stock.originalOnHand ?? 0;
     double quantity = orderLine.quantity ?? 0;
 
     if (isFlipped == 'pending') {
       orderLine.setStatus('pending');
-      stock.setonHand(0);
+      stock.setonHand(originalOnHand);
       //stock.setOnOrder(orderLine.originalQuantity ?? 0);
       stock.setorder(0);
       orderLine.setQuantity(0);
     } else if (isFlipped == 'received') {
       orderLine.setStatus('received');
-      stock.setonHand(orderLine.originalQuantity ?? 0);
+      stock.setonHand((orderLine.originalQuantity ?? 0) + originalOnHand);
       stock.setorder(orderLine.originalQuantity ?? 0);
       orderLine.setQuantity(orderLine.originalQuantity ?? 0);
     } else {
-      double onHandValue = onHand + onOrderVal;
       double onOrderValue = onOrderVal;
       //stock.setonHand(onHandValue);
       //stock.setOnOrder(onOrderValue);
       orderLine.setQuantity(onOrderValue);
-      stock.setonHand(onOrderValue);
+      stock.setonHand(onOrderValue + originalOnHand);
       stock.setorder(onOrderValue);
       orderLine.setIsChecked(onOrderValue > 0 ? true : false);
       orderLine.setStatus(
@@ -161,10 +160,12 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
     emit(state.copyWith(isLoading: false));
   }
 
-  Future<void> updateCheckbox(OrderLineModel? orderLineModel, bool? value) async {
+  Future<void> updateCheckbox(
+      OrderLineModel? orderLineModel, bool? value) async {
     orderLineModel?.setIsChecked(value ?? false);
     Box stockBox = await orderLineRepository.openBox();
-    orderLineRepository.addOrderLine(stockBox, orderLineModel ?? OrderLineModel());
+    orderLineRepository.addOrderLine(
+        stockBox, orderLineModel ?? OrderLineModel());
   }
 
   Future<void> updateOrderStatus(OrderModel order) async {

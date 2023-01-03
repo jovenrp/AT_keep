@@ -9,6 +9,7 @@ class LandingDrawer extends StatelessWidget {
   const LandingDrawer({Key? key, required this.landingBloc}) : super(key: key);
 
   final LandingScreenBloc landingBloc;
+
   @override
   Widget build(BuildContext context) => Drawer(
         child: SingleChildScrollView(
@@ -84,6 +85,16 @@ class LandingDrawer extends StatelessWidget {
               landingBloc.restoreDatabase();
             },
           ),
+          /*ListTile(
+            leading: const Icon(Icons.storage_outlined),
+            title: const ATText(
+              text: 'Export Stocks',
+            ),
+            onTap: () {
+              Navigator.of(context).pop();
+              landingBloc.createStockCSV();
+            },
+          ),*/
         ],
       );
 }
