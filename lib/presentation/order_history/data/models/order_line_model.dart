@@ -5,18 +5,19 @@ part 'order_line_model.g.dart';
 
 @HiveType(typeId: 3)
 class OrderLineModel {
-  OrderLineModel({
-    this.id,
-    this.orderId,
-    this.stockId,
-    this.lineNum,
-    this.quantity = 0,
-    this.originalQuantity = 0,
-    this.createdDate,
-    this.modifiedDate,
-    this.stockModel,
-    this.status,
-  });
+  OrderLineModel(
+      {this.id,
+      this.orderId,
+      this.stockId,
+      this.lineNum,
+      this.quantity = 0,
+      this.originalQuantity = 0,
+      this.createdDate,
+      this.modifiedDate,
+      this.stockModel,
+      this.status,
+      this.ordered = 0,
+      this.isChecked = false});
 
   @HiveField(0)
   String? id;
@@ -47,6 +48,12 @@ class OrderLineModel {
   @HiveField(8)
   String? status;
 
+  @HiveField(9)
+  double? ordered;
+
+  @HiveField(10)
+  bool? isChecked;
+
   Map<String, dynamic> toJson() => {
         'id': id.toString(),
         'orderId': orderId.toString(),
@@ -57,6 +64,8 @@ class OrderLineModel {
         'modifiedDate': modifiedDate.toString(),
         'originalQuantity': originalQuantity.toString(),
         'status': status.toString(),
+        'ordered': ordered.toString(),
+        'isChecked': isChecked.toString(),
       };
 
   OrderLineModel.fromJson(Map<String, dynamic> json) {
@@ -69,6 +78,8 @@ class OrderLineModel {
     modifiedDate = json['modifiedDate'];
     originalQuantity = double.parse(json['originalQuantity']);
     status = json['status'];
+    ordered = double.parse(json['ordered']);
+    isChecked = parseBool(json['isChecked'] ?? 'false');
   }
 
   void setModifiedDate(String modifiedDate) {
@@ -83,11 +94,29 @@ class OrderLineModel {
     this.quantity = quantity;
   }
 
+  void setOrdered(double ordered) {
+    this.ordered = ordered;
+  }
+
   void setOriginalQuantity(double quantity) {
     originalQuantity = quantity;
   }
 
   void setStatus(String status) {
     this.status = status;
+  }
+
+  void setIsChecked(bool isChecked) {
+    this.isChecked = isChecked;
+  }
+
+  bool parseBool(String value) {
+    if (value.toLowerCase() == 'true') {
+      return true;
+    } else if (value.toLowerCase() == 'false') {
+      return false;
+    }
+
+    throw '"$this" can not be parsed to boolean.';
   }
 }

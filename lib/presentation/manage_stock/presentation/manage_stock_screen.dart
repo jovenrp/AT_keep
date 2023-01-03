@@ -343,6 +343,8 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                 state.stocksList?[index].onHand ?? 0;
                             double onOrder =
                                 state.stocksList?[index].onOrder ?? 0;
+                            double order = state.stocksList?[index].order ?? 0;
+                            print('$onOrder $order');
                             return Visibility(
                               visible: state.stocksList?[index].isActive
                                       ?.toLowerCase() ==
@@ -750,7 +752,7 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                                                             'Adjust quantity cannot be empty on In.'));
                                                           }
                                                         },
-                                                        text: 'In',
+                                                        text: 'IN',
                                                       ),
                                                     ),
                                                   ),
@@ -808,7 +810,7 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                                                             'Adjust quantity cannot be empty on Out.'));
                                                           }
                                                         },
-                                                        text: 'Out',
+                                                        text: 'OUT',
                                                       ),
                                                     ),
                                                   ),
@@ -966,7 +968,8 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                                             .tertiary)),
                                               ),
                                               Visibility(
-                                                visible: onOrder > 0,
+                                                visible: onOrder > 0 &&
+                                                    order != onOrder,
                                                 child: Container(
                                                   padding:
                                                       const EdgeInsets.only(
@@ -977,7 +980,7 @@ class _ManageStockScreen extends State<ManageStockScreen>
                                                       Alignment.centerLeft,
                                                   child: ATText(
                                                       text:
-                                                          'pending: ${onOrder.toString().removeDecimalZeroFormat(onOrder)}',
+                                                          'pending: ${(onOrder - order).toString().removeDecimalZeroFormat(onOrder - order)}',
                                                       style: const TextStyle(
                                                           fontSize: 16,
                                                           color: AppColors

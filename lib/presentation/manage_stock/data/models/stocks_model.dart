@@ -29,6 +29,7 @@ class StockModel {
     this.quantity = 0,
     this.isOrdered = false,
     this.onOrder = 0,
+    this.isChecked = false,
     this.isOrderReceive = false,
   });
 
@@ -107,6 +108,9 @@ class StockModel {
   @HiveField(24)
   bool? isOrderReceive;
 
+  @HiveField(25)
+  bool? isChecked;
+
   void setName(String name) {
     this.name = name;
   }
@@ -159,6 +163,10 @@ class StockModel {
     isOrderReceive = isReceive;
   }
 
+  void setIsChecked(bool isChecked) {
+    this.isChecked = isChecked;
+  }
+
   Map<String, dynamic> toJson() => {
         'id': id.toString(),
         'name': name.toString(),
@@ -185,6 +193,7 @@ class StockModel {
         'isOrdered': isOrdered.toString(),
         'onOrder': onOrder.toString(),
         'isOrderReceive': isOrderReceive.toString(),
+        'isChecked': isChecked.toString(),
       };
 
   StockModel.fromJson(Map<String, dynamic> json) {
@@ -213,6 +222,7 @@ class StockModel {
     isOrdered = parseBool(json['isOrdered'] ?? 'false');
     onOrder = double.parse(json['onOrder'] ?? '0');
     isOrderReceive = parseBool(json['isOrderReceive'] ?? '0');
+    isChecked = parseBool(json['isChecked'] ?? 'false');
   }
 
   bool parseBool(String value) {

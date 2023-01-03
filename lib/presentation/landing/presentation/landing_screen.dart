@@ -250,7 +250,7 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
                                 SizedBox(
                                   width: MediaQuery.of(context).size.width * .2,
                                   child: QrImage(
-                                    data: 'http://actiontrakcom/keep',
+                                    data: 'http://actiontrak.com/keep',
                                     version: QrVersions.auto,
                                   ),
                                 ),

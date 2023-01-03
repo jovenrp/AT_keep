@@ -41,6 +41,7 @@ class StockModelAdapter extends TypeAdapter<StockModel> {
       quantity: fields[21] as double?,
       isOrdered: fields[22] as bool?,
       onOrder: fields[23] as double?,
+      isChecked: fields[25] as bool?,
       isOrderReceive: fields[24] as bool?,
     );
   }
@@ -48,7 +49,7 @@ class StockModelAdapter extends TypeAdapter<StockModel> {
   @override
   void write(BinaryWriter writer, StockModel obj) {
     writer
-      ..writeByte(25)
+      ..writeByte(26)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -98,7 +99,9 @@ class StockModelAdapter extends TypeAdapter<StockModel> {
       ..writeByte(23)
       ..write(obj.onOrder)
       ..writeByte(24)
-      ..write(obj.isOrderReceive);
+      ..write(obj.isOrderReceive)
+      ..writeByte(25)
+      ..write(obj.isChecked);
   }
 
   @override

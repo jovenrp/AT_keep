@@ -130,21 +130,25 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
     if (isFlipped == 'pending') {
       orderLine.setStatus('pending');
       stock.setonHand(0);
-      stock.setOnOrder(orderLine.originalQuantity ?? 0);
-      orderLine.setQuantity(orderLine.originalQuantity ?? 0);
+      //stock.setOnOrder(orderLine.originalQuantity ?? 0);
+      stock.setorder(0);
+      orderLine.setQuantity(0);
     } else if (isFlipped == 'received') {
       orderLine.setStatus('received');
       stock.setonHand(orderLine.originalQuantity ?? 0);
-      stock.setOnOrder(0);
-      orderLine.setQuantity(0);
+      stock.setorder(orderLine.originalQuantity ?? 0);
+      orderLine.setQuantity(orderLine.originalQuantity ?? 0);
     } else {
       double onHandValue = onHand + onOrderVal;
-      double onOrderValue = quantity - onOrderVal;
-      stock.setonHand(onHandValue);
-      stock.setOnOrder(onOrderValue);
-      orderLine.setQuantity(onOrderValue < 0 ? 0 : onOrderValue);
+      double onOrderValue = onOrderVal;
+      //stock.setonHand(onHandValue);
+      //stock.setOnOrder(onOrderValue);
+      orderLine.setQuantity(onOrderValue);
+      stock.setonHand(onOrderValue);
+      stock.setorder(onOrderValue);
+      orderLine.setIsChecked(onOrderValue > 0 ? true : false);
       orderLine.setStatus(
-          onHandValue == orderLine.originalQuantity ? 'received' : 'partial');
+          onOrderValue == orderLine.originalQuantity ? 'received' : 'partial');
     }
 
     Box stockBox = await stockOrderRepository.openBox();
@@ -157,6 +161,12 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
     emit(state.copyWith(isLoading: false));
   }
 
+  Future<void> updateCheckbox(OrderLineModel? orderLineModel, bool? value) async {
+    orderLineModel?.setIsChecked(value ?? false);
+    Box stockBox = await orderLineRepository.openBox();
+    orderLineRepository.addOrderLine(stockBox, orderLineModel ?? OrderLineModel());
+  }
+
   Future<void> updateOrderStatus(OrderModel order) async {
     int itemReceivedCounter = 0;
     for (OrderLineModel item in state.orderLineList ?? <OrderLineModel>[]) {
@@ -166,6 +176,7 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
         itemReceivedCounter++;
       }
     }
+
     if (itemReceivedCounter == state.orderLineList?.length) {
       order.setStatus('Received');
     } else {

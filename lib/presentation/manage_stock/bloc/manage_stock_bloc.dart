@@ -207,6 +207,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     for (StockModel item in stockList) {
       if (item.isOrdered == false) {
         item.setIsOrdered(true);
+        item.setorder(0);
         item.setOnOrder(double.parse(getQuantity(item)));
         stockOrderRepository.updateStock(stockBox, item);
 
@@ -217,8 +218,9 @@ class ManageStockBloc extends Cubit<ManageStockState> {
           lineNum: ordLineBox.isEmpty
               ? '000001'
               : (ordLineBox.length + 1).toString().padLeft(6, '0'),
-          quantity: double.parse(getQuantity(item)),
+          quantity: 0,
           originalQuantity: double.parse(getQuantity(item)),
+          ordered: double.parse(getQuantity(item)),
           createdDate: DateTime.now().toIso8601String(),
         );
         await orderLineRepository.addOrderLine(ordLineBox, orderLineModel);

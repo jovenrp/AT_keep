@@ -26,13 +26,15 @@ class OrderLineModelAdapter extends TypeAdapter<OrderLineModel> {
       createdDate: fields[5] as String?,
       modifiedDate: fields[6] as String?,
       status: fields[8] as String?,
+      ordered: fields[9] as double?,
+      isChecked: fields[10] as bool?,
     );
   }
 
   @override
   void write(BinaryWriter writer, OrderLineModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -50,7 +52,11 @@ class OrderLineModelAdapter extends TypeAdapter<OrderLineModel> {
       ..writeByte(7)
       ..write(obj.originalQuantity)
       ..writeByte(8)
-      ..write(obj.status);
+      ..write(obj.status)
+      ..writeByte(9)
+      ..write(obj.ordered)
+      ..writeByte(10)
+      ..write(obj.isChecked);
   }
 
   @override
