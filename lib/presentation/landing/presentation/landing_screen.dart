@@ -121,6 +121,24 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
             duration: Duration(seconds: 3),
           ),
         );
+      } else if (state.databaseStatus == 'success csv') {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text('CSV import is a success'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      } else if (state.databaseStatus == 'error csv') {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text('CSV import has failed'),
+            duration: Duration(seconds: 3),
+          ),
+        );
       }
     }, builder: (BuildContext context, LandingScreenState state) {
       return SafeArea(

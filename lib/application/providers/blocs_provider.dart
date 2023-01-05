@@ -43,6 +43,7 @@ class BlocsProvider {
         BlocProvider<LandingScreenBloc>(
           create: (_) => LandingScreenBloc(
               landingRepository: LandingRepositoryImpl(),
+              stockOrderRepository: StockOrderRepositoryImpl(),
               persistenceService: persistenceService),
         ),
         BlocProvider<ManageStockBloc>(

@@ -4,6 +4,7 @@ import 'package:keep/presentation/landing/bloc/landing_screen_bloc.dart';
 import 'package:keep/presentation/profile/presentation/profile_screen.dart';
 
 import '../../../core/domain/utils/constants/app_colors.dart';
+import '../../../core/presentation/widgets/keep_elevated_button.dart';
 
 class LandingDrawer extends StatelessWidget {
   const LandingDrawer({Key? key, required this.landingBloc}) : super(key: key);
@@ -54,16 +55,14 @@ class LandingDrawer extends StatelessWidget {
             title: const ATText(
               text: 'Profile',
             ),
-            onTap: () => Navigator.of(context)
-                .push(ProfileScreen.route(type: 'profile')),
+            onTap: () => Navigator.of(context).push(ProfileScreen.route(type: 'profile')),
           ),
           ListTile(
             leading: const Icon(Icons.receipt),
             title: const ATText(
               text: 'Vendor',
             ),
-            onTap: () =>
-                Navigator.of(context).push(ProfileScreen.route(type: 'vendor')),
+            onTap: () => Navigator.of(context).push(ProfileScreen.route(type: 'vendor')),
           ),
           ListTile(
             leading: const Icon(Icons.storage_outlined),
@@ -85,16 +84,85 @@ class LandingDrawer extends StatelessWidget {
               landingBloc.restoreDatabase();
             },
           ),
-          /*ListTile(
+          ListTile(
             leading: const Icon(Icons.storage_outlined),
             title: const ATText(
-              text: 'Export Stocks',
+              text: 'Export Stock',
             ),
             onTap: () {
               Navigator.of(context).pop();
               landingBloc.createStockCSV();
             },
-          ),*/
+          ),
+          ListTile(
+            leading: const Icon(Icons.storage_outlined),
+            title: const ATText(
+              text: 'Import Stock',
+            ),
+            onTap: () {
+              //Navigator.of(context).pop();
+              //landingBloc.importCSV();
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => Dialog(
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * .35,
+                    padding: const EdgeInsets.only(
+                        left: 18, right: 18, top: 20, bottom: 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        const ATText(
+                          text:
+                          'Import CSV',
+                          fontColor: AppColors.tertiary,
+                          weight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        const ATText(
+                          text:
+                          'Do you want to overwrite exisiting stock or append the new stock?',
+                          fontColor: AppColors.tertiary,
+                          fontSize: 16,
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: KeepElevatedButton(
+                            isEnabled: true,
+                            onPressed: () => landingBloc
+                                .importCSV('append')
+                                .then((_) => Navigator.of(context).pop()),
+                            text: 'Append',
+                            color: AppColors.successGreen,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: KeepElevatedButton(
+                            isEnabled: true,
+                            onPressed: () => landingBloc
+                                .importCSV('overwrite')
+                                .then((_) => Navigator.of(context).pop()),
+                            text: 'Overwrite',
+                            color: AppColors.atWarningRed,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       );
 }

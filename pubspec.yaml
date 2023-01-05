@@ -74,8 +74,8 @@ dependencies:
   filesystem_picker: ^3.0.0
   json_annotation: ^4.6.0
   share_plus: any
-  flip_card: ^0.6.0
   address_search_field: ^5.0.3
+  csv: ^5.0.1
 
   ## Testing and Development
   alice_lightweight: ^3.0.0

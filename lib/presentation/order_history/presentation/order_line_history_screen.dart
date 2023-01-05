@@ -1,5 +1,4 @@
 import 'package:easy_debounce/easy_debounce.dart';
-import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -42,7 +41,6 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
   TextEditingController orderController = TextEditingController();
   FocusNode orderNode = FocusNode();
 
-  final List<FlipCardController> _controller = <FlipCardController>[];
   bool isCheckedAll = false;
   bool isOrderReceived = false;
 
@@ -65,9 +63,6 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<OrderHistoryBloc, OrderHistoryState>(listener: (BuildContext context, OrderHistoryState state) {
-      for (OrderLineModel item in state.orderLineList ?? <OrderLineModel>[]) {
-        _controller.add(FlipCardController());
-      }
       if (!state.isLoading) {
         showAllChecker(state);
       }
