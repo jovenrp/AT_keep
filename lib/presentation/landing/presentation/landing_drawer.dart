@@ -55,14 +55,16 @@ class LandingDrawer extends StatelessWidget {
             title: const ATText(
               text: 'Profile',
             ),
-            onTap: () => Navigator.of(context).push(ProfileScreen.route(type: 'profile')),
+            onTap: () => Navigator.of(context)
+                .push(ProfileScreen.route(type: 'profile')),
           ),
           ListTile(
             leading: const Icon(Icons.receipt),
             title: const ATText(
               text: 'Vendor',
             ),
-            onTap: () => Navigator.of(context).push(ProfileScreen.route(type: 'vendor')),
+            onTap: () =>
+                Navigator.of(context).push(ProfileScreen.route(type: 'vendor')),
           ),
           ListTile(
             leading: const Icon(Icons.storage_outlined),
@@ -113,8 +115,7 @@ class LandingDrawer extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         const ATText(
-                          text:
-                          'Import CSV',
+                          text: 'Import CSV',
                           fontColor: AppColors.tertiary,
                           weight: FontWeight.bold,
                           fontSize: 20,
@@ -124,7 +125,7 @@ class LandingDrawer extends StatelessWidget {
                         ),
                         const ATText(
                           text:
-                          'Do you want to overwrite exisiting stock or append the new stock?',
+                              'Do you want to overwrite exisiting stock or append the new stock?',
                           fontColor: AppColors.tertiary,
                           fontSize: 16,
                         ),

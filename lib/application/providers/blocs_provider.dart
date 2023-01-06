@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:keep/presentation/landing/bloc/landing_screen_bloc.dart';
 import 'package:keep/presentation/landing/domain/repositories/landing_repository_impl.dart';
+import 'package:keep/presentation/manage_stock/data/services/manage_stock_api_service.dart';
 import 'package:keep/presentation/order_history/domain/repositories/order_repository_impl.dart';
 import 'package:keep/presentation/order_history/bloc/order_history_bloc.dart';
 import 'package:keep/presentation/profile/domain/repositories/profile_repository_impl.dart';
@@ -43,12 +44,16 @@ class BlocsProvider {
         BlocProvider<LandingScreenBloc>(
           create: (_) => LandingScreenBloc(
               landingRepository: LandingRepositoryImpl(),
-              stockOrderRepository: StockOrderRepositoryImpl(),
+              stockOrderRepository: StockOrderRepositoryImpl(
+                ManageStockApi(dio, baseUrl: apiUrl),
+              ),
               persistenceService: persistenceService),
         ),
         BlocProvider<ManageStockBloc>(
           create: (_) => ManageStockBloc(
-              stockOrderRepository: StockOrderRepositoryImpl(),
+              stockOrderRepository: StockOrderRepositoryImpl(
+                ManageStockApi(dio, baseUrl: apiUrl),
+              ),
               orderRepository: OrderRepositoryImpl(),
               orderLineRepository: OrderLineRepositoryImpl(),
               profileRepository: ProfileRepositoryImpl(),
@@ -56,7 +61,9 @@ class BlocsProvider {
         ),
         BlocProvider<OrderHistoryBloc>(
           create: (_) => OrderHistoryBloc(
-            stockOrderRepository: StockOrderRepositoryImpl(),
+            stockOrderRepository: StockOrderRepositoryImpl(
+              ManageStockApi(dio, baseUrl: apiUrl),
+            ),
             orderRepository: OrderRepositoryImpl(),
             orderLineRepository: OrderLineRepositoryImpl(),
           ),

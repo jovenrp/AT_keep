@@ -152,6 +152,7 @@ class _QRScreen extends State<QRScreen> {
         if (!isScanned && result != null) {
           isScanned = true;
           Future<void>.delayed(Duration.zero, () {
+            context.read<ManageStockBloc>().getUPC(result?.code);
             Navigator.pop(context, result?.code);
           });
         }

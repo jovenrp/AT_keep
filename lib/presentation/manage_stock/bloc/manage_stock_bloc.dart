@@ -605,4 +605,10 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     int uniqueId = value.nextInt(900000) + 100000;
     return uniqueId.toString().padLeft(6, '0');
   }
+
+  Future<void> getUPC(String? code) async {
+    emit(state.copyWith(isLoading: true));
+
+    final String result = await stockOrderRepository.getUpc(code);
+  }
 }

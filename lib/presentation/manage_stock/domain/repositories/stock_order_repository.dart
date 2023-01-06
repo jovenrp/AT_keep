@@ -10,4 +10,5 @@ abstract class StockOrderRepository {
   Future<void> clearStock(Box box);
   Future<void> backupDatabase(Box box, String? path);
   Future<void> restoreDatabase(Box box, String? path);
+  Future<String> getUpc(String? barcode);
 }

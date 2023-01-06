@@ -28,38 +28,50 @@ class LandingScreenBloc extends Cubit<LandingScreenState> {
   Future<void> backupStocks() async {
     emit(state.copyWith(databaseStatus: 'saving stock'));
     Box stocksBox = await landingRepository.openStocksBox();
-    Map<String, dynamic> stocksMap = await landingRepository.backupStocks(stocksBox);
+    Map<String, dynamic> stocksMap =
+        await landingRepository.backupStocks(stocksBox);
     String stocksJson = jsonEncode(stocksMap);
 
     Box profileBox = await landingRepository.openProfileBox();
-    Map<String, dynamic> profilesMap = await landingRepository.backupProfile(profileBox);
+    Map<String, dynamic> profilesMap =
+        await landingRepository.backupProfile(profileBox);
     String profilesJson = jsonEncode(profilesMap);
 
     Box orderBox = await landingRepository.openOrderBox();
-    Map<String, dynamic> orderMap = await landingRepository.backupOrder(orderBox);
+    Map<String, dynamic> orderMap =
+        await landingRepository.backupOrder(orderBox);
     String orderJson = jsonEncode(orderMap);
 
     Box orderLineBox = await landingRepository.openOrderLineBox();
-    Map<String, dynamic> orderLineMap = await landingRepository.backupOrderLine(orderLineBox);
+    Map<String, dynamic> orderLineMap =
+        await landingRepository.backupOrderLine(orderLineBox);
     String orderLineJson = jsonEncode(orderLineMap);
     PermissionStatus permissionStatus = await Permission.storage.request();
     if (permissionStatus.isGranted) {
-      String formattedDate =
-          DateFormat('MM-dd-yyyy HH:mm').format(DateTime.now()).toString().replaceAll('.', '-').replaceAll(' ', '-').replaceAll(':', '-');
+      String formattedDate = DateFormat('MM-dd-yyyy HH:mm')
+          .format(DateTime.now())
+          .toString()
+          .replaceAll('.', '-')
+          .replaceAll(' ', '-')
+          .replaceAll(':', '-');
       Directory dir = await _getBackupDirectory(formattedDate);
-      String stocksPath = '${dir.path}Stocks_$formattedDate.json'; //Change .json to your desired file format(like .barbackup or .hive).
+      String stocksPath =
+          '${dir.path}Stocks_$formattedDate.json'; //Change .json to your desired file format(like .barbackup or .hive).
       File stocksFile = File(stocksPath);
       await stocksFile.writeAsString(stocksJson);
 
-      String profilePath = '${dir.path}Profile_$formattedDate.json'; //Change .json to your desired file format(like .barbackup or .hive).
+      String profilePath =
+          '${dir.path}Profile_$formattedDate.json'; //Change .json to your desired file format(like .barbackup or .hive).
       File profileFile = File(profilePath);
       await profileFile.writeAsString(profilesJson);
 
-      String orderPath = '${dir.path}Order_$formattedDate.json'; //Change .json to your desired file format(like .barbackup or .hive).
+      String orderPath =
+          '${dir.path}Order_$formattedDate.json'; //Change .json to your desired file format(like .barbackup or .hive).
       File orderFile = File(orderPath);
       await orderFile.writeAsString(orderJson);
 
-      String orderLinePath = '${dir.path}OrderLine_$formattedDate.json'; //Change .json to your desired file format(like .barbackup or .hive).
+      String orderLinePath =
+          '${dir.path}OrderLine_$formattedDate.json'; //Change .json to your desired file format(like .barbackup or .hive).
       File orderLineFile = File(orderLinePath);
       await orderLineFile.writeAsString(orderLineJson);
 
@@ -85,7 +97,8 @@ class LandingScreenBloc extends Cubit<LandingScreenState> {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     //String appDocPath = appDocDir.path;
 
-    String pathExt = 'KeepBackup/$formattedDate/'; //This is the name of the folder where the backup is stored
+    String pathExt =
+        'KeepBackup/$formattedDate/'; //This is the name of the folder where the backup is stored
     //Directory newDirectory = Directory('$appDocPath' + pathExt);
     Directory newDirectory = Directory('/storage/emulated/0/' + pathExt);
     if (await newDirectory.exists() == false) {
@@ -98,7 +111,8 @@ class LandingScreenBloc extends Cubit<LandingScreenState> {
     emit(state.copyWith(databaseStatus: ''));
 
     Box stocksBox = await stockOrderRepository.openBox();
-    List<StockModel> stocks = await stockOrderRepository.getStockList(stocksBox);
+    List<StockModel> stocks =
+        await stockOrderRepository.getStockList(stocksBox);
     List<List<String>> data = <List<String>>[];
     List<String> value = <String>[
       'ID',
@@ -130,10 +144,15 @@ class LandingScreenBloc extends Cubit<LandingScreenState> {
 
     PermissionStatus permissionStatus = await Permission.storage.request();
     if (permissionStatus.isGranted) {
-      String formattedDate =
-          DateFormat('MM-dd-yyyy HH:mm').format(DateTime.now()).toString().replaceAll('.', '-').replaceAll(' ', '-').replaceAll(':', '-');
+      String formattedDate = DateFormat('MM-dd-yyyy HH:mm')
+          .format(DateTime.now())
+          .toString()
+          .replaceAll('.', '-')
+          .replaceAll(' ', '-')
+          .replaceAll(':', '-');
       Directory dir = await _getCSVDirectory(formattedDate);
-      String stocksPath = '${dir.path}Stocks_CSV_$formattedDate.csv'; //Change .json to your desired file format(like .barbackup or .hive).
+      String stocksPath =
+          '${dir.path}Stocks_CSV_$formattedDate.csv'; //Change .json to your desired file format(like .barbackup or .hive).
       File stocksFile = File(stocksPath);
       await stocksFile.writeAsString(csvData);
     } else {
@@ -146,7 +165,8 @@ class LandingScreenBloc extends Cubit<LandingScreenState> {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     //String appDocPath = appDocDir.path;
 
-    String pathExt = 'KeepCSV/$formattedDate/'; //This is the name of the folder where the backup is stored
+    String pathExt =
+        'KeepCSV/$formattedDate/'; //This is the name of the folder where the backup is stored
     //Directory newDirectory = Directory('$appDocPath' + pathExt);
     Directory newDirectory = Directory('/storage/emulated/0/' + pathExt);
     if (await newDirectory.exists() == false) {

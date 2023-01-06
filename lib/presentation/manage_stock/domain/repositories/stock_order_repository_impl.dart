@@ -2,11 +2,14 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 
 import 'package:keep/presentation/manage_stock/data/models/stocks_model.dart';
+import 'package:keep/presentation/manage_stock/data/services/manage_stock_api_service.dart';
 
 import 'stock_order_repository.dart';
 
 class StockOrderRepositoryImpl implements StockOrderRepository {
-  StockOrderRepositoryImpl();
+  StockOrderRepositoryImpl(this._apiService);
+
+  final ManageStockApi _apiService;
 
   String boxName = 'stocks_box';
 
@@ -68,5 +71,18 @@ class StockOrderRepositoryImpl implements StockOrderRepository {
       await Hive.openBox(boxName);
     }*/
     //await box.clear();
+  }
+
+  @override
+  Future<String> getUpc(String? barcode) async {
+    try {
+      dynamic token = await _apiService.getUpc(barcode ?? '');
+
+      print(token);
+      return '';
+    } catch (e) {
+      print('UPC Error ${e.toString()}');
+      return '';
+    }
   }
 }
