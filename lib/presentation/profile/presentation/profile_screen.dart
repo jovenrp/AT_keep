@@ -40,6 +40,9 @@ class _ProfileScreen extends State<ProfileScreen> {
   TextEditingController lastnameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController stateController = TextEditingController();
+  TextEditingController zipCodeController = TextEditingController();
   TextEditingController prefixController = TextEditingController();
   TextEditingController companyController = TextEditingController();
   FocusNode emailNode = FocusNode();
@@ -47,6 +50,9 @@ class _ProfileScreen extends State<ProfileScreen> {
   FocusNode lastnameNode = FocusNode();
   FocusNode phoneNode = FocusNode();
   FocusNode addressNode = FocusNode();
+  FocusNode cityNode = FocusNode();
+  FocusNode stateNode = FocusNode();
+  FocusNode zipCodeNode = FocusNode();
   FocusNode prefixNode = FocusNode();
   FocusNode companyNode = FocusNode();
   String emailOriginal = '';
@@ -54,6 +60,9 @@ class _ProfileScreen extends State<ProfileScreen> {
   String lastnameOriginal = '';
   String phoneOriginal = '';
   String addressOriginal = '';
+  String cityOriginal = '';
+  String stateOriginal = '';
+  String zipCodeOriginal = '';
   String prefixOriginal = '';
   String companyOriginal = '';
   bool isProfileUpdated = false;
@@ -73,6 +82,12 @@ class _ProfileScreen extends State<ProfileScreen> {
             context.read<ProfileBloc>().state.profileModel?.phoneNumber ?? '';
         addressController.text =
             context.read<ProfileBloc>().state.profileModel?.address ?? '';
+        cityController.text =
+            context.read<ProfileBloc>().state.profileModel?.city ?? '';
+        stateController.text =
+            context.read<ProfileBloc>().state.profileModel?.state ?? '';
+        zipCodeController.text =
+            context.read<ProfileBloc>().state.profileModel?.zipCode ?? '';
         prefixController.text =
             context.read<ProfileBloc>().state.profileModel?.orderCode ?? '';
         companyController.text =
@@ -163,6 +178,60 @@ class _ProfileScreen extends State<ProfileScreen> {
             //addressController.text = addressOriginal;
           } else {
             if (addressOriginal != addressController.text) {
+              isProfileUpdated = true;
+            }
+          }
+        }
+      });
+    });
+
+    cityNode.addListener(() {
+      setState(() {
+        if (cityNode.hasFocus) {
+          cityOriginal = cityController.text;
+          cityController.selection = TextSelection(
+              baseOffset: 0, extentOffset: cityController.text.length);
+        } else {
+          if (cityController.text.isEmpty) {
+            //addressController.text = addressOriginal;
+          } else {
+            if (cityOriginal != cityController.text) {
+              isProfileUpdated = true;
+            }
+          }
+        }
+      });
+    });
+
+    stateNode.addListener(() {
+      setState(() {
+        if (stateNode.hasFocus) {
+          stateOriginal = stateController.text;
+          stateController.selection = TextSelection(
+              baseOffset: 0, extentOffset: stateController.text.length);
+        } else {
+          if (stateController.text.isEmpty) {
+            //addressController.text = addressOriginal;
+          } else {
+            if (stateOriginal != stateController.text) {
+              isProfileUpdated = true;
+            }
+          }
+        }
+      });
+    });
+
+    zipCodeNode.addListener(() {
+      setState(() {
+        if (zipCodeNode.hasFocus) {
+          zipCodeOriginal = zipCodeController.text;
+          zipCodeController.selection = TextSelection(
+              baseOffset: 0, extentOffset: zipCodeController.text.length);
+        } else {
+          if (zipCodeController.text.isEmpty) {
+            //addressController.text = addressOriginal;
+          } else {
+            if (zipCodeOriginal != zipCodeController.text) {
               isProfileUpdated = true;
             }
           }
@@ -266,6 +335,9 @@ class _ProfileScreen extends State<ProfileScreen> {
                               lastname: lastnameController.text,
                               phone: phoneController.text,
                               address: addressController.text,
+                              city: cityController.text,
+                              states: stateController.text,
+                              zipCode: zipCodeController.text,
                               type: widget.type,
                               orderCode: prefixController.text,
                               company: companyController.text,
@@ -368,6 +440,36 @@ class _ProfileScreen extends State<ProfileScreen> {
                         hintText: 'Address',
                         focusNode: addressNode,
                         textEditingController: addressController,
+                        textAlign: TextAlign.start,
+                        isSuffixIcon: true,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      ATTextfield(
+                        hintText: 'City',
+                        focusNode: cityNode,
+                        textEditingController: cityController,
+                        textAlign: TextAlign.start,
+                        isSuffixIcon: true,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      ATTextfield(
+                        hintText: 'State',
+                        focusNode: stateNode,
+                        textEditingController: stateController,
+                        textAlign: TextAlign.start,
+                        isSuffixIcon: true,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      ATTextfield(
+                        hintText: 'Zip Code',
+                        focusNode: zipCodeNode,
+                        textEditingController: zipCodeController,
                         textAlign: TextAlign.start,
                         isSuffixIcon: true,
                       ),

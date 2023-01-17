@@ -11,6 +11,9 @@ class ProfileModel {
     this.email,
     this.phoneNumber,
     this.address,
+    this.city,
+    this.state,
+    this.zipCode,
     this.type,
     this.orderCode,
     this.company,
@@ -43,6 +46,15 @@ class ProfileModel {
   @HiveField(8)
   String? company;
 
+  @HiveField(9)
+  String? city;
+
+  @HiveField(10)
+  String? state;
+
+  @HiveField(11)
+  String? zipCode;
+
   Map<String, dynamic> toJson() => {
         'id': id.toString(),
         'firstname': firstname.toString(),
@@ -53,6 +65,9 @@ class ProfileModel {
         'type': type.toString(),
         'orderCode': orderCode.toString(),
         'company': company.toString(),
+        'city': city.toString(),
+        'state': state.toString(),
+        'zipCode': zipCode.toString(),
       };
 
   ProfileModel.fromJson(Map<String, dynamic> json) {
@@ -65,5 +80,8 @@ class ProfileModel {
     type = json['type'];
     orderCode = json['orderCode'];
     company = json['company'];
+    city = json['address'];
+    state = json['address'];
+    zipCode = json['address'];
   }
 }

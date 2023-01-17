@@ -227,10 +227,9 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
     String searchText = search.toLowerCase();
     List<OrderModel> values = sorted.where((OrderModel item) {
       String createdDate = DateFormat("MMM y dd HH:mm a")
-              .format(DateTime.parse(item.createdDate ?? '')
-                  .add(const Duration(hours: 8)))
-              .toLowerCase() ??
-          '';
+          .format(DateTime.parse(item.createdDate ?? '')
+              .add(const Duration(hours: 8)))
+          .toLowerCase();
       String num = item.num?.toLowerCase() ?? '';
       String name = item.name?.toLowerCase() ?? '';
       String source = item.source?.toLowerCase() ?? '';
@@ -274,11 +273,11 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
     String searchText = search.toLowerCase();
     List<OrderLineModel> values = sorted.where((OrderLineModel item) {
       String createdDate = DateFormat("MMM y dd HH:mm a")
-              .format(DateTime.parse(item.createdDate ?? '')
-                  .add(const Duration(hours: 8)))
-              .toLowerCase() ??
-          '';
-      String quantity = item.quantity.toString().toLowerCase() ?? '';
+          .format(DateTime.parse(item.createdDate ?? '')
+              .add(const Duration(hours: 8)))
+          .toLowerCase();
+      String quantity = item.quantity.toString().toLowerCase();
+      ;
       String sku = item.stockModel?.sku?.toLowerCase() ?? '';
       String name = item.stockModel?.name?.toLowerCase() ?? '';
       String onHand = item.stockModel?.onHand?.toString().toLowerCase() ?? '';

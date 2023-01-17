@@ -319,8 +319,10 @@ class ManageStockBloc extends Cubit<ManageStockState> {
 
     List<StockModel> stockList = <StockModel>[];
     for (StockModel item in stockModel ?? <StockModel>[]) {
-      if (double.parse(getQuantity(item)) > 0 && item.isOrdered == false) {
+      if (item.isOrdered != true &&
+          double.parse(getQuantity(item).toString()) > 0) {
         stockList.add(item);
+        print('${getQuantity(item)} ${item.sku}');
       }
     }
 
@@ -354,6 +356,16 @@ class ManageStockBloc extends Cubit<ManageStockState> {
                         width: 200,
                         child: pw.Text(
                           user.address.toString().capitalizeFirstofEach(),
+                          style: const pw.TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      pw.SizedBox(height: 3),
+                      pw.Container(
+                        width: 200,
+                        child: pw.Text(
+                          '${user.city.toString().capitalizeFirstofEach()}, ${user.state.toString().capitalizeFirstofEach()} ${user.zipCode.toString().capitalizeFirstofEach()}',
                           style: const pw.TextStyle(
                             fontSize: 16,
                           ),
@@ -416,6 +428,16 @@ class ManageStockBloc extends Cubit<ManageStockState> {
                       width: 200,
                       child: pw.Text(
                         vendor.address.toString().capitalizeFirstofEach(),
+                        style: const pw.TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    pw.SizedBox(height: 3),
+                    pw.Container(
+                      width: 200,
+                      child: pw.Text(
+      '${vendor.city.toString().capitalizeFirstofEach()}, ${vendor.state.toString().capitalizeFirstofEach()} ${vendor.zipCode.toString().capitalizeFirstofEach()}',
                         style: const pw.TextStyle(
                           fontSize: 16,
                         ),
@@ -534,7 +556,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
                                           const pw.EdgeInsets.only(right: 8),
                                       alignment: pw.Alignment.centerRight,
                                       child: pw.Text(
-                                        getQuantity(state.stocksList?[index]),
+                                        getQuantity(stockList[index]),
                                         style: pw.TextStyle(
                                           fontSize: 18,
                                           fontWeight: pw.FontWeight.bold,

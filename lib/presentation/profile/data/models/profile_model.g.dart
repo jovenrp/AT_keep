@@ -23,6 +23,9 @@ class ProfileModelAdapter extends TypeAdapter<ProfileModel> {
       email: fields[3] as String?,
       phoneNumber: fields[4] as String?,
       address: fields[5] as String?,
+      city: fields[9] as String?,
+      state: fields[10] as String?,
+      zipCode: fields[11] as String?,
       type: fields[6] as String?,
       orderCode: fields[7] as String?,
       company: fields[8] as String?,
@@ -32,7 +35,7 @@ class ProfileModelAdapter extends TypeAdapter<ProfileModel> {
   @override
   void write(BinaryWriter writer, ProfileModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -50,7 +53,13 @@ class ProfileModelAdapter extends TypeAdapter<ProfileModel> {
       ..writeByte(7)
       ..write(obj.orderCode)
       ..writeByte(8)
-      ..write(obj.company);
+      ..write(obj.company)
+      ..writeByte(9)
+      ..write(obj.city)
+      ..writeByte(10)
+      ..write(obj.state)
+      ..writeByte(11)
+      ..write(obj.zipCode);
   }
 
   @override
