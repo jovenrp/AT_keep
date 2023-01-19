@@ -125,7 +125,7 @@ class LandingDrawer extends StatelessWidget {
                         ),
                         const ATText(
                           text:
-                              'Do you want to overwrite exisiting stock or append the new stock?',
+                              'Do you want to Overwrite or Append new Stock data?',
                           fontColor: AppColors.tertiary,
                           fontSize: 16,
                         ),

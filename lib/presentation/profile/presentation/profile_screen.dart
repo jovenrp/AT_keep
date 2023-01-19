@@ -545,6 +545,9 @@ class _ProfileScreen extends State<ProfileScreen> {
                                     lastname: lastnameController.text,
                                     phone: phoneController.text,
                                     address: addressController.text,
+                                    city: cityController.text,
+                                    states: stateController.text,
+                                    zipCode: zipCodeController.text,
                                     type: widget.type,
                                     orderCode:
                                         prefixController.text.trim().isEmpty ==

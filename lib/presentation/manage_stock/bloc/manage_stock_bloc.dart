@@ -322,11 +322,12 @@ class ManageStockBloc extends Cubit<ManageStockState> {
       if (item.isOrdered != true &&
           double.parse(getQuantity(item).toString()) > 0) {
         stockList.add(item);
-        print('${getQuantity(item)} ${item.sku}');
       }
     }
 
-    pdf.addPage(pw.Page(build: (pw.Context context) {
+    pdf.addPage(pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
       return pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           mainAxisAlignment: pw.MainAxisAlignment.start,
@@ -347,11 +348,12 @@ class ManageStockBloc extends Cubit<ManageStockState> {
                       ),
                       pw.SizedBox(height: 3),
                       pw.Text(
-                        user.email.toString(),
+                        user.company.toString().capitalizeFirstofEach(),
                         style: const pw.TextStyle(
                           fontSize: 16,
                         ),
                       ),
+                      pw.SizedBox(height: 3),
                       pw.Container(
                         width: 200,
                         child: pw.Text(
@@ -371,16 +373,15 @@ class ManageStockBloc extends Cubit<ManageStockState> {
                           ),
                         ),
                       ),
-                      pw.SizedBox(height: 3),
                       pw.Text(
-                        user.phoneNumber.toString().capitalizeFirstofEach(),
+                        user.email.toString(),
                         style: const pw.TextStyle(
                           fontSize: 16,
                         ),
                       ),
                       pw.SizedBox(height: 3),
                       pw.Text(
-                        user.company.toString().capitalizeFirstofEach(),
+                        user.phoneNumber.toString().capitalizeFirstofEach(),
                         style: const pw.TextStyle(
                           fontSize: 16,
                         ),
@@ -418,7 +419,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
                     ),
                     pw.SizedBox(height: 3),
                     pw.Text(
-                      vendor.email.toString(),
+                      vendor.company.toString().capitalizeFirstofEach(),
                       style: const pw.TextStyle(
                         fontSize: 16,
                       ),
@@ -445,18 +446,19 @@ class ManageStockBloc extends Cubit<ManageStockState> {
                     ),
                     pw.SizedBox(height: 3),
                     pw.Text(
-                      vendor.phoneNumber.toString().capitalizeFirstofEach(),
+                      vendor.email.toString(),
                       style: const pw.TextStyle(
                         fontSize: 16,
                       ),
                     ),
                     pw.SizedBox(height: 3),
                     pw.Text(
-                      vendor.company.toString().capitalizeFirstofEach(),
+                      vendor.phoneNumber.toString().capitalizeFirstofEach(),
                       style: const pw.TextStyle(
                         fontSize: 16,
                       ),
                     ),
+
                   ],
                 ),
               ],
@@ -589,6 +591,11 @@ class ManageStockBloc extends Cubit<ManageStockState> {
                       ),
                     );
                   }),
+            ),
+            pw.Container(
+              child: pw.Center(
+                child: pw.Text('Copyright \u00a9 2023 ActionTRAK · All rights reserved', style: const pw.TextStyle(fontSize: 14))
+              )
             )
           ]); // Center
     }));
