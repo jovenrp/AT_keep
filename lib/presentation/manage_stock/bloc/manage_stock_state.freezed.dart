@@ -22,6 +22,8 @@ class _$ManageStockStateTearOff {
       bool isAdding = false,
       bool hasError = false,
       String? errorMessage,
+      bool? sortOrder,
+      String? sortType,
       List<StockModel>? stocksList,
       FormModel? formResponse,
       ProfileModel? user,
@@ -35,6 +37,8 @@ class _$ManageStockStateTearOff {
       isAdding: isAdding,
       hasError: hasError,
       errorMessage: errorMessage,
+      sortOrder: sortOrder,
+      sortType: sortType,
       stocksList: stocksList,
       formResponse: formResponse,
       user: user,
@@ -56,6 +60,8 @@ mixin _$ManageStockState {
   bool get isAdding => throw _privateConstructorUsedError;
   bool get hasError => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
+  bool? get sortOrder => throw _privateConstructorUsedError;
+  String? get sortType => throw _privateConstructorUsedError;
   List<StockModel>? get stocksList => throw _privateConstructorUsedError;
   FormModel? get formResponse => throw _privateConstructorUsedError;
   ProfileModel? get user => throw _privateConstructorUsedError;
@@ -80,6 +86,8 @@ abstract class $ManageStockStateCopyWith<$Res> {
       bool isAdding,
       bool hasError,
       String? errorMessage,
+      bool? sortOrder,
+      String? sortType,
       List<StockModel>? stocksList,
       FormModel? formResponse,
       ProfileModel? user,
@@ -105,6 +113,8 @@ class _$ManageStockStateCopyWithImpl<$Res>
     Object? isAdding = freezed,
     Object? hasError = freezed,
     Object? errorMessage = freezed,
+    Object? sortOrder = freezed,
+    Object? sortType = freezed,
     Object? stocksList = freezed,
     Object? formResponse = freezed,
     Object? user = freezed,
@@ -130,6 +140,14 @@ class _$ManageStockStateCopyWithImpl<$Res>
       errorMessage: errorMessage == freezed
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      sortOrder: sortOrder == freezed
+          ? _value.sortOrder
+          : sortOrder // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      sortType: sortType == freezed
+          ? _value.sortType
+          : sortType // ignore: cast_nullable_to_non_nullable
               as String?,
       stocksList: stocksList == freezed
           ? _value.stocksList
@@ -179,6 +197,8 @@ abstract class _$ManageStockStateCopyWith<$Res>
       bool isAdding,
       bool hasError,
       String? errorMessage,
+      bool? sortOrder,
+      String? sortType,
       List<StockModel>? stocksList,
       FormModel? formResponse,
       ProfileModel? user,
@@ -206,6 +226,8 @@ class __$ManageStockStateCopyWithImpl<$Res>
     Object? isAdding = freezed,
     Object? hasError = freezed,
     Object? errorMessage = freezed,
+    Object? sortOrder = freezed,
+    Object? sortType = freezed,
     Object? stocksList = freezed,
     Object? formResponse = freezed,
     Object? user = freezed,
@@ -231,6 +253,14 @@ class __$ManageStockStateCopyWithImpl<$Res>
       errorMessage: errorMessage == freezed
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      sortOrder: sortOrder == freezed
+          ? _value.sortOrder
+          : sortOrder // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      sortType: sortType == freezed
+          ? _value.sortType
+          : sortType // ignore: cast_nullable_to_non_nullable
               as String?,
       stocksList: stocksList == freezed
           ? _value.stocksList
@@ -276,6 +306,8 @@ class _$_ManageStockState implements _ManageStockState {
       this.isAdding = false,
       this.hasError = false,
       this.errorMessage,
+      this.sortOrder,
+      this.sortType,
       this.stocksList,
       this.formResponse,
       this.user,
@@ -297,6 +329,10 @@ class _$_ManageStockState implements _ManageStockState {
   @override
   final String? errorMessage;
   @override
+  final bool? sortOrder;
+  @override
+  final String? sortType;
+  @override
   final List<StockModel>? stocksList;
   @override
   final FormModel? formResponse;
@@ -317,7 +353,7 @@ class _$_ManageStockState implements _ManageStockState {
 
   @override
   String toString() {
-    return 'ManageStockState(isLoading: $isLoading, isAdding: $isAdding, hasError: $hasError, errorMessage: $errorMessage, stocksList: $stocksList, formResponse: $formResponse, user: $user, vendor: $vendor, locationData: $locationData, isAdded: $isAdded, isPdfGenerated: $isPdfGenerated, userProfileModel: $userProfileModel)';
+    return 'ManageStockState(isLoading: $isLoading, isAdding: $isAdding, hasError: $hasError, errorMessage: $errorMessage, sortOrder: $sortOrder, sortType: $sortType, stocksList: $stocksList, formResponse: $formResponse, user: $user, vendor: $vendor, locationData: $locationData, isAdded: $isAdded, isPdfGenerated: $isPdfGenerated, userProfileModel: $userProfileModel)';
   }
 
   @override
@@ -336,6 +372,12 @@ class _$_ManageStockState implements _ManageStockState {
             (identical(other.errorMessage, errorMessage) ||
                 const DeepCollectionEquality()
                     .equals(other.errorMessage, errorMessage)) &&
+            (identical(other.sortOrder, sortOrder) ||
+                const DeepCollectionEquality()
+                    .equals(other.sortOrder, sortOrder)) &&
+            (identical(other.sortType, sortType) ||
+                const DeepCollectionEquality()
+                    .equals(other.sortType, sortType)) &&
             (identical(other.stocksList, stocksList) ||
                 const DeepCollectionEquality()
                     .equals(other.stocksList, stocksList)) &&
@@ -367,6 +409,8 @@ class _$_ManageStockState implements _ManageStockState {
       const DeepCollectionEquality().hash(isAdding) ^
       const DeepCollectionEquality().hash(hasError) ^
       const DeepCollectionEquality().hash(errorMessage) ^
+      const DeepCollectionEquality().hash(sortOrder) ^
+      const DeepCollectionEquality().hash(sortType) ^
       const DeepCollectionEquality().hash(stocksList) ^
       const DeepCollectionEquality().hash(formResponse) ^
       const DeepCollectionEquality().hash(user) ^
@@ -388,6 +432,8 @@ abstract class _ManageStockState implements ManageStockState {
       bool isAdding,
       bool hasError,
       String? errorMessage,
+      bool? sortOrder,
+      String? sortType,
       List<StockModel>? stocksList,
       FormModel? formResponse,
       ProfileModel? user,
@@ -405,6 +451,10 @@ abstract class _ManageStockState implements ManageStockState {
   bool get hasError => throw _privateConstructorUsedError;
   @override
   String? get errorMessage => throw _privateConstructorUsedError;
+  @override
+  bool? get sortOrder => throw _privateConstructorUsedError;
+  @override
+  String? get sortType => throw _privateConstructorUsedError;
   @override
   List<StockModel>? get stocksList => throw _privateConstructorUsedError;
   @override

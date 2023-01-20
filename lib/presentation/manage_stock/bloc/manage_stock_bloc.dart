@@ -304,7 +304,12 @@ class ManageStockBloc extends Cubit<ManageStockState> {
               : aa.toLowerCase().compareTo(bb.toLowerCase());
       }
     });
-    emit(state.copyWith(isLoading: false, stocksList: sorted, hasError: false));
+    emit(state.copyWith(
+        isLoading: false,
+        stocksList: sorted,
+        hasError: false,
+        sortOrder: sortBy,
+        sortType: column));
   }
 
   Future<void> generatePdfOrder(
@@ -328,191 +333,192 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     pdf.addPage(pw.Page(
         pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
-      return pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.start,
-          mainAxisAlignment: pw.MainAxisAlignment.start,
-          children: [
-            pw.Row(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                mainAxisAlignment: pw.MainAxisAlignment.start,
-                children: [
-                  pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    mainAxisAlignment: pw.MainAxisAlignment.start,
-                    children: [
-                      pw.SizedBox(height: 12),
-                      pw.Text(
-                        '${user.firstname.toString().capitalizeFirstofEach()} ${user.lastname.toString().capitalizeFirstofEach()}',
-                        style: pw.TextStyle(
-                            fontSize: 20, fontWeight: pw.FontWeight.bold),
-                      ),
-                      pw.SizedBox(height: 3),
-                      pw.Text(
-                        user.company.toString().capitalizeFirstofEach(),
-                        style: const pw.TextStyle(
-                          fontSize: 16,
-                        ),
-                      ),
-                      pw.SizedBox(height: 3),
-                      pw.Container(
-                        width: 200,
-                        child: pw.Text(
-                          user.address.toString().capitalizeFirstofEach(),
-                          style: const pw.TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      pw.SizedBox(height: 3),
-                      pw.Container(
-                        width: 200,
-                        child: pw.Text(
-                          '${user.city.toString().capitalizeFirstofEach()}, ${user.state.toString().capitalizeFirstofEach()} ${user.zipCode.toString().capitalizeFirstofEach()}',
-                          style: const pw.TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      pw.Text(
-                        user.email.toString(),
-                        style: const pw.TextStyle(
-                          fontSize: 16,
-                        ),
-                      ),
-                      pw.SizedBox(height: 3),
-                      pw.Text(
-                        user.phoneNumber.toString().capitalizeFirstofEach(),
-                        style: const pw.TextStyle(
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ),
-                  pw.Spacer(),
-                  pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.end,
-                    children: [
-                      pw.SizedBox(height: 12),
-                      pw.Text(formattedDate,
-                          style: const pw.TextStyle(fontSize: 18)),
-                      pw.Text('Order # $orderNumber',
-                          style: const pw.TextStyle(fontSize: 18)),
-                    ],
-                  ),
-                ]),
-            pw.Row(
+          return pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               mainAxisAlignment: pw.MainAxisAlignment.start,
               children: [
-                /*pw.SizedBox(
-                    child: pw.Image(image, width: 100, height: 100),
-                  ),*/
-                pw.Column(
+                pw.Row(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    mainAxisAlignment: pw.MainAxisAlignment.start,
+                    children: [
+                      pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        mainAxisAlignment: pw.MainAxisAlignment.start,
+                        children: [
+                          pw.SizedBox(height: 12),
+                          pw.Text(
+                            '${user.firstname.toString().capitalizeFirstofEach()} ${user.lastname.toString().capitalizeFirstofEach()}',
+                            style: pw.TextStyle(
+                                fontSize: 20, fontWeight: pw.FontWeight.bold),
+                          ),
+                          pw.SizedBox(height: 3),
+                          pw.Text(
+                            user.company.toString().capitalizeFirstofEach(),
+                            style: const pw.TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          pw.SizedBox(height: 3),
+                          pw.Container(
+                            width: 200,
+                            child: pw.Text(
+                              user.address.toString().capitalizeFirstofEach(),
+                              style: const pw.TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          pw.SizedBox(height: 3),
+                          pw.Container(
+                            width: 200,
+                            child: pw.Text(
+                              '${user.city.toString().capitalizeFirstofEach()}, ${user.state.toString().capitalizeFirstofEach()} ${user.zipCode.toString().capitalizeFirstofEach()}',
+                              style: const pw.TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          pw.Text(
+                            user.email.toString(),
+                            style: const pw.TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          pw.SizedBox(height: 3),
+                          pw.Text(
+                            user.phoneNumber.toString().capitalizeFirstofEach(),
+                            style: const pw.TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      pw.Spacer(),
+                      pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.end,
+                        children: [
+                          pw.SizedBox(height: 12),
+                          pw.Text(formattedDate,
+                              style: const pw.TextStyle(fontSize: 18)),
+                          pw.Text('Order # $orderNumber',
+                              style: const pw.TextStyle(fontSize: 18)),
+                        ],
+                      ),
+                    ]),
+                pw.Row(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   mainAxisAlignment: pw.MainAxisAlignment.start,
                   children: [
-                    pw.SizedBox(height: 12),
-                    pw.Text(
-                      '${vendor.firstname.toString().capitalizeFirstofEach()} ${vendor.lastname.toString().capitalizeFirstofEach()}',
-                      style: pw.TextStyle(
-                          fontSize: 20, fontWeight: pw.FontWeight.bold),
-                    ),
-                    pw.SizedBox(height: 3),
-                    pw.Text(
-                      vendor.company.toString().capitalizeFirstofEach(),
-                      style: const pw.TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    pw.SizedBox(height: 3),
-                    pw.Container(
-                      width: 200,
-                      child: pw.Text(
-                        vendor.address.toString().capitalizeFirstofEach(),
-                        style: const pw.TextStyle(
-                          fontSize: 16,
+                    /*pw.SizedBox(
+                    child: pw.Image(image, width: 100, height: 100),
+                  ),*/
+                    pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      mainAxisAlignment: pw.MainAxisAlignment.start,
+                      children: [
+                        pw.SizedBox(height: 12),
+                        pw.Text(
+                          '${vendor.firstname.toString().capitalizeFirstofEach()} ${vendor.lastname.toString().capitalizeFirstofEach()}',
+                          style: pw.TextStyle(
+                              fontSize: 20, fontWeight: pw.FontWeight.bold),
                         ),
-                      ),
-                    ),
-                    pw.SizedBox(height: 3),
-                    pw.Container(
-                      width: 200,
-                      child: pw.Text(
-      '${vendor.city.toString().capitalizeFirstofEach()}, ${vendor.state.toString().capitalizeFirstofEach()} ${vendor.zipCode.toString().capitalizeFirstofEach()}',
-                        style: const pw.TextStyle(
-                          fontSize: 16,
+                        pw.SizedBox(height: 3),
+                        pw.Text(
+                          vendor.company.toString().capitalizeFirstofEach(),
+                          style: const pw.TextStyle(
+                            fontSize: 16,
+                          ),
                         ),
-                      ),
+                        pw.SizedBox(height: 3),
+                        pw.Container(
+                          width: 200,
+                          child: pw.Text(
+                            vendor.address.toString().capitalizeFirstofEach(),
+                            style: const pw.TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        pw.SizedBox(height: 3),
+                        pw.Container(
+                          width: 200,
+                          child: pw.Text(
+                            '${vendor.city.toString().capitalizeFirstofEach()}, ${vendor.state.toString().capitalizeFirstofEach()} ${vendor.zipCode.toString().capitalizeFirstofEach()}',
+                            style: const pw.TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        pw.SizedBox(height: 3),
+                        pw.Text(
+                          vendor.email.toString(),
+                          style: const pw.TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                        pw.SizedBox(height: 3),
+                        pw.Text(
+                          vendor.phoneNumber.toString().capitalizeFirstofEach(),
+                          style: const pw.TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
                     ),
-                    pw.SizedBox(height: 3),
-                    pw.Text(
-                      vendor.email.toString(),
-                      style: const pw.TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    pw.SizedBox(height: 3),
-                    pw.Text(
-                      vendor.phoneNumber.toString().capitalizeFirstofEach(),
-                      style: const pw.TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-
                   ],
                 ),
-              ],
-            ),
-            pw.SizedBox(height: 20),
-            pw.Divider(height: 1),
-            pw.SizedBox(height: 20),
-            pw.Padding(
-              padding: const pw.EdgeInsets.only(left: 0),
-              child: pw.Table(
-                columnWidths: const {
-                  0: pw.FlexColumnWidth(6),
-                  4: pw.FlexColumnWidth(2),
-                },
-                children: <pw.TableRow>[
-                  pw.TableRow(
-                    children: <pw.Widget>[
-                      pw.Container(
-                        color: PdfColor.fromInt(AppColors.headerGrey.value),
-                        padding: const pw.EdgeInsets.only(
-                            left: 18, top: 5, bottom: 5),
-                        alignment: pw.Alignment.centerLeft,
-                        child: pw.Text(
-                          'SKU / DESCRIPTION',
-                          style: pw.TextStyle(
-                              fontSize: 18,
-                              fontWeight: pw.FontWeight.bold,
-                              color: PdfColor.fromInt(AppColors.white.value)),
-                        ),
-                      ),
-                      pw.Container(
-                        padding: const pw.EdgeInsets.only(
-                            right: 8, top: 5, bottom: 5),
-                        alignment: pw.Alignment.centerRight,
-                        color: PdfColor.fromInt(AppColors.headerGrey.value),
-                        child: pw.Text(
-                          'Qty',
-                          style: pw.TextStyle(
-                              fontSize: 18,
-                              fontWeight: pw.FontWeight.bold,
-                              color: PdfColor.fromInt(AppColors.white.value)),
-                        ),
+                pw.SizedBox(height: 20),
+                pw.Divider(height: 1),
+                pw.SizedBox(height: 20),
+                pw.Padding(
+                  padding: const pw.EdgeInsets.only(left: 0),
+                  child: pw.Table(
+                    columnWidths: const {
+                      0: pw.FlexColumnWidth(6),
+                      4: pw.FlexColumnWidth(2),
+                    },
+                    children: <pw.TableRow>[
+                      pw.TableRow(
+                        children: <pw.Widget>[
+                          pw.Container(
+                            color: PdfColor.fromInt(AppColors.headerGrey.value),
+                            padding: const pw.EdgeInsets.only(
+                                left: 18, top: 5, bottom: 5),
+                            alignment: pw.Alignment.centerLeft,
+                            child: pw.Text(
+                              'SKU / DESCRIPTION',
+                              style: pw.TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: pw.FontWeight.bold,
+                                  color:
+                                      PdfColor.fromInt(AppColors.white.value)),
+                            ),
+                          ),
+                          pw.Container(
+                            padding: const pw.EdgeInsets.only(
+                                right: 8, top: 5, bottom: 5),
+                            alignment: pw.Alignment.centerRight,
+                            color: PdfColor.fromInt(AppColors.headerGrey.value),
+                            child: pw.Text(
+                              'Qty',
+                              style: pw.TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: pw.FontWeight.bold,
+                                  color:
+                                      PdfColor.fromInt(AppColors.white.value)),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            pw.Expanded(
-              child: pw.ListView.builder(
-                  itemCount: stockList.length,
-                  itemBuilder: (pw.Context context, index) {
-                    return pw.Container(
-                      /*decoration: pw.BoxDecoration(
+                ),
+                pw.Expanded(
+                  child: pw.ListView.builder(
+                      itemCount: stockList.length,
+                      itemBuilder: (pw.Context context, index) {
+                        return pw.Container(
+                          /*decoration: pw.BoxDecoration(
                     border: pw.Border(
                       left: pw.BorderSide(
                           width: 10.0,
@@ -526,79 +532,82 @@ class ManageStockBloc extends Cubit<ManageStockState> {
                               : pc.AppColors.warningOrange.value)),
                     ),
                   ),*/
-                      child: pw.Container(
-                        padding: const pw.EdgeInsets.only(top: 10),
-                        color: PdfColor.fromInt(index % 2 == 1
-                            ? AppColors.lightBlue.value
-                            : AppColors.white.value),
-                        child: pw.Column(
-                          crossAxisAlignment: pw.CrossAxisAlignment.start,
-                          children: <pw.Widget>[
-                            pw.Table(
-                              columnWidths: const {
-                                0: pw.FlexColumnWidth(6),
-                                4: pw.FlexColumnWidth(2),
-                              },
-                              children: <pw.TableRow>[
-                                pw.TableRow(
-                                  children: <pw.Widget>[
-                                    pw.Container(
-                                      padding:
-                                          const pw.EdgeInsets.only(left: 8),
-                                      alignment: pw.Alignment.centerLeft,
-                                      child: pw.Text(stockList[index].sku ?? '',
-                                          style: pw.TextStyle(
+                          child: pw.Container(
+                            padding: const pw.EdgeInsets.only(top: 10),
+                            color: PdfColor.fromInt(index % 2 == 1
+                                ? AppColors.lightBlue.value
+                                : AppColors.white.value),
+                            child: pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: <pw.Widget>[
+                                pw.Table(
+                                  columnWidths: const {
+                                    0: pw.FlexColumnWidth(6),
+                                    4: pw.FlexColumnWidth(2),
+                                  },
+                                  children: <pw.TableRow>[
+                                    pw.TableRow(
+                                      children: <pw.Widget>[
+                                        pw.Container(
+                                          padding:
+                                              const pw.EdgeInsets.only(left: 8),
+                                          alignment: pw.Alignment.centerLeft,
+                                          child: pw.Text(
+                                              stockList[index].sku ?? '',
+                                              style: pw.TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight:
+                                                      pw.FontWeight.bold,
+                                                  color: PdfColor.fromInt(
+                                                      AppColors
+                                                          .tertiary.value))),
+                                        ),
+                                        pw.Container(
+                                          padding: const pw.EdgeInsets.only(
+                                              right: 8),
+                                          alignment: pw.Alignment.centerRight,
+                                          child: pw.Text(
+                                            getQuantity(stockList[index]),
+                                            style: pw.TextStyle(
                                               fontSize: 18,
                                               fontWeight: pw.FontWeight.bold,
                                               color: PdfColor.fromInt(
-                                                  AppColors.tertiary.value))),
-                                    ),
-                                    pw.Container(
-                                      padding:
-                                          const pw.EdgeInsets.only(right: 8),
-                                      alignment: pw.Alignment.centerRight,
-                                      child: pw.Text(
-                                        getQuantity(stockList[index]),
-                                        style: pw.TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: pw.FontWeight.bold,
-                                          color: PdfColor.fromInt(
-                                            AppColors.tertiary.value,
+                                                AppColors.tertiary.value,
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
+                                      ],
                                     ),
                                   ],
                                 ),
+                                pw.Container(
+                                  padding: const pw.EdgeInsets.only(
+                                      left: 8, right: 8, top: 5),
+                                  alignment: pw.Alignment.centerLeft,
+                                  child: pw.Text(
+                                    stockList[index].name ?? '',
+                                    style: pw.TextStyle(
+                                      fontSize: 15,
+                                      color: PdfColor.fromInt(
+                                        AppColors.tertiary.value,
+                                      ),
+                                    ),
+                                  ),
+                                )
                               ],
                             ),
-                            pw.Container(
-                              padding: const pw.EdgeInsets.only(
-                                  left: 8, right: 8, top: 5),
-                              alignment: pw.Alignment.centerLeft,
-                              child: pw.Text(
-                                stockList[index].name ?? '',
-                                style: pw.TextStyle(
-                                  fontSize: 15,
-                                  color: PdfColor.fromInt(
-                                    AppColors.tertiary.value,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  }),
-            ),
-            pw.Container(
-              child: pw.Center(
-                child: pw.Text('Copyright \u00a9 2023 ActionTRAK · All rights reserved', style: const pw.TextStyle(fontSize: 14))
-              )
-            )
-          ]); // Center
-    }));
+                          ),
+                        );
+                      }),
+                ),
+                pw.Container(
+                    child: pw.Center(
+                        child: pw.Text(
+                            'Copyright \u00a9 2023 ActionTRAK · All rights reserved',
+                            style: const pw.TextStyle(fontSize: 14))))
+              ]); // Center
+        }));
 
     Directory appDocDir = await getApplicationDocumentsDirectory();
     String appDocPath = appDocDir.path;

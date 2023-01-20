@@ -15,6 +15,8 @@ class ManageStockState with _$ManageStockState {
       @Default(false) bool isAdding,
       @Default(false) bool hasError,
       String? errorMessage,
+      bool? sortOrder,
+      String? sortType,
       List<StockModel>? stocksList,
       FormModel? formResponse,
       ProfileModel? user,

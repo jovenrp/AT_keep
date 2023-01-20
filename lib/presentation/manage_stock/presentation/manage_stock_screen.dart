@@ -72,7 +72,13 @@ class _ManageStockScreen extends State<ManageStockScreen>
   void initState() {
     super.initState();
 
-    context.read<ManageStockBloc>().getStocks();
+    context.read<ManageStockBloc>().getStocks().then((value) {
+      BlocListener<ManageStockBloc, ManageStockState>(
+          listener: (BuildContext context, ManageStockState state) {
+            context.read<ManageStockBloc>().sortStockOrders(sortBy: state.sortOrder ?? false, stockList: state.stocksList, column: state.sortType);
+          }
+      );
+    });
 
     skuNode.addListener(() {
       setState(() {
@@ -126,6 +132,7 @@ class _ManageStockScreen extends State<ManageStockScreen>
       listener: (BuildContext context, ManageStockState state) {
         if (!state.isLoading) {
           refreshController.refreshCompleted();
+          context.read<ManageStockBloc>().sortStockOrders(sortBy: state.sortOrder ?? false, stockList: state.stocksList, column: state.sortType);
         }
         if (state.formResponse?.error == true) {
           DialogUtils.showToast(context, state.formResponse?.message ?? '');
