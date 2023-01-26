@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:keep/application/domain/models/application_config.dart';
 import 'package:keep/core/data/mixin/back_pressed_mixin.dart';
 import 'package:keep/core/domain/utils/constants/app_colors.dart';
@@ -276,9 +277,9 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
                             ),
                             Column(
                               children: <Widget>[
-                                const ATText(
-                                  text: 'Copyright ActionTRAK 2022',
-                                  style: TextStyle(fontSize: 12),
+                                ATText(
+                                  text: 'Copyright ActionTRAK ${DateFormat.y().format(DateTime.now())}',
+                                  style: const TextStyle(fontSize: 12),
                                 ),
                                 const ATText(
                                   text: 'All Rights Reserved',

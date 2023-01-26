@@ -17,17 +17,14 @@ import '../../manage_stock/data/models/stocks_model.dart';
 import '../data/models/order_model.dart';
 
 class OrderLineHistoryScreen extends StatefulWidget {
-  const OrderLineHistoryScreen({Key? key, this.config, this.order})
-      : super(key: key);
+  const OrderLineHistoryScreen({Key? key, this.config, this.order}) : super(key: key);
   static const String routeName = '/orderLineHistory';
   static const String screenName = 'orderLineHistoryScreen';
 
   final ApplicationConfig? config;
   final OrderModel? order;
 
-  static ModalRoute<OrderLineHistoryScreen> route(
-          {ApplicationConfig? config, OrderModel? order}) =>
-      MaterialPageRoute<OrderLineHistoryScreen>(
+  static ModalRoute<OrderLineHistoryScreen> route({ApplicationConfig? config, OrderModel? order}) => MaterialPageRoute<OrderLineHistoryScreen>(
         settings: const RouteSettings(name: routeName),
         builder: (_) => OrderLineHistoryScreen(
           config: config,
@@ -50,15 +47,10 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
   @override
   void initState() {
     super.initState();
-    context
-        .read<OrderHistoryBloc>()
-        .getOrderLines(order: widget.order)
-        .then((List<OrderLineModel> list) {
+    context.read<OrderHistoryBloc>().getOrderLines(order: widget.order).then((List<OrderLineModel> list) {
       int itemReceivedCounter = 0;
       for (OrderLineModel item in list) {
-        if (item.status != 'partial' &&
-            item.status != 'pending' &&
-            item.status != null) {
+        if (item.status != 'partial' && item.status != 'pending' && item.status != null) {
           itemReceivedCounter++;
         }
       }
@@ -70,8 +62,7 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<OrderHistoryBloc, OrderHistoryState>(
-        listener: (BuildContext context, OrderHistoryState state) {
+    return BlocConsumer<OrderHistoryBloc, OrderHistoryState>(listener: (BuildContext context, OrderHistoryState state) {
       if (!state.isLoading) {
         showAllChecker(state);
       }
@@ -109,47 +100,30 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                             fontColor: AppColors.white,
                           ),
                         ),
-                        activeColor: isCheckedAll == true
-                            ? AppColors.white
-                            : AppColors.white,
+                        activeColor: isCheckedAll == true ? AppColors.white : AppColors.white,
                         checkColor: AppColors.successGreen,
                         onChanged: (bool? value) {
                           setState(
                             () {
                               isCheckedAll = !isCheckedAll;
-                              for (int index = 0;
-                                  index < state.orderLineList!.length;
-                                  index++) {
+                              for (int index = 0; index < state.orderLineList!.length; index++) {
                                 //_controller[index].toggleCard();
                                 if (isCheckedAll == true) {
-                                  context
-                                      .read<OrderHistoryBloc>()
-                                      .receieveOrder(
-                                        stock: state.orderLineList?[index]
-                                                .stockModel ??
-                                            StockModel(),
-                                        orderLine:
-                                            state.orderLineList?[index] ??
-                                                OrderLineModel(),
+                                  context.read<OrderHistoryBloc>().receieveOrder(
+                                        stock: state.orderLineList?[index].stockModel ?? StockModel(),
+                                        orderLine: state.orderLineList?[index] ?? OrderLineModel(),
                                         isFlipped: 'received',
                                         orderModel: widget.order,
                                       );
                                 } else {
-                                  context
-                                      .read<OrderHistoryBloc>()
-                                      .receieveOrder(
-                                        stock: state.orderLineList?[index]
-                                                .stockModel ??
-                                            StockModel(),
-                                        orderLine:
-                                            state.orderLineList?[index] ??
-                                                OrderLineModel(),
+                                  context.read<OrderHistoryBloc>().receieveOrder(
+                                        stock: state.orderLineList?[index].stockModel ?? StockModel(),
+                                        orderLine: state.orderLineList?[index] ?? OrderLineModel(),
                                         isFlipped: 'pending',
                                         orderModel: widget.order,
                                       );
                                 }
-                                context.read<OrderHistoryBloc>().updateCheckbox(
-                                    state.orderLineList?[index], isCheckedAll);
+                                context.read<OrderHistoryBloc>().updateCheckbox(state.orderLineList?[index], isCheckedAll);
                               }
                             },
                           );
@@ -162,20 +136,16 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20, right: 20, top: 20, bottom: 0),
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 0),
                   child: ATTextfield(
                     hintText: 'Search Item',
                     textEditingController: searchController,
                     onFieldSubmitted: (String? value) {
-                      context.read<OrderHistoryBloc>().searchOrderLine(
-                          search: value ?? '', order: widget.order);
+                      context.read<OrderHistoryBloc>().searchOrderLine(search: value ?? '', order: widget.order);
                     },
                     onChanged: (String value) {
-                      EasyDebounce.debounce(
-                          'deebouncer1', const Duration(milliseconds: 500), () {
-                        context.read<OrderHistoryBloc>().searchOrderLine(
-                            search: value, order: widget.order);
+                      EasyDebounce.debounce('deebouncer1', const Duration(milliseconds: 500), () {
+                        context.read<OrderHistoryBloc>().searchOrderLine(search: value, order: widget.order);
                       });
                     },
                   ),
@@ -190,11 +160,8 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                         ? ListView.builder(
                             itemCount: state.orderLineList?.length,
                             itemBuilder: (BuildContext context, index) {
-                              bool checkboxValue =
-                                  state.orderLineList?[index].isChecked ??
-                                      false;
-                              print(
-                                  '${state.orderLineList?[index].quantity} ${state.orderLineList?[index].ordered}');
+                              bool checkboxValue = state.orderLineList?[index].isChecked ?? false;
+                              print('${state.orderLineList?[index].quantity} ${state.orderLineList?[index].ordered}');
                               return Slidable(
                                 closeOnScroll: true,
                                 startActionPane: ActionPane(
@@ -202,58 +169,33 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                   extentRatio: 0.2,
                                   children: <Widget>[
                                     SlidableAction(
-                                      onPressed:
-                                          (BuildContext navContext) async {
+                                      onPressed: (BuildContext navContext) async {
                                         await showModalBottomSheet(
                                           context: context,
                                           isScrollControlled: true,
                                           builder: (context) {
                                             orderController.text = '';
-                                            orderController.selection =
-                                                TextSelection.fromPosition(
-                                                    TextPosition(
-                                                        offset: orderController
-                                                            .text.length));
+                                            orderController.selection = TextSelection.fromPosition(TextPosition(offset: orderController.text.length));
 
                                             orderNode.requestFocus();
 
-                                            final double onHand = state
-                                                    .orderLineList?[index]
-                                                    .stockModel
-                                                    ?.onHand ??
-                                                0;
-                                            final double quantity = state
-                                                    .orderLineList?[index]
-                                                    .quantity ??
-                                                0;
+                                            final double onHand = state.orderLineList?[index].stockModel?.onHand ?? 0;
+                                            final double quantity = state.orderLineList?[index].quantity ?? 0;
                                             return Container(
                                               padding: EdgeInsets.only(
-                                                  left: 20,
-                                                  right: 20,
-                                                  top: 20,
-                                                  bottom: MediaQuery.of(context)
-                                                          .viewInsets
-                                                          .bottom +
-                                                      30),
+                                                  left: 20, right: 20, top: 20, bottom: MediaQuery.of(context).viewInsets.bottom + 30),
                                               child: Wrap(
                                                 children: <Widget>[
                                                   Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: <Widget>[
                                                       const Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                bottom: 10),
+                                                        padding: EdgeInsets.only(bottom: 10),
                                                         child: ATText(
-                                                          text:
-                                                              'Receieve Stock Item',
-                                                          fontColor: AppColors
-                                                              .onboardingText,
+                                                          text: 'Receieve Stock Item',
+                                                          fontColor: AppColors.onboardingText,
                                                           fontSize: 18,
-                                                          weight:
-                                                              FontWeight.bold,
+                                                          weight: FontWeight.bold,
                                                         ),
                                                       ),
                                                       Table(
@@ -268,82 +210,30 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                                           TableRow(
                                                             children: <Widget>[
                                                               Container(
-                                                                color: AppColors
-                                                                    .headerGrey,
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        left: 5,
-                                                                        top: 5,
-                                                                        bottom:
-                                                                            5),
-                                                                alignment: Alignment
-                                                                    .centerLeft,
-                                                                child:
-                                                                    const ATText(
+                                                                color: AppColors.headerGrey,
+                                                                padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                                                                alignment: Alignment.centerLeft,
+                                                                child: const ATText(
                                                                   text: 'SKU',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          15,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      color: AppColors
-                                                                          .white),
+                                                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.white),
                                                                 ),
                                                               ),
                                                               Container(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        right:
-                                                                            8,
-                                                                        top: 5,
-                                                                        bottom:
-                                                                            5),
-                                                                alignment: Alignment
-                                                                    .centerRight,
-                                                                color: AppColors
-                                                                    .headerGrey,
-                                                                child:
-                                                                    const ATText(
-                                                                  text:
-                                                                      'Ordered',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          15,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      color: AppColors
-                                                                          .white),
+                                                                padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
+                                                                alignment: Alignment.centerRight,
+                                                                color: AppColors.headerGrey,
+                                                                child: const ATText(
+                                                                  text: 'Ordered',
+                                                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.white),
                                                                 ),
                                                               ),
                                                               Container(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        right:
-                                                                            8,
-                                                                        top: 5,
-                                                                        bottom:
-                                                                            5),
-                                                                alignment: Alignment
-                                                                    .centerRight,
-                                                                color: AppColors
-                                                                    .headerGrey,
-                                                                child:
-                                                                    const ATText(
-                                                                  text:
-                                                                      'Received',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          15,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      color: AppColors
-                                                                          .white),
+                                                                padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
+                                                                alignment: Alignment.centerRight,
+                                                                color: AppColors.headerGrey,
+                                                                child: const ATText(
+                                                                  text: 'Received',
+                                                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.white),
                                                                 ),
                                                               ),
                                                             ],
@@ -362,92 +252,37 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                                           TableRow(
                                                             children: <Widget>[
                                                               Container(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        left: 3,
-                                                                        top: 5,
-                                                                        bottom:
-                                                                            5),
-                                                                alignment: Alignment
-                                                                    .centerLeft,
+                                                                padding: const EdgeInsets.only(left: 3, top: 5, bottom: 5),
+                                                                alignment: Alignment.centerLeft,
                                                                 child: ATText(
-                                                                  text: state
-                                                                      .orderLineList?[
-                                                                          index]
-                                                                      .stockModel
-                                                                      ?.sku,
-                                                                  fontColor:
-                                                                      AppColors
-                                                                          .onboardingText,
+                                                                  text: state.orderLineList?[index].stockModel?.sku,
+                                                                  fontColor: AppColors.onboardingText,
                                                                   fontSize: 16,
-                                                                  weight:
-                                                                      FontWeight
-                                                                          .bold,
+                                                                  weight: FontWeight.bold,
                                                                 ),
                                                               ),
                                                               Container(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        right:
-                                                                            8,
-                                                                        top: 5,
-                                                                        bottom:
-                                                                            5),
-                                                                alignment: Alignment
-                                                                    .centerRight,
+                                                                padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
+                                                                alignment: Alignment.centerRight,
                                                                 child: ATText(
-                                                                  text: state
-                                                                      .orderLineList?[
-                                                                          index]
-                                                                      .stockModel
-                                                                      ?.onOrder
+                                                                  text: state.orderLineList?[index].stockModel?.onOrder
                                                                       .toString()
-                                                                      .removeDecimalZeroFormat(state
-                                                                              .orderLineList?[index]
-                                                                              .stockModel
-                                                                              ?.onOrder ??
-                                                                          0),
-                                                                  fontColor:
-                                                                      AppColors
-                                                                          .onboardingText,
+                                                                      .removeDecimalZeroFormat(state.orderLineList?[index].stockModel?.onOrder ?? 0),
+                                                                  fontColor: AppColors.onboardingText,
                                                                   fontSize: 16,
-                                                                  weight:
-                                                                      FontWeight
-                                                                          .bold,
+                                                                  weight: FontWeight.bold,
                                                                 ),
                                                               ),
                                                               Container(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        right:
-                                                                            8,
-                                                                        top: 5,
-                                                                        bottom:
-                                                                            5),
-                                                                alignment: Alignment
-                                                                    .centerRight,
+                                                                padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
+                                                                alignment: Alignment.centerRight,
                                                                 child: ATText(
-                                                                  text: state
-                                                                      .orderLineList?[
-                                                                          index]
-                                                                      .stockModel
-                                                                      ?.order
+                                                                  text: state.orderLineList?[index].stockModel?.order
                                                                       .toString()
-                                                                      .removeDecimalZeroFormat(state
-                                                                              .orderLineList?[index]
-                                                                              .stockModel
-                                                                              ?.order ??
-                                                                          0),
-                                                                  fontColor:
-                                                                      AppColors
-                                                                          .onboardingText,
+                                                                      .removeDecimalZeroFormat(state.orderLineList?[index].stockModel?.order ?? 0),
+                                                                  fontColor: AppColors.onboardingText,
                                                                   fontSize: 16,
-                                                                  weight:
-                                                                      FontWeight
-                                                                          .bold,
+                                                                  weight: FontWeight.bold,
                                                                 ),
                                                               ),
                                                             ],
@@ -455,102 +290,60 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                                         ],
                                                       ),
                                                       Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                bottom: 10),
+                                                        padding: const EdgeInsets.only(bottom: 10),
                                                         child: ATText(
-                                                          text: state
-                                                              .orderLineList?[
-                                                                  index]
-                                                              .stockModel
-                                                              ?.name,
-                                                          fontColor: AppColors
-                                                              .onboardingText,
+                                                          text: state.orderLineList?[index].stockModel?.name,
+                                                          fontColor: AppColors.onboardingText,
                                                           fontSize: 14,
                                                         ),
                                                       ),
                                                     ],
                                                   ),
                                                   Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            bottom: 20),
+                                                    padding: const EdgeInsets.only(bottom: 20),
                                                     child: ATTextfield(
                                                       hintText: 'Receive',
                                                       focusNode: orderNode,
-                                                      textEditingController:
-                                                          orderController,
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      textInputAction:
-                                                          TextInputAction.done,
+                                                      textEditingController: orderController,
+                                                      textAlign: TextAlign.center,
+                                                      textInputAction: TextInputAction.done,
                                                     ),
                                                   ),
                                                   const SizedBox(
                                                     height: 5,
                                                   ),
                                                   Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 10),
+                                                    padding: const EdgeInsets.only(top: 10),
                                                     child: SizedBox(
                                                       width: double.infinity,
                                                       child: KeepElevatedButton(
-                                                        isEnabled:
-                                                            !state.isLoading,
-                                                        color: AppColors
-                                                            .successGreen,
-                                                        onPressed: () => orderController
-                                                                .text.isNotEmpty
+                                                        isEnabled: !state.isLoading,
+                                                        color: AppColors.successGreen,
+                                                        onPressed: () => orderController.text.isNotEmpty
                                                             ? context
-                                                                .read<
-                                                                    OrderHistoryBloc>()
+                                                                .read<OrderHistoryBloc>()
                                                                 .receieveOrder(
-                                                                  stock: state
-                                                                          .orderLineList?[
-                                                                              index]
-                                                                          .stockModel ??
-                                                                      StockModel(),
-                                                                  orderLine: state
-                                                                              .orderLineList?[
-                                                                          index] ??
-                                                                      OrderLineModel(),
-                                                                  onOrder: double
-                                                                      .parse(
-                                                                    orderController
-                                                                        .text,
+                                                                  stock: state.orderLineList?[index].stockModel ?? StockModel(),
+                                                                  orderLine: state.orderLineList?[index] ?? OrderLineModel(),
+                                                                  onOrder: double.parse(
+                                                                    orderController.text,
                                                                   ),
-                                                                  orderModel:
-                                                                      widget
-                                                                          .order,
+                                                                  orderModel: widget.order,
                                                                 )
-                                                                .then((value) =>
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pop())
-                                                            : DialogUtils.showToast(
-                                                                context,
-                                                                'Item to receive cannot be empty.'),
+                                                                .then((value) => Navigator.of(context).pop())
+                                                            : DialogUtils.showToast(context, 'Item to receive cannot be empty.'),
                                                         text: 'Receive',
                                                       ),
                                                     ),
                                                   ),
                                                   Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 10),
+                                                    padding: const EdgeInsets.only(top: 10),
                                                     child: SizedBox(
                                                       width: double.infinity,
                                                       child: KeepElevatedButton(
-                                                        isEnabled:
-                                                            !state.isLoading,
-                                                        color: AppColors
-                                                            .criticalRed,
-                                                        onPressed: () =>
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop(),
+                                                        isEnabled: !state.isLoading,
+                                                        color: AppColors.criticalRed,
+                                                        onPressed: () => Navigator.of(context).pop(),
                                                         text: 'Cancel',
                                                       ),
                                                     ),
@@ -574,45 +367,20 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                       InkWell(
                                         onTap: () {
                                           setState(() {
-                                            bool value = state
-                                                    .orderLineList?[index]
-                                                    .isChecked ??
-                                                false;
+                                            bool value = state.orderLineList?[index].isChecked ?? false;
                                             value = !value;
-                                            context
-                                                .read<OrderHistoryBloc>()
-                                                .updateCheckbox(
-                                                    state.orderLineList?[index],
-                                                    value);
+                                            context.read<OrderHistoryBloc>().updateCheckbox(state.orderLineList?[index], value);
                                             if (value == true) {
-                                              context
-                                                  .read<OrderHistoryBloc>()
-                                                  .receieveOrder(
-                                                    stock: state
-                                                            .orderLineList?[
-                                                                index]
-                                                            .stockModel ??
-                                                        StockModel(),
-                                                    orderLine:
-                                                        state.orderLineList?[
-                                                                index] ??
-                                                            OrderLineModel(),
+                                              context.read<OrderHistoryBloc>().receieveOrder(
+                                                    stock: state.orderLineList?[index].stockModel ?? StockModel(),
+                                                    orderLine: state.orderLineList?[index] ?? OrderLineModel(),
                                                     isFlipped: 'received',
                                                     orderModel: widget.order,
                                                   );
                                             } else {
-                                              context
-                                                  .read<OrderHistoryBloc>()
-                                                  .receieveOrder(
-                                                    stock: state
-                                                            .orderLineList?[
-                                                                index]
-                                                            .stockModel ??
-                                                        StockModel(),
-                                                    orderLine:
-                                                        state.orderLineList?[
-                                                                index] ??
-                                                            OrderLineModel(),
+                                              context.read<OrderHistoryBloc>().receieveOrder(
+                                                    stock: state.orderLineList?[index].stockModel ?? StockModel(),
+                                                    orderLine: state.orderLineList?[index] ?? OrderLineModel(),
                                                     isFlipped: 'pending',
                                                     orderModel: widget.order,
                                                   );
@@ -620,105 +388,47 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                           });
                                         },
                                         child: Container(
-                                          padding: const EdgeInsets.only(
-                                              left: 0,
-                                              right: 16,
-                                              top: 0,
-                                              bottom: 0),
+                                          padding: const EdgeInsets.only(left: 0, right: 16, top: 0, bottom: 0),
                                           width: double.infinity,
                                           color: !isOrderReceived
                                               ? double.parse(state.orderLineList?[index].quantity.toString() ?? '0') > 0 &&
                                                       double.parse(state.orderLineList?[index].quantity.toString() ?? '0') <
-                                                          double.parse(state
-                                                                  .orderLineList?[
-                                                                      index]
-                                                                  .ordered
-                                                                  .toString() ??
-                                                              '0')
+                                                          double.parse(state.orderLineList?[index].ordered.toString() ?? '0')
                                                   ? AppColors.warningOrange
-                                                  : double.parse(state.orderLineList?[index].ordered
-                                                                  .toString() ??
-                                                              '0') <=
-                                                          double.parse(state
-                                                                  .orderLineList?[index]
-                                                                  .quantity
-                                                                  .toString() ??
-                                                              '0')
+                                                  : double.parse(state.orderLineList?[index].ordered.toString() ?? '0') <=
+                                                          double.parse(state.orderLineList?[index].quantity.toString() ?? '0')
                                                       ? AppColors.successGreen
                                                       : AppColors.criticalRed
                                               : AppColors.successGreen,
                                           child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.start,
                                             children: <Widget>[
                                               SizedBox(
                                                 width: 45,
                                                 height: 45,
                                                 child: Checkbox(
                                                     value: checkboxValue,
-                                                    activeColor:
-                                                        isCheckedAll == true
-                                                            ? AppColors.white
-                                                            : AppColors.white,
-                                                    checkColor:
-                                                        AppColors.successGreen,
-                                                    side:
-                                                        MaterialStateBorderSide
-                                                            .resolveWith(
-                                                      (states) =>
-                                                          const BorderSide(
-                                                              width: 2,
-                                                              color: AppColors
-                                                                  .white),
+                                                    activeColor: isCheckedAll == true ? AppColors.white : AppColors.white,
+                                                    checkColor: AppColors.successGreen,
+                                                    side: MaterialStateBorderSide.resolveWith(
+                                                      (states) => const BorderSide(width: 2, color: AppColors.white),
                                                     ),
                                                     onChanged: (bool? value) {
                                                       setState(() {
-                                                        context
-                                                            .read<
-                                                                OrderHistoryBloc>()
-                                                            .updateCheckbox(
-                                                                state.orderLineList?[
-                                                                    index],
-                                                                value);
+                                                        context.read<OrderHistoryBloc>().updateCheckbox(state.orderLineList?[index], value);
                                                         if (value == true) {
-                                                          context
-                                                              .read<
-                                                                  OrderHistoryBloc>()
-                                                              .receieveOrder(
-                                                                stock: state
-                                                                        .orderLineList?[
-                                                                            index]
-                                                                        .stockModel ??
-                                                                    StockModel(),
-                                                                orderLine: state
-                                                                            .orderLineList?[
-                                                                        index] ??
-                                                                    OrderLineModel(),
-                                                                isFlipped:
-                                                                    'received',
-                                                                orderModel:
-                                                                    widget
-                                                                        .order,
+                                                          context.read<OrderHistoryBloc>().receieveOrder(
+                                                                stock: state.orderLineList?[index].stockModel ?? StockModel(),
+                                                                orderLine: state.orderLineList?[index] ?? OrderLineModel(),
+                                                                isFlipped: 'received',
+                                                                orderModel: widget.order,
                                                               );
                                                         } else {
-                                                          context
-                                                              .read<
-                                                                  OrderHistoryBloc>()
-                                                              .receieveOrder(
-                                                                stock: state
-                                                                        .orderLineList?[
-                                                                            index]
-                                                                        .stockModel ??
-                                                                    StockModel(),
-                                                                orderLine: state
-                                                                            .orderLineList?[
-                                                                        index] ??
-                                                                    OrderLineModel(),
-                                                                isFlipped:
-                                                                    'pending',
-                                                                orderModel:
-                                                                    widget
-                                                                        .order,
+                                                          context.read<OrderHistoryBloc>().receieveOrder(
+                                                                stock: state.orderLineList?[index].stockModel ?? StockModel(),
+                                                                orderLine: state.orderLineList?[index] ?? OrderLineModel(),
+                                                                isFlipped: 'pending',
+                                                                orderModel: widget.order,
                                                               );
                                                         }
                                                       });
@@ -727,22 +437,11 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                               ATText(
                                                 text: !isOrderReceived
                                                     ? double.parse(state.orderLineList?[index].quantity.toString() ?? '0') > 0 &&
-                                                            double.parse(state
-                                                                        .orderLineList?[
-                                                                            index]
-                                                                        .quantity
-                                                                        .toString() ??
-                                                                    '0') <
-                                                                double.parse(
-                                                                    state.orderLineList?[index].ordered.toString() ??
-                                                                        '0')
+                                                            double.parse(state.orderLineList?[index].quantity.toString() ?? '0') <
+                                                                double.parse(state.orderLineList?[index].ordered.toString() ?? '0')
                                                         ? 'Partial'
                                                         : double.parse(state.orderLineList?[index].ordered.toString() ?? '0') <=
-                                                                double.parse(state
-                                                                        .orderLineList?[index]
-                                                                        .quantity
-                                                                        .toString() ??
-                                                                    '0')
+                                                                double.parse(state.orderLineList?[index].quantity.toString() ?? '0')
                                                             ? 'Received!'
                                                             : 'Pending'
                                                     : 'Received!',
@@ -767,50 +466,29 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                             children: <Widget>[
                                               Container(
                                                 color: AppColors.headerGrey,
-                                                padding: const EdgeInsets.only(
-                                                    left: 8, top: 5, bottom: 5),
+                                                padding: const EdgeInsets.only(left: 8, top: 5, bottom: 5),
                                                 alignment: Alignment.centerLeft,
                                                 child: const ATText(
                                                   text: 'SKU',
-                                                  style: TextStyle(
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: AppColors.white),
+                                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.white),
                                                 ),
                                               ),
                                               Container(
-                                                padding: const EdgeInsets.only(
-                                                    right: 8,
-                                                    top: 5,
-                                                    bottom: 5),
-                                                alignment:
-                                                    Alignment.centerRight,
+                                                padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
+                                                alignment: Alignment.centerRight,
                                                 color: AppColors.headerGrey,
                                                 child: const ATText(
                                                   text: 'Ordered',
-                                                  style: TextStyle(
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: AppColors.white),
+                                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.white),
                                                 ),
                                               ),
                                               Container(
-                                                padding: const EdgeInsets.only(
-                                                    right: 8,
-                                                    top: 5,
-                                                    bottom: 5),
-                                                alignment:
-                                                    Alignment.centerRight,
+                                                padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
+                                                alignment: Alignment.centerRight,
                                                 color: AppColors.headerGrey,
                                                 child: const ATText(
                                                   text: 'Received',
-                                                  style: TextStyle(
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: AppColors.white),
+                                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.white),
                                                 ),
                                               ),
                                             ],
@@ -829,64 +507,35 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                           TableRow(
                                             children: <Widget>[
                                               Container(
-                                                padding: const EdgeInsets.only(
-                                                    left: 8, top: 5, bottom: 5),
+                                                padding: const EdgeInsets.only(left: 8, top: 5, bottom: 5),
                                                 alignment: Alignment.centerLeft,
                                                 child: ATText(
-                                                  text: state
-                                                      .orderLineList?[index]
-                                                      .stockModel
-                                                      ?.sku,
-                                                  fontColor:
-                                                      AppColors.onboardingText,
+                                                  text: state.orderLineList?[index].stockModel?.sku,
+                                                  fontColor: AppColors.onboardingText,
                                                   fontSize: 16,
                                                   weight: FontWeight.bold,
                                                 ),
                                               ),
                                               Container(
-                                                padding: const EdgeInsets.only(
-                                                    right: 8,
-                                                    top: 5,
-                                                    bottom: 5),
-                                                alignment:
-                                                    Alignment.centerRight,
+                                                padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
+                                                alignment: Alignment.centerRight,
                                                 child: ATText(
-                                                  text: state
-                                                      .orderLineList?[index]
-                                                      .ordered
+                                                  text: state.orderLineList?[index].ordered
                                                       .toString()
-                                                      .removeDecimalZeroFormat(
-                                                          state
-                                                                  .orderLineList?[
-                                                                      index]
-                                                                  .ordered ??
-                                                              0),
-                                                  fontColor:
-                                                      AppColors.onboardingText,
+                                                      .removeDecimalZeroFormat(state.orderLineList?[index].ordered ?? 0),
+                                                  fontColor: AppColors.onboardingText,
                                                   fontSize: 16,
                                                   weight: FontWeight.bold,
                                                 ),
                                               ),
                                               Container(
-                                                padding: const EdgeInsets.only(
-                                                    right: 8,
-                                                    top: 5,
-                                                    bottom: 5),
-                                                alignment:
-                                                    Alignment.centerRight,
+                                                padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
+                                                alignment: Alignment.centerRight,
                                                 child: ATText(
-                                                  text: state
-                                                      .orderLineList?[index]
-                                                      .quantity
+                                                  text: state.orderLineList?[index].quantity
                                                       .toString()
-                                                      .removeDecimalZeroFormat(
-                                                          state
-                                                                  .orderLineList?[
-                                                                      index]
-                                                                  .quantity ??
-                                                              0),
-                                                  fontColor:
-                                                      AppColors.onboardingText,
+                                                      .removeDecimalZeroFormat(state.orderLineList?[index].quantity ?? 0),
+                                                  fontColor: AppColors.onboardingText,
                                                   fontSize: 16,
                                                   weight: FontWeight.bold,
                                                 ),
@@ -899,8 +548,7 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                         padding: const EdgeInsets.only(left: 8),
                                         alignment: Alignment.centerLeft,
                                         child: ATText(
-                                          text: state.orderLineList?[index]
-                                              .stockModel?.name,
+                                          text: state.orderLineList?[index].stockModel?.name,
                                           fontSize: 16,
                                         ),
                                       ),
@@ -924,33 +572,22 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
     });
   }
 
-  Widget itemCard(OrderHistoryState state, int index,
-      {bool isOrderReceived = false}) {
+  Widget itemCard(OrderHistoryState state, int index, {bool isOrderReceived = false}) {
     bool isChecked = false;
     return Card(
       elevation: 4.0,
       child: Column(
         children: [
           Container(
-            padding:
-                const EdgeInsets.only(left: 16, right: 16, top: 5, bottom: 5),
+            padding: const EdgeInsets.only(left: 16, right: 16, top: 5, bottom: 5),
             width: double.infinity,
             color: !isOrderReceived
                 ? double.parse(state.orderLineList?[index].stockModel?.onHand.toString() ?? '0') > 0 &&
-                        double.parse(state
-                                    .orderLineList?[index].stockModel?.onHand
-                                    .toString() ??
-                                '0') <
-                            double.parse(state
-                                    .orderLineList?[index].originalQuantity
-                                    .toString() ??
-                                '0')
+                        double.parse(state.orderLineList?[index].stockModel?.onHand.toString() ?? '0') <
+                            double.parse(state.orderLineList?[index].originalQuantity.toString() ?? '0')
                     ? AppColors.warningOrange
-                    : double.parse(state.orderLineList?[index].stockModel?.onOrder
-                                    .toString() ??
-                                '0') ==
-                            double.parse(
-                                state.orderLineList?[index].stockModel?.order.toString() ?? '0')
+                    : double.parse(state.orderLineList?[index].stockModel?.onOrder.toString() ?? '0') ==
+                            double.parse(state.orderLineList?[index].stockModel?.order.toString() ?? '0')
                         ? AppColors.successGreen
                         : AppColors.criticalRed
                 : AppColors.successGreen,
@@ -965,21 +602,12 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                     }),
                 ATText(
                   text: !isOrderReceived
-                      ? double.parse(state.orderLineList?[index].quantity.toString() ?? '0') >
-                                  0 &&
-                              double.parse(state.orderLineList?[index].quantity
-                                          .toString() ??
-                                      '0') <
-                                  double.parse(state
-                                          .orderLineList?[index].ordered
-                                          .toString() ??
-                                      '0')
+                      ? double.parse(state.orderLineList?[index].quantity.toString() ?? '0') > 0 &&
+                              double.parse(state.orderLineList?[index].quantity.toString() ?? '0') <
+                                  double.parse(state.orderLineList?[index].ordered.toString() ?? '0')
                           ? 'Partial'
-                          : double.parse(state.orderLineList?[index].ordered
-                                          .toString() ??
-                                      '0') ==
-                                  double.parse(
-                                      state.orderLineList?[index].quantity.toString() ?? '0')
+                          : double.parse(state.orderLineList?[index].ordered.toString() ?? '0') ==
+                                  double.parse(state.orderLineList?[index].quantity.toString() ?? '0')
                               ? 'Received!'
                               : 'Pending'
                       : 'Received!',
@@ -1007,10 +635,7 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                     alignment: Alignment.centerLeft,
                     child: const ATText(
                       text: 'SKU',
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.white),
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.white),
                     ),
                   ),
                   Container(
@@ -1019,10 +644,7 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                     color: AppColors.headerGrey,
                     child: const ATText(
                       text: 'Ordered',
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.white),
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.white),
                     ),
                   ),
                   Container(
@@ -1031,10 +653,7 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                     color: AppColors.headerGrey,
                     child: const ATText(
                       text: 'Received',
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.white),
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.white),
                     ),
                   ),
                 ],
@@ -1066,10 +685,7 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                     padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
                     alignment: Alignment.centerRight,
                     child: ATText(
-                      text: state.orderLineList?[index].ordered
-                          .toString()
-                          .removeDecimalZeroFormat(
-                              state.orderLineList?[index].ordered ?? 0),
+                      text: state.orderLineList?[index].ordered.toString().removeDecimalZeroFormat(state.orderLineList?[index].ordered ?? 0),
                       fontColor: AppColors.onboardingText,
                       fontSize: 16,
                       weight: FontWeight.bold,
@@ -1079,10 +695,7 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                     padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
                     alignment: Alignment.centerRight,
                     child: ATText(
-                      text: state.orderLineList?[index].quantity
-                          .toString()
-                          .removeDecimalZeroFormat(
-                              state.orderLineList?[index].quantity ?? 0),
+                      text: state.orderLineList?[index].quantity.toString().removeDecimalZeroFormat(state.orderLineList?[index].quantity ?? 0),
                       fontColor: AppColors.onboardingText,
                       fontSize: 16,
                       weight: FontWeight.bold,
@@ -1111,9 +724,7 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
   void showAllChecker(OrderHistoryState state) {
     int itemReceivedCounter = 0;
     for (OrderLineModel item in state.orderLineList ?? <OrderLineModel>[]) {
-      if (item.status != 'partial' &&
-          item.status != 'pending' &&
-          item.status != null) {
+      if (item.status != 'partial' && item.status != 'pending' && item.status != null) {
         itemReceivedCounter++;
       }
     }

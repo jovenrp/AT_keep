@@ -80,8 +80,8 @@ class ProfileModel {
     type = json['type'];
     orderCode = json['orderCode'];
     company = json['company'];
-    city = json['address'];
-    state = json['address'];
-    zipCode = json['address'];
+    city = json['city'];
+    state = json['state'];
+    zipCode = json['zipCode'];
   }
 }

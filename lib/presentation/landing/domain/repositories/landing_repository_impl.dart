@@ -162,7 +162,6 @@ class LandingRepositoryImpl implements LandingRepository {
           List<StockModel> stocks = <StockModel>[];
           int index = 0;
           for (List<dynamic> item in data) {
-            print(item);
             if (index > 0) {
               StockModel stock = StockModel(
                 id: item[0].toString(),

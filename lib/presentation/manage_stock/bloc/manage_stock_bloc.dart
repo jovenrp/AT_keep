@@ -13,7 +13,8 @@ import 'package:keep/presentation/manage_stock/domain/repositories/stock_order_r
 import 'package:keep/presentation/order_history/domain/repositories/order_repository.dart';
 import 'package:keep/presentation/profile/domain/repositories/profile_repository.dart';
 import 'package:location/location.dart';
-import 'package:open_file/open_file.dart';
+import 'package:logger/logger.dart';
+import 'package:open_file_safe/open_file_safe.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -73,6 +74,8 @@ class ManageStockBloc extends Cubit<ManageStockState> {
       minQuantity: double.parse(minQuantity ?? '0'),
       maxQuantity: double.parse(maxQuantity ?? '0'),
       order: double.parse(order ?? '0'),
+      createdDate: DateTime.now().toIso8601String(),
+      modifiedDate: DateTime.now().toIso8601String()
     );
 
     await stockOrderRepository.addStock(box, stock);
@@ -115,6 +118,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
 
     emit(state.copyWith(
         isLoading: false, hasError: false, stocksList: stockList));
+    await sortStockOrders(sortBy: state.sortOrder ?? false, stockList: stockList, column: state.sortType);
   }
 
   Future<void> searchStocks({required String search}) async {
@@ -272,6 +276,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
       String? column,
       required bool sortBy}) async {
     List<StockModel> sorted = stockList ?? <StockModel>[];
+    print('sprting');
     sorted.sort((StockModel? a, StockModel? b) {
       switch (column) {
         case 'sku':
@@ -604,7 +609,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
                 pw.Container(
                     child: pw.Center(
                         child: pw.Text(
-                            'Copyright \u00a9 2023 ActionTRAK · All rights reserved',
+                            'Copyright \u00a9 ${DateFormat.y().format(DateTime.now())} ActionTRAK · All rights reserved',
                             style: const pw.TextStyle(fontSize: 14))))
               ]); // Center
         }));
