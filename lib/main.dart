@@ -21,7 +21,6 @@ String? appVersion;
 String? buildNumber;
 // Default is prod
 String apiPublicKey = 'api key for prod here';
-/*
 void main() async {
   commonMain(
     ApplicationConfig(
@@ -33,10 +32,10 @@ void main() async {
         isUiDebuggerEnabled: true,
         isProxyEnabled: true,
         baseContentUrl: 'http://actiontrak.ddns.net:5555',
-        appVersion: '1.0.10',
-        buildNumber: '1.0.10'),
+        appVersion: '1.0.12',
+        buildNumber: '1.0.12'),
   );
-}*/
+}
 
 void commonMain(ApplicationConfig applicationConfig) async {
   // Flutter Optimization

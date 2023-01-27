@@ -13,7 +13,6 @@ import 'package:keep/presentation/manage_stock/domain/repositories/stock_order_r
 import 'package:keep/presentation/order_history/domain/repositories/order_repository.dart';
 import 'package:keep/presentation/profile/domain/repositories/profile_repository.dart';
 import 'package:location/location.dart';
-import 'package:logger/logger.dart';
 import 'package:open_file_safe/open_file_safe.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -56,39 +55,27 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     }
   }
 
-  Future<void> addStock(
-      {String? sku,
-      String? name,
-      String? num,
-      String? minQuantity,
-      String? maxQuantity,
-      String? order}) async {
+  Future<void> addStock({String? sku, String? name, String? num, String? minQuantity, String? maxQuantity, String? order}) async {
     emit(state.copyWith(isAdding: true));
 
     Box box = await stockOrderRepository.openBox();
     StockModel stock = StockModel(
-      id: generateUniqueId(),
-      sku: sku,
-      name: name ?? '',
-      num: num ?? '',
-      minQuantity: double.parse(minQuantity ?? '0'),
-      maxQuantity: double.parse(maxQuantity ?? '0'),
-      order: double.parse(order ?? '0'),
-      createdDate: DateTime.now().toIso8601String(),
-      modifiedDate: DateTime.now().toIso8601String()
-    );
+        id: generateUniqueId(),
+        sku: sku,
+        name: name ?? '',
+        num: num ?? '',
+        minQuantity: double.parse(minQuantity ?? '0'),
+        maxQuantity: double.parse(maxQuantity ?? '0'),
+        order: double.parse(order ?? '0'),
+        createdDate: DateTime.now().toIso8601String(),
+        modifiedDate: DateTime.now().toIso8601String());
 
     await stockOrderRepository.addStock(box, stock);
     emit(state.copyWith(isAdding: false));
   }
 
   Future<void> updateStock(int index, StockModel? stockModel,
-      {String? sku,
-      String? name,
-      String? num,
-      String? minQuantity,
-      String? maxQuantity,
-      String? order}) async {
+      {String? sku, String? name, String? num, String? minQuantity, String? maxQuantity, String? order}) async {
     emit(state.copyWith(isAdding: true));
 
     Box box = await stockOrderRepository.openBox();
@@ -107,25 +94,19 @@ class ManageStockBloc extends Cubit<ManageStockState> {
   }
 
   Future<void> getStocks() async {
-    emit(state.copyWith(
-        isLoading: true,
-        isPdfGenerated: false,
-        stocksList: <StockModel>[],
-        formResponse: FormModel(error: false, message: '')));
+    emit(state.copyWith(isLoading: true, isPdfGenerated: false, stocksList: <StockModel>[], formResponse: FormModel(error: false, message: '')));
 
     Box box = await stockOrderRepository.openBox();
     List<StockModel> stockList = stockOrderRepository.getStockList(box);
 
-    emit(state.copyWith(
-        isLoading: false, hasError: false, stocksList: stockList));
+    Box orderLineBox = await orderLineRepository.openBox();
+
+    emit(state.copyWith(isLoading: false, hasError: false, stocksList: stockList, orderLineBox: orderLineBox));
     await sortStockOrders(sortBy: state.sortOrder ?? false, stockList: stockList, column: state.sortType);
   }
 
   Future<void> searchStocks({required String search}) async {
-    emit(state.copyWith(
-        isLoading: true,
-        stocksList: <StockModel>[],
-        formResponse: FormModel(error: false, message: '')));
+    emit(state.copyWith(isLoading: true, stocksList: <StockModel>[], formResponse: FormModel(error: false, message: '')));
 
     Box box = await stockOrderRepository.openBox();
     List<StockModel> stockList = stockOrderRepository.getStockList(box);
@@ -135,19 +116,13 @@ class ManageStockBloc extends Cubit<ManageStockState> {
       String sku = item.sku?.toLowerCase() ?? '';
       String num = item.num?.toLowerCase() ?? '';
       String name = item.name?.toLowerCase() ?? '';
-      return sku.contains(searchText) ||
-          num.contains((searchText)) ||
-          name.contains(searchText);
+      return sku.contains(searchText) || num.contains((searchText)) || name.contains(searchText);
     }).toList();
 
     emit(state.copyWith(isLoading: false, hasError: false, stocksList: values));
   }
 
-  Future<void> adjustStock(
-      {StockModel? stockModel,
-      required int index,
-      required double quantity,
-      bool? isIn}) async {
+  Future<void> adjustStock({StockModel? stockModel, required int index, required double quantity, bool? isIn}) async {
     Box box = await stockOrderRepository.openBox();
     double qty = 0;
     double currentQuantity = stockModel?.onHand ?? 0;
@@ -162,11 +137,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     stockOrderRepository.updateStock(box, stockModel ?? StockModel());
   }
 
-  Future<void> orderStock(
-      {StockModel? stockModel,
-      required int index,
-      required double quantity,
-      bool? isIn}) async {
+  Future<void> orderStock({StockModel? stockModel, required int index, required double quantity, bool? isIn}) async {
     Box box = await stockOrderRepository.openBox();
 
     stockModel?.setQuantity(quantity);
@@ -183,8 +154,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     //stockOrderRepository.clearStock(box);
   }
 
-  Future<void> clearStocks(
-      {required List<StockModel> stockList, String? orderName}) async {
+  Future<void> clearStocks({required List<StockModel> stockList, String? orderName}) async {
     emit(state.copyWith(isLoading: true));
 
     Box ordBox = await orderRepository.openBox();
@@ -210,24 +180,23 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     Box stockBox = await stockOrderRepository.openBox();
     for (StockModel item in stockList) {
       if (item.isOrdered == false) {
+        OrderLineModel orderLineModel = OrderLineModel(
+          id: generateUniqueId(),
+          orderId: orderUniqueId,
+          stockId: item.id,
+          lineNum: ordLineBox.isEmpty ? '000001' : (ordLineBox.length + 1).toString().padLeft(6, '0'),
+          quantity: 0,
+          originalQuantity: double.parse(getQuantity(item)),
+          ordered: double.parse(getQuantity(item)),
+          createdDate: DateTime.now().toIso8601String(),
+        );
+
         item.setIsOrdered(true);
         item.setorder(0);
         item.setOriginalOnHand(item.onHand ?? 0);
         item.setOnOrder(double.parse(getQuantity(item)));
         stockOrderRepository.updateStock(stockBox, item);
 
-        OrderLineModel orderLineModel = OrderLineModel(
-          id: generateUniqueId(),
-          orderId: orderUniqueId,
-          stockId: item.id,
-          lineNum: ordLineBox.isEmpty
-              ? '000001'
-              : (ordLineBox.length + 1).toString().padLeft(6, '0'),
-          quantity: 0,
-          originalQuantity: double.parse(getQuantity(item)),
-          ordered: double.parse(getQuantity(item)),
-          createdDate: DateTime.now().toIso8601String(),
-        );
         await orderLineRepository.addOrderLine(ordLineBox, orderLineModel);
       }
     }
@@ -237,8 +206,24 @@ class ManageStockBloc extends Cubit<ManageStockState> {
   }
 
   Future<void> displayErrorMessage(FormModel? response) async {
-    emit(state.copyWith(
-        isLoading: false, hasError: false, formResponse: response));
+    emit(state.copyWith(isLoading: false, hasError: false, formResponse: response));
+  }
+  
+  String getPending(StockModel? stockModel){
+    double onOrder = 0;
+    double order = 0;
+    
+    List<OrderLineModel> orderLineList = orderLineRepository.getOrderLineList(state.orderLineBox!);
+
+    for (OrderLineModel lineItem in orderLineList) {
+      if (stockModel?.id == lineItem.stockModel?.id) {
+        double ordered = lineItem.ordered ?? 0;
+        double qty = lineItem.quantity ?? 0;
+        onOrder += ordered;
+        order += qty;
+      }
+    }
+    return (onOrder - order).toString().removeDecimalZeroFormat(onOrder - order);
   }
 
   String getQuantity(StockModel? stockModel) {
@@ -248,43 +233,40 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     double onHand = stockModel?.onHand ?? 0;
     double qtyOrder = stockModel?.quantity ?? 0;
 
+    double onOrder = 0;
+    double order = 0;
+
+    List<OrderLineModel> orderLineList = orderLineRepository.getOrderLineList(state.orderLineBox!);
+
+    for (OrderLineModel lineItem in orderLineList) {
+      if (stockModel?.id == lineItem.stockModel?.id) {
+        double ordered = lineItem.ordered ?? 0;
+        double qty = lineItem.quantity ?? 0;
+        onOrder += ordered;
+        order += qty;
+      }
+    }
+
     if (qtyOrder > 0) {
       quantity = qtyOrder;
     } else {
       if ((onHand < min) || (onHand == 0) && min == 0) {
-        quantity = (max >= min) ? max - onHand : 0;
+        quantity = (max >= min) ? max - onHand - (onOrder - order) : 0;
       }
     }
-
-    /*if (qtyOrder > 0) {
-      if (onHand < max) {
-        quantity = onHand + qtyOrder > max ? max - onHand : qtyOrder;
-      } else {
-        quantity = 0;
-      }
-      return quantity.toString().removeDecimalZeroFormat(quantity);
-    }
-    if (onHand < min || (onHand == 0 && min == 0)) {
-      quantity = max - onHand;
-    }*/
 
     return quantity.toString().removeDecimalZeroFormat(quantity);
   }
 
-  Future<void> sortStockOrders(
-      {List<StockModel>? stockList,
-      String? column,
-      required bool sortBy}) async {
+  Future<void> sortStockOrders({List<StockModel>? stockList, String? column, required bool sortBy}) async {
     List<StockModel> sorted = stockList ?? <StockModel>[];
-    print('sprting');
+
     sorted.sort((StockModel? a, StockModel? b) {
       switch (column) {
         case 'sku':
           String aa = a?.sku ?? '';
           String bb = b?.sku ?? '';
-          return sortBy
-              ? bb.toLowerCase().compareTo(aa.toLowerCase())
-              : aa.toLowerCase().compareTo(bb.toLowerCase());
+          return sortBy ? bb.toLowerCase().compareTo(aa.toLowerCase()) : aa.toLowerCase().compareTo(bb.toLowerCase());
         case 'min':
           double aa = a?.minQuantity ?? 0;
           double bb = b?.minQuantity ?? 0;
@@ -304,24 +286,14 @@ class ManageStockBloc extends Cubit<ManageStockState> {
         default:
           String aa = a?.sku ?? '';
           String bb = b?.sku ?? '';
-          return sortBy
-              ? bb.toLowerCase().compareTo(aa.toLowerCase())
-              : aa.toLowerCase().compareTo(bb.toLowerCase());
+          return sortBy ? bb.toLowerCase().compareTo(aa.toLowerCase()) : aa.toLowerCase().compareTo(bb.toLowerCase());
       }
     });
-    emit(state.copyWith(
-        isLoading: false,
-        stocksList: sorted,
-        hasError: false,
-        sortOrder: sortBy,
-        sortType: column));
+    emit(state.copyWith(isLoading: false, stocksList: sorted, hasError: false, sortOrder: sortBy, sortType: column));
   }
 
   Future<void> generatePdfOrder(
-      {required List<StockModel>? stockModel,
-      required ProfileModel user,
-      required ProfileModel vendor,
-      required String? action}) async {
+      {required List<StockModel>? stockModel, required ProfileModel user, required ProfileModel vendor, required String? action}) async {
     String formattedDate = DateFormat.yMMMEd().format(DateTime.now());
     String orderNameFile = await createOrderName();
     String? orderNumber = orderNameFile;
@@ -329,8 +301,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
 
     List<StockModel> stockList = <StockModel>[];
     for (StockModel item in stockModel ?? <StockModel>[]) {
-      if (item.isOrdered != true &&
-          double.parse(getQuantity(item).toString()) > 0) {
+      if (item.isOrdered != true && double.parse(getQuantity(item).toString()) > 0) {
         stockList.add(item);
       }
     }
@@ -338,192 +309,172 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     pdf.addPage(pw.Page(
         pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
-          return pw.Column(
+          return pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, mainAxisAlignment: pw.MainAxisAlignment.start, children: [
+            pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, mainAxisAlignment: pw.MainAxisAlignment.start, children: [
+              pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                mainAxisAlignment: pw.MainAxisAlignment.start,
+                children: [
+                  pw.SizedBox(height: 12),
+                  pw.Text(
+                    '${user.firstname.toString().capitalizeFirstofEach()} ${user.lastname.toString().capitalizeFirstofEach()}',
+                    style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold),
+                  ),
+                  pw.SizedBox(height: 3),
+                  pw.Text(
+                    user.company.toString().capitalizeFirstofEach(),
+                    style: const pw.TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  pw.SizedBox(height: 3),
+                  pw.Container(
+                    width: 200,
+                    child: pw.Text(
+                      user.address.toString().capitalizeFirstofEach(),
+                      style: const pw.TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  pw.SizedBox(height: 3),
+                  pw.Container(
+                    width: 200,
+                    child: pw.Text(
+                      '${user.city.toString().capitalizeFirstofEach()}, ${user.state.toString().capitalizeFirstofEach()} ${user.zipCode.toString().capitalizeFirstofEach()}',
+                      style: const pw.TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  pw.Text(
+                    user.email.toString(),
+                    style: const pw.TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  pw.SizedBox(height: 3),
+                  pw.Text(
+                    user.phoneNumber.toString().capitalizeFirstofEach(),
+                    style: const pw.TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+              pw.Spacer(),
+              pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.end,
+                children: [
+                  pw.SizedBox(height: 12),
+                  pw.Text(formattedDate, style: const pw.TextStyle(fontSize: 18)),
+                  pw.Text('Order # $orderNumber', style: const pw.TextStyle(fontSize: 18)),
+                ],
+              ),
+            ]),
+            pw.Row(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               mainAxisAlignment: pw.MainAxisAlignment.start,
               children: [
-                pw.Row(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    mainAxisAlignment: pw.MainAxisAlignment.start,
-                    children: [
-                      pw.Column(
-                        crossAxisAlignment: pw.CrossAxisAlignment.start,
-                        mainAxisAlignment: pw.MainAxisAlignment.start,
-                        children: [
-                          pw.SizedBox(height: 12),
-                          pw.Text(
-                            '${user.firstname.toString().capitalizeFirstofEach()} ${user.lastname.toString().capitalizeFirstofEach()}',
-                            style: pw.TextStyle(
-                                fontSize: 20, fontWeight: pw.FontWeight.bold),
-                          ),
-                          pw.SizedBox(height: 3),
-                          pw.Text(
-                            user.company.toString().capitalizeFirstofEach(),
-                            style: const pw.TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                          pw.SizedBox(height: 3),
-                          pw.Container(
-                            width: 200,
-                            child: pw.Text(
-                              user.address.toString().capitalizeFirstofEach(),
-                              style: const pw.TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          pw.SizedBox(height: 3),
-                          pw.Container(
-                            width: 200,
-                            child: pw.Text(
-                              '${user.city.toString().capitalizeFirstofEach()}, ${user.state.toString().capitalizeFirstofEach()} ${user.zipCode.toString().capitalizeFirstofEach()}',
-                              style: const pw.TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          pw.Text(
-                            user.email.toString(),
-                            style: const pw.TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                          pw.SizedBox(height: 3),
-                          pw.Text(
-                            user.phoneNumber.toString().capitalizeFirstofEach(),
-                            style: const pw.TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                      pw.Spacer(),
-                      pw.Column(
-                        crossAxisAlignment: pw.CrossAxisAlignment.end,
-                        children: [
-                          pw.SizedBox(height: 12),
-                          pw.Text(formattedDate,
-                              style: const pw.TextStyle(fontSize: 18)),
-                          pw.Text('Order # $orderNumber',
-                              style: const pw.TextStyle(fontSize: 18)),
-                        ],
-                      ),
-                    ]),
-                pw.Row(
+                /*pw.SizedBox(
+                    child: pw.Image(image, width: 100, height: 100),
+                  ),*/
+                pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   mainAxisAlignment: pw.MainAxisAlignment.start,
                   children: [
-                    /*pw.SizedBox(
-                    child: pw.Image(image, width: 100, height: 100),
-                  ),*/
-                    pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.start,
-                      mainAxisAlignment: pw.MainAxisAlignment.start,
-                      children: [
-                        pw.SizedBox(height: 12),
-                        pw.Text(
-                          '${vendor.firstname.toString().capitalizeFirstofEach()} ${vendor.lastname.toString().capitalizeFirstofEach()}',
-                          style: pw.TextStyle(
-                              fontSize: 20, fontWeight: pw.FontWeight.bold),
+                    pw.SizedBox(height: 12),
+                    pw.Text(
+                      '${vendor.firstname.toString().capitalizeFirstofEach()} ${vendor.lastname.toString().capitalizeFirstofEach()}',
+                      style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold),
+                    ),
+                    pw.SizedBox(height: 3),
+                    pw.Text(
+                      vendor.company.toString().capitalizeFirstofEach(),
+                      style: const pw.TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    pw.SizedBox(height: 3),
+                    pw.Container(
+                      width: 200,
+                      child: pw.Text(
+                        vendor.address.toString().capitalizeFirstofEach(),
+                        style: const pw.TextStyle(
+                          fontSize: 16,
                         ),
-                        pw.SizedBox(height: 3),
-                        pw.Text(
-                          vendor.company.toString().capitalizeFirstofEach(),
-                          style: const pw.TextStyle(
-                            fontSize: 16,
-                          ),
+                      ),
+                    ),
+                    pw.SizedBox(height: 3),
+                    pw.Container(
+                      width: 200,
+                      child: pw.Text(
+                        '${vendor.city.toString().capitalizeFirstofEach()}, ${vendor.state.toString().capitalizeFirstofEach()} ${vendor.zipCode.toString().capitalizeFirstofEach()}',
+                        style: const pw.TextStyle(
+                          fontSize: 16,
                         ),
-                        pw.SizedBox(height: 3),
-                        pw.Container(
-                          width: 200,
-                          child: pw.Text(
-                            vendor.address.toString().capitalizeFirstofEach(),
-                            style: const pw.TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                        pw.SizedBox(height: 3),
-                        pw.Container(
-                          width: 200,
-                          child: pw.Text(
-                            '${vendor.city.toString().capitalizeFirstofEach()}, ${vendor.state.toString().capitalizeFirstofEach()} ${vendor.zipCode.toString().capitalizeFirstofEach()}',
-                            style: const pw.TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                        pw.SizedBox(height: 3),
-                        pw.Text(
-                          vendor.email.toString(),
-                          style: const pw.TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
-                        pw.SizedBox(height: 3),
-                        pw.Text(
-                          vendor.phoneNumber.toString().capitalizeFirstofEach(),
-                          style: const pw.TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
+                      ),
+                    ),
+                    pw.SizedBox(height: 3),
+                    pw.Text(
+                      vendor.email.toString(),
+                      style: const pw.TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    pw.SizedBox(height: 3),
+                    pw.Text(
+                      vendor.phoneNumber.toString().capitalizeFirstofEach(),
+                      style: const pw.TextStyle(
+                        fontSize: 16,
+                      ),
                     ),
                   ],
                 ),
-                pw.SizedBox(height: 20),
-                pw.Divider(height: 1),
-                pw.SizedBox(height: 20),
-                pw.Padding(
-                  padding: const pw.EdgeInsets.only(left: 0),
-                  child: pw.Table(
-                    columnWidths: const {
-                      0: pw.FlexColumnWidth(6),
-                      4: pw.FlexColumnWidth(2),
-                    },
-                    children: <pw.TableRow>[
-                      pw.TableRow(
-                        children: <pw.Widget>[
-                          pw.Container(
-                            color: PdfColor.fromInt(AppColors.headerGrey.value),
-                            padding: const pw.EdgeInsets.only(
-                                left: 18, top: 5, bottom: 5),
-                            alignment: pw.Alignment.centerLeft,
-                            child: pw.Text(
-                              'SKU / DESCRIPTION',
-                              style: pw.TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: pw.FontWeight.bold,
-                                  color:
-                                      PdfColor.fromInt(AppColors.white.value)),
-                            ),
-                          ),
-                          pw.Container(
-                            padding: const pw.EdgeInsets.only(
-                                right: 8, top: 5, bottom: 5),
-                            alignment: pw.Alignment.centerRight,
-                            color: PdfColor.fromInt(AppColors.headerGrey.value),
-                            child: pw.Text(
-                              'Qty',
-                              style: pw.TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: pw.FontWeight.bold,
-                                  color:
-                                      PdfColor.fromInt(AppColors.white.value)),
-                            ),
-                          ),
-                        ],
+              ],
+            ),
+            pw.SizedBox(height: 20),
+            pw.Divider(height: 1),
+            pw.SizedBox(height: 20),
+            pw.Padding(
+              padding: const pw.EdgeInsets.only(left: 0),
+              child: pw.Table(
+                columnWidths: const {
+                  0: pw.FlexColumnWidth(6),
+                  4: pw.FlexColumnWidth(2),
+                },
+                children: <pw.TableRow>[
+                  pw.TableRow(
+                    children: <pw.Widget>[
+                      pw.Container(
+                        color: PdfColor.fromInt(AppColors.headerGrey.value),
+                        padding: const pw.EdgeInsets.only(left: 18, top: 5, bottom: 5),
+                        alignment: pw.Alignment.centerLeft,
+                        child: pw.Text(
+                          'SKU / DESCRIPTION',
+                          style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold, color: PdfColor.fromInt(AppColors.white.value)),
+                        ),
+                      ),
+                      pw.Container(
+                        padding: const pw.EdgeInsets.only(right: 8, top: 5, bottom: 5),
+                        alignment: pw.Alignment.centerRight,
+                        color: PdfColor.fromInt(AppColors.headerGrey.value),
+                        child: pw.Text(
+                          'Qty',
+                          style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold, color: PdfColor.fromInt(AppColors.white.value)),
+                        ),
                       ),
                     ],
                   ),
-                ),
-                pw.Expanded(
-                  child: pw.ListView.builder(
-                      itemCount: stockList.length,
-                      itemBuilder: (pw.Context context, index) {
-                        return pw.Container(
-                          /*decoration: pw.BoxDecoration(
+                ],
+              ),
+            ),
+            pw.Expanded(
+              child: pw.ListView.builder(
+                  itemCount: stockList.length,
+                  itemBuilder: (pw.Context context, index) {
+                    return pw.Container(
+                      /*decoration: pw.BoxDecoration(
                     border: pw.Border(
                       left: pw.BorderSide(
                           width: 10.0,
@@ -537,81 +488,69 @@ class ManageStockBloc extends Cubit<ManageStockState> {
                               : pc.AppColors.warningOrange.value)),
                     ),
                   ),*/
-                          child: pw.Container(
-                            padding: const pw.EdgeInsets.only(top: 10),
-                            color: PdfColor.fromInt(index % 2 == 1
-                                ? AppColors.lightBlue.value
-                                : AppColors.white.value),
-                            child: pw.Column(
-                              crossAxisAlignment: pw.CrossAxisAlignment.start,
-                              children: <pw.Widget>[
-                                pw.Table(
-                                  columnWidths: const {
-                                    0: pw.FlexColumnWidth(6),
-                                    4: pw.FlexColumnWidth(2),
-                                  },
-                                  children: <pw.TableRow>[
-                                    pw.TableRow(
-                                      children: <pw.Widget>[
-                                        pw.Container(
-                                          padding:
-                                              const pw.EdgeInsets.only(left: 8),
-                                          alignment: pw.Alignment.centerLeft,
-                                          child: pw.Text(
-                                              stockList[index].sku ?? '',
-                                              style: pw.TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight:
-                                                      pw.FontWeight.bold,
-                                                  color: PdfColor.fromInt(
-                                                      AppColors
-                                                          .tertiary.value))),
-                                        ),
-                                        pw.Container(
-                                          padding: const pw.EdgeInsets.only(
-                                              right: 8),
-                                          alignment: pw.Alignment.centerRight,
-                                          child: pw.Text(
-                                            getQuantity(stockList[index]),
-                                            style: pw.TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: pw.FontWeight.bold,
-                                              color: PdfColor.fromInt(
-                                                AppColors.tertiary.value,
-                                              ),
-                                            ),
+                      child: pw.Container(
+                        padding: const pw.EdgeInsets.only(top: 10),
+                        color: PdfColor.fromInt(index % 2 == 1 ? AppColors.lightBlue.value : AppColors.white.value),
+                        child: pw.Column(
+                          crossAxisAlignment: pw.CrossAxisAlignment.start,
+                          children: <pw.Widget>[
+                            pw.Table(
+                              columnWidths: const {
+                                0: pw.FlexColumnWidth(6),
+                                4: pw.FlexColumnWidth(2),
+                              },
+                              children: <pw.TableRow>[
+                                pw.TableRow(
+                                  children: <pw.Widget>[
+                                    pw.Container(
+                                      padding: const pw.EdgeInsets.only(left: 8),
+                                      alignment: pw.Alignment.centerLeft,
+                                      child: pw.Text(stockList[index].sku ?? '',
+                                          style: pw.TextStyle(
+                                              fontSize: 18, fontWeight: pw.FontWeight.bold, color: PdfColor.fromInt(AppColors.tertiary.value))),
+                                    ),
+                                    pw.Container(
+                                      padding: const pw.EdgeInsets.only(right: 8),
+                                      alignment: pw.Alignment.centerRight,
+                                      child: pw.Text(
+                                        getQuantity(stockList[index]),
+                                        style: pw.TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: pw.FontWeight.bold,
+                                          color: PdfColor.fromInt(
+                                            AppColors.tertiary.value,
                                           ),
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ],
                                 ),
-                                pw.Container(
-                                  padding: const pw.EdgeInsets.only(
-                                      left: 8, right: 8, top: 5),
-                                  alignment: pw.Alignment.centerLeft,
-                                  child: pw.Text(
-                                    stockList[index].name ?? '',
-                                    style: pw.TextStyle(
-                                      fontSize: 15,
-                                      color: PdfColor.fromInt(
-                                        AppColors.tertiary.value,
-                                      ),
-                                    ),
-                                  ),
-                                )
                               ],
                             ),
-                          ),
-                        );
-                      }),
-                ),
-                pw.Container(
-                    child: pw.Center(
-                        child: pw.Text(
-                            'Copyright \u00a9 ${DateFormat.y().format(DateTime.now())} ActionTRAK · All rights reserved',
-                            style: const pw.TextStyle(fontSize: 14))))
-              ]); // Center
+                            pw.Container(
+                              padding: const pw.EdgeInsets.only(left: 8, right: 8, top: 5),
+                              alignment: pw.Alignment.centerLeft,
+                              child: pw.Text(
+                                stockList[index].name ?? '',
+                                style: pw.TextStyle(
+                                  fontSize: 15,
+                                  color: PdfColor.fromInt(
+                                    AppColors.tertiary.value,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+            ),
+            pw.Container(
+                child: pw.Center(
+                    child: pw.Text('Copyright \u00a9 ${DateFormat.y().format(DateTime.now())} ActionTRAK · All rights reserved',
+                        style: const pw.TextStyle(fontSize: 14))))
+          ]); // Center
         }));
 
     Directory appDocDir = await getApplicationDocumentsDirectory();
@@ -622,8 +561,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     await file.writeAsBytes(await pdf.save());
 
     if (action == 'share') {
-      ShareResult result =
-          await Share.shareFilesWithResult([file.path], subject: orderNameFile);
+      ShareResult result = await Share.shareFilesWithResult([file.path], subject: orderNameFile);
 
       if (result.status.name == 'success') {
         clearStocks(stockList: stockList, orderName: orderNameFile);

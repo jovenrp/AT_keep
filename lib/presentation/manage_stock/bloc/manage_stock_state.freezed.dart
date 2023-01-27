@@ -29,6 +29,8 @@ class _$ManageStockStateTearOff {
       ProfileModel? user,
       ProfileModel? vendor,
       LocationData? locationData,
+      List<OrderLineModel>? orderLineList,
+      Box<dynamic>? orderLineBox,
       bool isAdded = false,
       bool isPdfGenerated = false,
       UserProfileModel? userProfileModel}) {
@@ -44,6 +46,8 @@ class _$ManageStockStateTearOff {
       user: user,
       vendor: vendor,
       locationData: locationData,
+      orderLineList: orderLineList,
+      orderLineBox: orderLineBox,
       isAdded: isAdded,
       isPdfGenerated: isPdfGenerated,
       userProfileModel: userProfileModel,
@@ -67,6 +71,8 @@ mixin _$ManageStockState {
   ProfileModel? get user => throw _privateConstructorUsedError;
   ProfileModel? get vendor => throw _privateConstructorUsedError;
   LocationData? get locationData => throw _privateConstructorUsedError;
+  List<OrderLineModel>? get orderLineList => throw _privateConstructorUsedError;
+  Box<dynamic>? get orderLineBox => throw _privateConstructorUsedError;
   bool get isAdded => throw _privateConstructorUsedError;
   bool get isPdfGenerated => throw _privateConstructorUsedError;
   UserProfileModel? get userProfileModel => throw _privateConstructorUsedError;
@@ -93,6 +99,8 @@ abstract class $ManageStockStateCopyWith<$Res> {
       ProfileModel? user,
       ProfileModel? vendor,
       LocationData? locationData,
+      List<OrderLineModel>? orderLineList,
+      Box<dynamic>? orderLineBox,
       bool isAdded,
       bool isPdfGenerated,
       UserProfileModel? userProfileModel});
@@ -120,6 +128,8 @@ class _$ManageStockStateCopyWithImpl<$Res>
     Object? user = freezed,
     Object? vendor = freezed,
     Object? locationData = freezed,
+    Object? orderLineList = freezed,
+    Object? orderLineBox = freezed,
     Object? isAdded = freezed,
     Object? isPdfGenerated = freezed,
     Object? userProfileModel = freezed,
@@ -169,6 +179,14 @@ class _$ManageStockStateCopyWithImpl<$Res>
           ? _value.locationData
           : locationData // ignore: cast_nullable_to_non_nullable
               as LocationData?,
+      orderLineList: orderLineList == freezed
+          ? _value.orderLineList
+          : orderLineList // ignore: cast_nullable_to_non_nullable
+              as List<OrderLineModel>?,
+      orderLineBox: orderLineBox == freezed
+          ? _value.orderLineBox
+          : orderLineBox // ignore: cast_nullable_to_non_nullable
+              as Box<dynamic>?,
       isAdded: isAdded == freezed
           ? _value.isAdded
           : isAdded // ignore: cast_nullable_to_non_nullable
@@ -204,6 +222,8 @@ abstract class _$ManageStockStateCopyWith<$Res>
       ProfileModel? user,
       ProfileModel? vendor,
       LocationData? locationData,
+      List<OrderLineModel>? orderLineList,
+      Box<dynamic>? orderLineBox,
       bool isAdded,
       bool isPdfGenerated,
       UserProfileModel? userProfileModel});
@@ -233,6 +253,8 @@ class __$ManageStockStateCopyWithImpl<$Res>
     Object? user = freezed,
     Object? vendor = freezed,
     Object? locationData = freezed,
+    Object? orderLineList = freezed,
+    Object? orderLineBox = freezed,
     Object? isAdded = freezed,
     Object? isPdfGenerated = freezed,
     Object? userProfileModel = freezed,
@@ -282,6 +304,14 @@ class __$ManageStockStateCopyWithImpl<$Res>
           ? _value.locationData
           : locationData // ignore: cast_nullable_to_non_nullable
               as LocationData?,
+      orderLineList: orderLineList == freezed
+          ? _value.orderLineList
+          : orderLineList // ignore: cast_nullable_to_non_nullable
+              as List<OrderLineModel>?,
+      orderLineBox: orderLineBox == freezed
+          ? _value.orderLineBox
+          : orderLineBox // ignore: cast_nullable_to_non_nullable
+              as Box<dynamic>?,
       isAdded: isAdded == freezed
           ? _value.isAdded
           : isAdded // ignore: cast_nullable_to_non_nullable
@@ -313,6 +343,8 @@ class _$_ManageStockState implements _ManageStockState {
       this.user,
       this.vendor,
       this.locationData,
+      this.orderLineList,
+      this.orderLineBox,
       this.isAdded = false,
       this.isPdfGenerated = false,
       this.userProfileModel});
@@ -342,6 +374,10 @@ class _$_ManageStockState implements _ManageStockState {
   final ProfileModel? vendor;
   @override
   final LocationData? locationData;
+  @override
+  final List<OrderLineModel>? orderLineList;
+  @override
+  final Box<dynamic>? orderLineBox;
   @JsonKey(defaultValue: false)
   @override
   final bool isAdded;
@@ -353,7 +389,7 @@ class _$_ManageStockState implements _ManageStockState {
 
   @override
   String toString() {
-    return 'ManageStockState(isLoading: $isLoading, isAdding: $isAdding, hasError: $hasError, errorMessage: $errorMessage, sortOrder: $sortOrder, sortType: $sortType, stocksList: $stocksList, formResponse: $formResponse, user: $user, vendor: $vendor, locationData: $locationData, isAdded: $isAdded, isPdfGenerated: $isPdfGenerated, userProfileModel: $userProfileModel)';
+    return 'ManageStockState(isLoading: $isLoading, isAdding: $isAdding, hasError: $hasError, errorMessage: $errorMessage, sortOrder: $sortOrder, sortType: $sortType, stocksList: $stocksList, formResponse: $formResponse, user: $user, vendor: $vendor, locationData: $locationData, orderLineList: $orderLineList, orderLineBox: $orderLineBox, isAdded: $isAdded, isPdfGenerated: $isPdfGenerated, userProfileModel: $userProfileModel)';
   }
 
   @override
@@ -391,6 +427,12 @@ class _$_ManageStockState implements _ManageStockState {
             (identical(other.locationData, locationData) ||
                 const DeepCollectionEquality()
                     .equals(other.locationData, locationData)) &&
+            (identical(other.orderLineList, orderLineList) ||
+                const DeepCollectionEquality()
+                    .equals(other.orderLineList, orderLineList)) &&
+            (identical(other.orderLineBox, orderLineBox) ||
+                const DeepCollectionEquality()
+                    .equals(other.orderLineBox, orderLineBox)) &&
             (identical(other.isAdded, isAdded) ||
                 const DeepCollectionEquality()
                     .equals(other.isAdded, isAdded)) &&
@@ -416,6 +458,8 @@ class _$_ManageStockState implements _ManageStockState {
       const DeepCollectionEquality().hash(user) ^
       const DeepCollectionEquality().hash(vendor) ^
       const DeepCollectionEquality().hash(locationData) ^
+      const DeepCollectionEquality().hash(orderLineList) ^
+      const DeepCollectionEquality().hash(orderLineBox) ^
       const DeepCollectionEquality().hash(isAdded) ^
       const DeepCollectionEquality().hash(isPdfGenerated) ^
       const DeepCollectionEquality().hash(userProfileModel);
@@ -439,6 +483,8 @@ abstract class _ManageStockState implements ManageStockState {
       ProfileModel? user,
       ProfileModel? vendor,
       LocationData? locationData,
+      List<OrderLineModel>? orderLineList,
+      Box<dynamic>? orderLineBox,
       bool isAdded,
       bool isPdfGenerated,
       UserProfileModel? userProfileModel}) = _$_ManageStockState;
@@ -465,6 +511,10 @@ abstract class _ManageStockState implements ManageStockState {
   ProfileModel? get vendor => throw _privateConstructorUsedError;
   @override
   LocationData? get locationData => throw _privateConstructorUsedError;
+  @override
+  List<OrderLineModel>? get orderLineList => throw _privateConstructorUsedError;
+  @override
+  Box<dynamic>? get orderLineBox => throw _privateConstructorUsedError;
   @override
   bool get isAdded => throw _privateConstructorUsedError;
   @override

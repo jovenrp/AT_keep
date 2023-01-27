@@ -265,7 +265,7 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                                                 padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
                                                                 alignment: Alignment.centerRight,
                                                                 child: ATText(
-                                                                  text: state.orderLineList?[index].stockModel?.onOrder
+                                                                  text: state.orderLineList?[index].ordered
                                                                       .toString()
                                                                       .removeDecimalZeroFormat(state.orderLineList?[index].stockModel?.onOrder ?? 0),
                                                                   fontColor: AppColors.onboardingText,
@@ -277,7 +277,7 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                                                 padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
                                                                 alignment: Alignment.centerRight,
                                                                 child: ATText(
-                                                                  text: state.orderLineList?[index].stockModel?.order
+                                                                  text: state.orderLineList?[index].quantity
                                                                       .toString()
                                                                       .removeDecimalZeroFormat(state.orderLineList?[index].stockModel?.order ?? 0),
                                                                   fontColor: AppColors.onboardingText,

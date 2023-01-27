@@ -124,27 +124,31 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
     emit(state.copyWith(isLoading: true));
 
     double onOrderVal = onOrder ?? 0;
-    double originalOnHand = stock.originalOnHand ?? 0;
+    double originalQuantity = orderLine.originalQuantity ?? 0;
     double quantity = orderLine.quantity ?? 0;
+    double stockOnHand = stock.onHand ?? 0;
+    double stockOnOrder = stock.onOrder ?? 0;
+    double stockOriginalOnHand = stock.originalOnHand ?? 0;
 
+    print('stockOnHand $stockOnHand $originalQuantity $onOrderVal $stockOnOrder');
     if (isFlipped == 'pending') {
       orderLine.setStatus('pending');
-      stock.setonHand(originalOnHand);
+      stock.setonHand(stockOnHand - (originalQuantity != 0 ? quantity : originalQuantity));
       //stock.setOnOrder(orderLine.originalQuantity ?? 0);
-      stock.setorder(0);
+      //stock.setorder(0);
       orderLine.setQuantity(0);
     } else if (isFlipped == 'received') {
       orderLine.setStatus('received');
-      stock.setonHand((orderLine.originalQuantity ?? 0) + originalOnHand);
-      stock.setorder(orderLine.originalQuantity ?? 0);
-      orderLine.setQuantity(orderLine.originalQuantity ?? 0);
+      stock.setonHand(originalQuantity + stockOriginalOnHand);
+      //stock.setorder(originalQuantity);
+      orderLine.setQuantity(originalQuantity);
     } else {
       double onOrderValue = onOrderVal;
       //stock.setonHand(onHandValue);
       //stock.setOnOrder(onOrderValue);
       orderLine.setQuantity(onOrderValue);
-      stock.setonHand(onOrderValue + originalOnHand);
-      stock.setorder(onOrderValue);
+      stock.setonHand(stockOriginalOnHand + onOrderValue);
+      //stock.setorder(onOrderValue);
       orderLine.setIsChecked(onOrderValue > 0 ? true : false);
       orderLine.setStatus(
           onOrderValue == orderLine.originalQuantity ? 'received' : 'partial');

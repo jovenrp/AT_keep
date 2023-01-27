@@ -278,7 +278,8 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
                             Column(
                               children: <Widget>[
                                 ATText(
-                                  text: 'Copyright ActionTRAK ${DateFormat.y().format(DateTime.now())}',
+                                  text:
+                                      'Copyright ActionTRAK ${DateFormat.y().format(DateTime.now())}',
                                   style: const TextStyle(fontSize: 12),
                                 ),
                                 const ATText(
