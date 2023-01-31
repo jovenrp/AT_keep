@@ -56,7 +56,7 @@ class _OrderHistoryScreen extends State<OrderHistoryScreen> {
                   backgroundColor: AppColors.secondary,
                   iconTheme: const IconThemeData(color: AppColors.background),
                   title: const ATText(
-                    text: 'Order History',
+                    text: 'Order Receive',
                     fontColor: AppColors.background,
                     fontSize: 18,
                     weight: FontWeight.bold,

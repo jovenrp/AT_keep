@@ -242,7 +242,7 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
                             isEnabled: !state.isLoading,
                             onPressed: () => Navigator.of(context)
                                 .push(OrderHistoryScreen.route()),
-                            text: 'History',
+                            text: 'Receiving',
                           ),
                         ),
                         /*SizedBox(
@@ -269,7 +269,7 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
                                 SizedBox(
                                   width: MediaQuery.of(context).size.width * .2,
                                   child: QrImage(
-                                    data: 'http://actiontrak.com/keep',
+                                    data: 'https://play.google.com/store/apps/details?id=com.actiontrak.keep.keep',
                                     version: QrVersions.auto,
                                   ),
                                 ),
