@@ -195,6 +195,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
         item.setorder(0);
         item.setOriginalOnHand(item.onHand ?? 0);
         item.setOnOrder(double.parse(getQuantity(item)));
+        item.setQuantity(0);
         stockOrderRepository.updateStock(stockBox, item);
 
         await orderLineRepository.addOrderLine(ordLineBox, orderLineModel);
@@ -212,7 +213,6 @@ class ManageStockBloc extends Cubit<ManageStockState> {
   String getPending(StockModel? stockModel){
     double onOrder = 0;
     double order = 0;
-    
     List<OrderLineModel> orderLineList = orderLineRepository.getOrderLineList(state.orderLineBox!);
 
     for (OrderLineModel lineItem in orderLineList) {
@@ -223,6 +223,7 @@ class ManageStockBloc extends Cubit<ManageStockState> {
         order += qty;
       }
     }
+
     return (onOrder - order).toString().removeDecimalZeroFormat(onOrder - order);
   }
 
@@ -250,8 +251,12 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     if (qtyOrder > 0) {
       quantity = qtyOrder;
     } else {
+      double pending = double.parse(getPending(stockModel));
       if ((onHand < min) || (onHand == 0) && min == 0) {
         quantity = (max >= min) ? max - onHand - (onOrder - order) : 0;
+      }
+      if ( pending > 0) {
+        return '0';
       }
     }
 

@@ -225,7 +225,7 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
                             text: 'Stock List',
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        /*const SizedBox(height: 10),
                         SizedBox(
                           width: double.infinity,
                           child: KeepElevatedButton(
@@ -234,7 +234,7 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
                                 .push(OrderStockScreen.route()),
                             text: 'Order',
                           ),
-                        ),
+                        ),*/
                         const SizedBox(height: 10),
                         SizedBox(
                           width: double.infinity,
@@ -242,7 +242,7 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
                             isEnabled: !state.isLoading,
                             onPressed: () => Navigator.of(context)
                                 .push(OrderHistoryScreen.route()),
-                            text: 'Receiving',
+                            text: 'Orders',
                           ),
                         ),
                         /*SizedBox(

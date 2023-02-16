@@ -130,7 +130,6 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
     double stockOnOrder = stock.onOrder ?? 0;
     double stockOriginalOnHand = stock.originalOnHand ?? 0;
 
-    print('stockOnHand $stockOnHand $originalQuantity $onOrderVal $stockOnOrder');
     if (isFlipped == 'pending') {
       orderLine.setStatus('pending');
       stock.setonHand(stockOnHand - (originalQuantity != 0 ? quantity : originalQuantity));
