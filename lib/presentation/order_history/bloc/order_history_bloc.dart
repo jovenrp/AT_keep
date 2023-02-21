@@ -142,7 +142,8 @@ class OrderHistoryBloc extends Cubit<OrderHistoryState> {
       //stock.setorder(originalQuantity);
       orderLine.setQuantity(originalQuantity);
     } else {
-      double onOrderValue = onOrderVal;
+      double currQuantity = orderLine.quantity ?? 0;
+      double onOrderValue = onOrderVal + currQuantity;
       //stock.setonHand(onHandValue);
       //stock.setOnOrder(onOrderValue);
       orderLine.setQuantity(onOrderValue);

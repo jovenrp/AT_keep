@@ -44,7 +44,7 @@ class LandingDrawer extends StatelessWidget {
   Widget buildMenuItems(BuildContext context) => Column(
         children: <Widget>[
           ListTile(
-            leading: const Icon(Icons.arrow_forward),
+            leading: const Icon(Icons.arrow_back_outlined),
             title: const ATText(
               text: 'Close',
             ),

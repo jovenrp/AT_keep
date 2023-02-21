@@ -279,7 +279,7 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                                                 child: ATText(
                                                                   text: state.orderLineList?[index].quantity
                                                                       .toString()
-                                                                      .removeDecimalZeroFormat(state.orderLineList?[index].stockModel?.order ?? 0),
+                                                                      .removeDecimalZeroFormat(state.orderLineList?[index].quantity ?? 0),
                                                                   fontColor: AppColors.onboardingText,
                                                                   fontSize: 16,
                                                                   weight: FontWeight.bold,

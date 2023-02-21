@@ -12,6 +12,7 @@ import 'package:keep/presentation/landing/presentation/landing_drawer.dart';
 import 'package:keep/presentation/manage_stock/presentation/order_stock_screen.dart';
 import 'package:keep/presentation/order_history/presentation/order_history_screen.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/presentation/widgets/keep_elevated_button.dart';
 import '../../../core/presentation/widgets/at_loading_indicator.dart';
@@ -156,23 +157,21 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
                   ),*/
                   backgroundColor: AppColors.transparent,
                   iconTheme: const IconThemeData(color: AppColors.background),
-                  actions: <Widget>[
-                    Builder(
-                      builder: (BuildContext buildContext) {
-                        return IconButton(
-                          icon: const Icon(
-                            Icons.settings,
-                            color: AppColors.black,
-                          ),
-                          onPressed: () {
-                            Scaffold.of(buildContext).openEndDrawer();
-                          },
-                        );
-                      },
-                    )
-                  ],
+                  leading: Builder(
+                    builder: (BuildContext buildContext) {
+                      return IconButton(
+                        icon: const Icon(
+                          Icons.menu,
+                          color: AppColors.black,
+                        ),
+                        onPressed: () {
+                          Scaffold.of(buildContext).openDrawer();
+                        },
+                      );
+                    },
+                  ),
                 ),
-                endDrawer: LandingDrawer(
+                drawer: LandingDrawer(
                   landingBloc: context.read<LandingScreenBloc>(),
                 ),
                 body: SingleChildScrollView(
@@ -222,7 +221,7 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
                             isEnabled: !state.isLoading,
                             onPressed: () => Navigator.of(context)
                                 .push(ManageStockScreen.route()),
-                            text: 'Stock List',
+                            text: 'Stock',
                           ),
                         ),
                         /*const SizedBox(height: 10),
@@ -261,17 +260,21 @@ class _LandingScreen extends State<LandingScreen> with BackPressedMixin {
                             Column(
                               children: <Widget>[
                                 const ATText(
-                                  text: 'Scan to Share',
+                                  text: 'Share app',
                                   style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width * .2,
-                                  child: QrImage(
+                                const SizedBox(height: 10,),
+                                GestureDetector(
+                                  onTap: () async {
+                                    await Share.share('Checkout ActionTRAK KEEP! Personal Inventory Manager. \n\nhttps://play.google.com/store/apps/details?id=com.actiontrak.keep.keep');
+                                  },
+                                  child: const Icon(Icons.share, size: 35, color: AppColors.tertiary,)
+                                    /*QrImage(
                                     data: 'https://play.google.com/store/apps/details?id=com.actiontrak.keep.keep',
                                     version: QrVersions.auto,
-                                  ),
+                                  )*/,
                                 ),
                               ],
                             ),

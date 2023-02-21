@@ -17,6 +17,7 @@ import '../../../core/presentation/utils/dialog_utils.dart';
 import '../../../core/presentation/widgets/at_loading_indicator.dart';
 import '../../../core/presentation/widgets/at_textfield.dart';
 import '../../order_history/bloc/order_history_bloc.dart';
+import '../../order_history/presentation/order_history_screen.dart';
 import '../../profile/data/models/profile_model.dart';
 import '../../scanners/qr_screen.dart';
 import '../data/models/form_model.dart';
@@ -296,7 +297,7 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                             title: Transform.translate(
                               offset: const Offset(-20, 0),
                               child: const ATText(
-                                text: 'Show orders only',
+                                text: 'Show order',
                                 weight: FontWeight.bold,
                                 fontSize: 14,
                                 fontColor: AppColors.tertiary,
@@ -312,6 +313,32 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                             controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
                           ),
                         ),
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.only(right: 18),
+                            width: double.infinity,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                GestureDetector(
+                                  onTap: () => Navigator.of(context).push(OrderHistoryScreen.route()).then((value) => _forcedRefresh()),
+                                  child: const Icon(
+                                    Icons.receipt_long,
+                                    size: 30,
+                                    color: AppColors.tertiary,
+                                  ),
+                                ),
+                                const SizedBox(width: 5,),
+                                const ATText(
+                                  text: 'Orders',
+                                  weight: FontWeight.bold,
+                                  fontSize: 14,
+                                  fontColor: AppColors.tertiary,
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -346,6 +373,7 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                                 padding: const EdgeInsets.only(left: 18, top: 5, bottom: 5),
                                 alignment: Alignment.centerLeft,
                                 child: const ATText(
+                                  overflow: TextOverflow.ellipsis,
                                   text: 'SKU / DESC',
                                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.white),
                                 ),
@@ -397,7 +425,8 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                                 alignment: Alignment.centerRight,
                                 color: AppColors.headerGrey,
                                 child: const ATText(
-                                  text: 'OnHand',
+                                  text: 'Stk',
+                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.white),
                                 ),
                               ),
@@ -458,13 +487,15 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                             double order = state.stocksList?[index].order ?? 0;
                             double quantity = double.parse(context.read<ManageStockBloc>().getQuantity(state.stocksList?[index]));
 
-                            bool yellow = (onHand < minQuantity && (quantity > 0 && quantity < maxQuantity)) || (minQuantity <= 0 && maxQuantity <= 0 && quantity > 0);
+                            bool yellow = (onHand < minQuantity && (quantity > 0 && quantity < maxQuantity)) ||
+                                (minQuantity <= 0 && maxQuantity <= 0 && quantity > 0);
                             bool red = onHand < minQuantity && (quantity > 0 && quantity >= maxQuantity);
                             bool green = minQuantity >= 0 && maxQuantity > 0;
                             bool grey = minQuantity <= 0 && maxQuantity <= 0 && quantity <= 0;
 
                             return Visibility(
-                              visible: state.stocksList?[index].isActive?.toLowerCase() == 'y' && (isShowAll == false || double.parse(context.read<ManageStockBloc>().getQuantity(state.stocksList?[index])) > 0),
+                              visible: state.stocksList?[index].isActive?.toLowerCase() == 'y' &&
+                                  (isShowAll == false || double.parse(context.read<ManageStockBloc>().getQuantity(state.stocksList?[index])) > 0),
                               child: Slidable(
                                 key: ValueKey<int>(index),
                                 startActionPane: ActionPane(motion: const ScrollMotion(), extentRatio: 0.3, children: <Widget>[
@@ -547,7 +578,7 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                                                               alignment: Alignment.centerRight,
                                                               color: AppColors.headerGrey,
                                                               child: const ATText(
-                                                                text: 'OnHand',
+                                                                text: 'Stk',
                                                                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.white),
                                                               ),
                                                             ),
@@ -830,6 +861,7 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                                                             padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
                                                             alignment: Alignment.centerLeft,
                                                             child: ATText(
+                                                              overflow: TextOverflow.ellipsis,
                                                               text: state.stocksList?[index].sku,
                                                               fontColor: AppColors.onboardingText,
                                                               fontSize: 16,
@@ -1245,7 +1277,18 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                   child: KeepElevatedButton(
                     isEnabled: !state.isLoading,
                     focusNode: submitNode,
-                    onPressed: () => addOrder(state, index, isFloatingButton),
+                    onPressed: () {
+                      if (minController.text.isNotEmpty && maxController.text.isNotEmpty) {
+                        if (double.parse(maxController.text) < double.parse(minController.text)) {
+                          FormModel response = FormModel(error: true, message: 'Min quantity should not be greater than max quantity.');
+                          context.read<ManageStockBloc>().displayErrorMessage(response);
+                        } else {
+                          FormModel response = FormModel(error: false, message: '');
+                          context.read<ManageStockBloc>().displayErrorMessage(response);
+                          addOrder(state, index, isFloatingButton);
+                        }
+                      }
+                    },
                     text: isFloatingButton ? 'Done' : 'Update',
                   ),
                 ),
