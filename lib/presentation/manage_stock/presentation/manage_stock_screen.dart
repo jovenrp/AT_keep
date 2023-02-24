@@ -1,4 +1,5 @@
 import 'package:easy_debounce/easy_debounce.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -13,11 +14,13 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../application/domain/models/application_config.dart';
 import '../../../core/data/mixin/back_pressed_mixin.dart';
 import '../../../core/domain/utils/constants/app_colors.dart';
+import '../../../core/domain/utils/constants/app_text_style.dart';
 import '../../../core/presentation/utils/dialog_utils.dart';
 import '../../../core/presentation/widgets/at_loading_indicator.dart';
 import '../../../core/presentation/widgets/at_textfield.dart';
 import '../../order_history/bloc/order_history_bloc.dart';
 import '../../order_history/presentation/order_history_screen.dart';
+import '../../profile/bloc/profile_bloc.dart';
 import '../../profile/data/models/profile_model.dart';
 import '../../scanners/qr_screen.dart';
 import '../data/models/form_model.dart';
@@ -76,6 +79,37 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
   bool serviceEnabled = false;
   Location location = Location();
   late LocationData locationData;
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController firstnameController = TextEditingController();
+  TextEditingController lastnameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController stateController = TextEditingController();
+  TextEditingController zipCodeController = TextEditingController();
+  TextEditingController prefixController = TextEditingController();
+  TextEditingController companyController = TextEditingController();
+  FocusNode emailNode = FocusNode();
+  FocusNode firstnameNode = FocusNode();
+  FocusNode lastnameNode = FocusNode();
+  FocusNode phoneNode = FocusNode();
+  FocusNode addressNode = FocusNode();
+  FocusNode cityNode = FocusNode();
+  FocusNode stateNode = FocusNode();
+  FocusNode zipCodeNode = FocusNode();
+  FocusNode prefixNode = FocusNode();
+  FocusNode companyNode = FocusNode();
+  String emailOriginal = '';
+  String firstnameOriginal = '';
+  String lastnameOriginal = '';
+  String phoneOriginal = '';
+  String addressOriginal = '';
+  String cityOriginal = '';
+  String stateOriginal = '';
+  String zipCodeOriginal = '';
+  String prefixOriginal = '';
+  String companyOriginal = '';
 
   @override
   void initState() {
@@ -213,7 +247,7 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                       }
                     },
                     child: const Padding(
-                      padding: EdgeInsets.only(right: 9, left: 9),
+                      padding: EdgeInsets.only(right: 18, left: 9),
                       child: Icon(
                         Icons.preview_outlined,
                         size: 30,
@@ -221,7 +255,7 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                       ),
                     ),
                   ),
-                  InkWell(
+                  /*InkWell(
                     onTap: () {
                       //share native
                       if (state.user == null || state.vendor == null) {
@@ -264,7 +298,7 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                         color: AppColors.white,
                       ),
                     ),
-                  )
+                  )*/
                 ],
               ),
               body: Column(
@@ -291,6 +325,7 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Expanded(
+                          flex: 3,
                           child: CheckboxListTile(
                             dense: true,
                             contentPadding: const EdgeInsets.all(0),
@@ -314,29 +349,339 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                           ),
                         ),
                         Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.only(right: 18),
-                            width: double.infinity,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                GestureDetector(
-                                  onTap: () => Navigator.of(context).push(OrderHistoryScreen.route()).then((value) => _forcedRefresh()),
-                                  child: const Icon(
-                                    Icons.receipt_long,
-                                    size: 30,
-                                    color: AppColors.tertiary,
+                          flex: 4,
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Visibility(
+                                  visible: isShowAll == true,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      showDialog(context: context, builder: (BuildContext context) => AlertDialog(
+                                        title: const Text('Send Order', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                                        content: const Text('Do you want to send the order to a new vendor or the default vendor?', style: TextStyle(fontSize: 16)),
+                                        actions: <Widget>[
+                                          Container(
+                                            padding: const EdgeInsets.only(top: 0, left: 10, right: 10),
+                                            width: double.infinity,
+                                            child: KeepElevatedButton(
+                                              isEnabled: !state.isLoading,
+                                              color: AppColors.successGreen,
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                                if (state.user == null || state.vendor == null) {
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    const SnackBar(
+                                                      behavior: SnackBarBehavior.floating,
+                                                      content: Text('Fill up the profile settings before send an order.'),
+                                                      duration: Duration(seconds: 1),
+                                                    ),
+                                                  );
+                                                } else {
+                                                  bool isShareable = false;
+                                                  for (StockModel item in state.stocksList ?? <StockModel>[]) {
+                                                    if (item.isOrdered != true &&
+                                                        double.parse(context.read<ManageStockBloc>().getQuantity(item).toString()) > 0) {
+                                                      isShareable = true;
+                                                    }
+                                                  }
+                                                  if (isShareable) {
+                                                    context.read<ManageStockBloc>().generatePdfOrder(
+                                                        stockModel: state.stocksList,
+                                                        user: state.user ?? ProfileModel(),
+                                                        vendor: state.vendor ?? ProfileModel(),
+                                                        action: 'share');
+                                                  } else {
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(
+                                                        behavior: SnackBarBehavior.floating,
+                                                        content: Text('No stock order to be viewed.'),
+                                                        duration: Duration(seconds: 1),
+                                                      ),
+                                                    );
+                                                  }
+                                                }
+                                              },
+                                              text: 'Default Vendor',
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.only(top: 5, left: 10, right: 10, bottom: 25),
+                                            width: double.infinity,
+                                            child: KeepElevatedButton(
+                                              isEnabled: !state.isLoading,
+                                              color: AppColors.criticalRed,
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                                showModalBottomSheet(
+                                                    context: context,
+                                                    isScrollControlled: true,
+                                                    builder: (context) {
+
+                                                      return Wrap(
+                                                        children: <Widget>[
+                                                          Container(
+                                                            padding: EdgeInsets.only(top: 10, bottom: MediaQuery.of(context).viewInsets.bottom),
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.only(left: 24, right: 24, top: 30),
+                                                              child: Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: <Widget>[
+                                                                  const ATText(
+                                                                    text: 'Vendor Profile',
+                                                                    fontSize: 20,
+                                                                    fontColor: AppColors.tertiary,
+                                                                    weight: FontWeight.bold,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    height: 30,
+                                                                  ),
+                                                                  Container(
+                                                                    padding: const EdgeInsets.only(bottom: 10),
+                                                                    child: Row(
+                                                                      children: <Widget>[
+                                                                        Expanded(
+                                                                          child: ATTextfield(
+                                                                            hintText: 'First Name',
+                                                                            focusNode: firstnameNode,
+                                                                            textEditingController: firstnameController,
+                                                                            textInputAction: TextInputAction.next,
+                                                                          ),
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          width: 10,
+                                                                        ),
+                                                                        Expanded(
+                                                                          child: ATTextfield(
+                                                                            hintText: 'Last Name',
+                                                                            focusNode: lastnameNode,
+                                                                            textEditingController: lastnameController,
+                                                                            textInputAction: TextInputAction.next,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  ATTextfield(
+                                                                    hintText: 'Company',
+                                                                    focusNode: companyNode,
+                                                                    textEditingController: companyController,
+                                                                    textAlign: TextAlign.start,
+                                                                    isSuffixIcon: true,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    height: 10,
+                                                                  ),
+                                                                  ATTextfield(
+                                                                    hintText: 'Address',
+                                                                    focusNode: addressNode,
+                                                                    textEditingController: addressController,
+                                                                    textAlign: TextAlign.start,
+                                                                    isSuffixIcon: true,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    height: 10,
+                                                                  ),
+                                                                  ATTextfield(
+                                                                    hintText: 'City',
+                                                                    focusNode: cityNode,
+                                                                    textEditingController: cityController,
+                                                                    textAlign: TextAlign.start,
+                                                                    isSuffixIcon: true,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    height: 10,
+                                                                  ),
+                                                                  ATTextfield(
+                                                                    hintText: 'State',
+                                                                    focusNode: stateNode,
+                                                                    textEditingController: stateController,
+                                                                    textAlign: TextAlign.start,
+                                                                    isSuffixIcon: true,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    height: 10,
+                                                                  ),
+                                                                  ATTextfield(
+                                                                    hintText: 'Zip Code',
+                                                                    focusNode: zipCodeNode,
+                                                                    textEditingController: zipCodeController,
+                                                                    textAlign: TextAlign.start,
+                                                                    isSuffixIcon: true,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    height: 10,
+                                                                  ),
+                                                                  ATTextfield(
+                                                                    hintText: 'Phone',
+                                                                    focusNode: phoneNode,
+                                                                    textEditingController: phoneController,
+                                                                    textAlign: TextAlign.start,
+                                                                    isSuffixIcon: true,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    height: 10,
+                                                                  ),
+                                                                  ATTextfield(
+                                                                    hintText: 'Email',
+                                                                    focusNode: emailNode,
+                                                                    textEditingController: emailController,
+                                                                    textInputAction: TextInputAction.next,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    height: 20,
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: double.infinity,
+                                                                    child: KeepElevatedButton(
+                                                                      isEnabled: true,
+                                                                      disableText: Text(
+                                                                        'Save',
+                                                                        style: AppTextStyle.size_16_medium.copyWith(
+                                                                          color: Theme.of(context).colorScheme.onPrimary,
+                                                                        ),
+                                                                      ),
+                                                                      onPressed: () {
+                                                                        if (emailController.text.isEmpty ||
+                                                                            firstnameController.text.isEmpty ||
+                                                                            lastnameController.text.isEmpty ||
+                                                                            phoneController.text.isEmpty ||
+                                                                            addressController.text.isEmpty) {
+                                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                                            const SnackBar(
+                                                                              behavior: SnackBarBehavior.floating,
+                                                                              content:
+                                                                              Text('Please fill up all the fields.'),
+                                                                              duration: Duration(seconds: 1),
+                                                                            ),
+                                                                          );
+                                                                          FormModel vendorResponse = FormModel(error: true, message: 'Please fill up all the fields');
+                                                                          context.read<ManageStockBloc>().displayErrorMessage(vendorResponse);
+                                                                        } else {
+                                                                          ProfileModel vendor = ProfileModel(
+                                                                            email: emailController.text,
+                                                                            firstname: firstnameController.text,
+                                                                            lastname: lastnameController.text,
+                                                                            phoneNumber: phoneController.text,
+                                                                            address: addressController.text,
+                                                                            city: cityController.text,
+                                                                            state: stateController.text,
+                                                                            zipCode: zipCodeController.text,
+                                                                            type: 'vendor',
+                                                                            company: companyController.text,
+                                                                          );
+
+                                                                          Navigator.of(context).pop();
+                                                                          if (state.user == null || state.vendor == null) {
+                                                                            ScaffoldMessenger.of(context).showSnackBar(
+                                                                              const SnackBar(
+                                                                                behavior: SnackBarBehavior.floating,
+                                                                                content: Text('Fill up the profile settings before send an order.'),
+                                                                                duration: Duration(seconds: 1),
+                                                                              ),
+                                                                            );
+                                                                          } else {
+                                                                            bool isShareable = false;
+                                                                            for (StockModel item in state.stocksList ?? <StockModel>[]) {
+                                                                              if (item.isOrdered != true &&
+                                                                                  double.parse(context.read<ManageStockBloc>().getQuantity(item).toString()) > 0) {
+                                                                                isShareable = true;
+                                                                              }
+                                                                            }
+                                                                            if (isShareable) {
+                                                                              context.read<ManageStockBloc>().generatePdfOrder(
+                                                                                  stockModel: state.stocksList,
+                                                                                  user: state.user ?? ProfileModel(),
+                                                                                  vendor: vendor,
+                                                                                  action: 'share');
+                                                                            } else {
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                                const SnackBar(
+                                                                                  behavior: SnackBarBehavior.floating,
+                                                                                  content: Text('No stock order to be viewed.'),
+                                                                                  duration: Duration(seconds: 1),
+                                                                                ),
+                                                                              );
+                                                                            }
+                                                                          }
+                                                                        }
+                                                                      },
+                                                                      text: 'Save',
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    height: 10,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      );
+                                                    });
+                                              },
+                                              text: 'New Vendor',
+                                            ),
+                                          ),
+                                        ]),
+                                      );
+
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.only(right: 0),
+                                      width: double.infinity,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: const <Widget>[
+                                          Icon(
+                                            Icons.send,
+                                            size: 25,
+                                            color: AppColors.tertiary,
+                                          ),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          ATText(
+                                            text: 'Send',
+                                            weight: FontWeight.bold,
+                                            fontSize: 14,
+                                            fontColor: AppColors.tertiary,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
-                                const SizedBox(width: 5,),
-                                const ATText(
-                                  text: 'Orders',
-                                  weight: FontWeight.bold,
-                                  fontSize: 14,
-                                  fontColor: AppColors.tertiary,
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () => Navigator.of(context).push(OrderHistoryScreen.route()).then((value) => _forcedRefresh()),
+                                  child: Container(
+                                    padding: const EdgeInsets.only(right: 18),
+                                    width: double.infinity,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: const <Widget>[
+                                        Icon(
+                                          Icons.receipt_long,
+                                          size: 25,
+                                          color: AppColors.tertiary,
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        ATText(
+                                          text: 'Receive',
+                                          weight: FontWeight.bold,
+                                          fontSize: 14,
+                                          fontColor: AppColors.tertiary,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ],
-                            ),
+                              )
+                            ],
                           ),
                         )
                       ],
@@ -686,7 +1031,7 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                                                     focusNode: orderNode,
                                                     textEditingController: orderController,
                                                     textAlign: TextAlign.center,
-                                                    isNumbersOnly: false,
+                                                    isNumbersOnly: true,
                                                     textInputType: TextInputType.number,
                                                     textInputAction: TextInputAction.done,
                                                   ),
@@ -936,7 +1281,7 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                                                   focusNode: adjustNode,
                                                   textAlign: TextAlign.center,
                                                   textInputAction: TextInputAction.done,
-                                                  isNumbersOnly: false,
+                                                  isNumbersOnly: true,
                                                   textInputType: TextInputType.number,
                                                 ),
                                               ),
@@ -1234,7 +1579,7 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                         focusNode: minNode,
                         textAlign: TextAlign.center,
                         textInputAction: TextInputAction.next,
-                        isNumbersOnly: false,
+                        isNumbersOnly: true,
                         textInputType: TextInputType.number,
                       ),
                     ),
@@ -1248,7 +1593,7 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                         focusNode: maxNode,
                         textAlign: TextAlign.center,
                         textInputAction: TextInputAction.next,
-                        isNumbersOnly: false,
+                        isNumbersOnly: true,
                         textInputType: TextInputType.number,
                       ),
                     ),
@@ -1287,6 +1632,8 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
                           context.read<ManageStockBloc>().displayErrorMessage(response);
                           addOrder(state, index, isFloatingButton);
                         }
+                      } else {
+                        addOrder(state, index, isFloatingButton);
                       }
                     },
                     text: isFloatingButton ? 'Done' : 'Update',
@@ -1301,50 +1648,63 @@ class _ManageStockScreen extends State<ManageStockScreen> with BackPressedMixin 
   }
 
   void addOrder(ManageStockState state, int index, bool isFloatingButton) {
-    FormModel response = formChecker();
-    if (!response.error) {
-      if (isFloatingButton) {
-        context
-            .read<ManageStockBloc>()
-            .addStock(
-              sku: skuController.text,
-              name: nameController.text,
-              num: numController.text,
-              minQuantity: minController.text,
-              maxQuantity: maxController.text,
-              order: orderController.text,
-            )
-            .then((_) {
-          Navigator.of(context).pop();
-          context.read<ManageStockBloc>().getStocks().then((value) {
-            BlocListener<ManageStockBloc, ManageStockState>(listener: (BuildContext context, ManageStockState state) {
-              context.read<ManageStockBloc>().sortStockOrders(sortBy: state.sortOrder ?? false, stockList: state.stocksList, column: state.sortType);
-            });
-          });
-        });
-      } else {
-        context
-            .read<ManageStockBloc>()
-            .updateStock(
-              index,
-              state.stocksList?[index],
-              sku: skuController.text,
-              name: nameController.text,
-              num: numController.text,
-              minQuantity: minController.text,
-              maxQuantity: maxController.text,
-              order: orderController.text,
-            )
-            .then((_) {
-          Navigator.of(context).pop();
-          context.read<ManageStockBloc>().getStocks().then((value) {
-            BlocListener<ManageStockBloc, ManageStockState>(listener: (BuildContext context, ManageStockState state) {
-              context.read<ManageStockBloc>().sortStockOrders(sortBy: state.sortOrder ?? false, stockList: state.stocksList, column: state.sortType);
-            });
-          });
-        });
+    context.read<ManageStockBloc>().checkStock(skuController.text, numController.text).then((FormModel stockCheckResponse) {
+      if (!isFloatingButton) {
+        stockCheckResponse.error = false;
+        stockCheckResponse.message = '';
       }
-    }
+
+      if (stockCheckResponse.error != true) {
+        FormModel response = formChecker();
+        if (!response.error) {
+          if (isFloatingButton) {
+            context
+                .read<ManageStockBloc>()
+                .addStock(
+                  sku: skuController.text,
+                  name: nameController.text,
+                  num: numController.text,
+                  minQuantity: minController.text,
+                  maxQuantity: maxController.text,
+                  order: orderController.text,
+                )
+                .then((_) {
+              Navigator.of(context).pop();
+              context.read<ManageStockBloc>().getStocks().then((value) {
+                BlocListener<ManageStockBloc, ManageStockState>(listener: (BuildContext context, ManageStockState state) {
+                  context
+                      .read<ManageStockBloc>()
+                      .sortStockOrders(sortBy: state.sortOrder ?? false, stockList: state.stocksList, column: state.sortType);
+                });
+              });
+            });
+          } else {
+            context
+                .read<ManageStockBloc>()
+                .updateStock(
+                  index,
+                  state.stocksList?[index],
+                  sku: skuController.text,
+                  name: nameController.text,
+                  num: numController.text,
+                  minQuantity: minController.text,
+                  maxQuantity: maxController.text,
+                  order: orderController.text,
+                )
+                .then((_) {
+              Navigator.of(context).pop();
+              context.read<ManageStockBloc>().getStocks().then((value) {
+                BlocListener<ManageStockBloc, ManageStockState>(listener: (BuildContext context, ManageStockState state) {
+                  context
+                      .read<ManageStockBloc>()
+                      .sortStockOrders(sortBy: state.sortOrder ?? false, stockList: state.stocksList, column: state.sortType);
+                });
+              });
+            });
+          }
+        }
+      }
+    });
   }
 
   FormModel formChecker() {

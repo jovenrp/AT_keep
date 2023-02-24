@@ -260,7 +260,12 @@ class ManageStockBloc extends Cubit<ManageStockState> {
       }
     }
 
-    return quantity.toString().removeDecimalZeroFormat(quantity);
+    if (min <= 0 && max <= 0) {
+      return qtyOrder.toString().removeDecimalZeroFormat(qtyOrder);
+    } else {
+      return quantity.toString().removeDecimalZeroFormat(quantity);
+    }
+
   }
 
   Future<void> sortStockOrders({List<StockModel>? stockList, String? column, required bool sortBy}) async {
@@ -596,5 +601,22 @@ class ManageStockBloc extends Cubit<ManageStockState> {
     emit(state.copyWith(isLoading: true));
 
     final String result = await stockOrderRepository.getUpc(code);
+  }
+
+  Future<FormModel> checkStock(String sku, String partNum) async {
+    Box box = await stockOrderRepository.openBox();
+    List<StockModel> stockList = stockOrderRepository.getStockList(box);
+
+    FormModel response = FormModel(error: false, message: '');
+    for (StockModel item in stockList) {
+      if (item.sku == sku) {
+        response = FormModel(error: true, message: 'SKU ${item.sku} is already existing.');
+        emit(state.copyWith(formResponse: response));
+      } else if (item.num == partNum) {
+        response = FormModel(error: true, message: 'PartNum ${item.num} is already existing.');
+        emit(state.copyWith(formResponse: response));
+      }
+    }
+    return response;
   }
 }

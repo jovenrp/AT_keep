@@ -304,9 +304,12 @@ class _OrderLineHistoryScreen extends State<OrderLineHistoryScreen> {
                                                     child: ATTextfield(
                                                       hintText: 'Receive',
                                                       focusNode: orderNode,
+                                                      isNumbersOnly: true,
+                                                      textInputType: TextInputType.number,
                                                       textEditingController: orderController,
                                                       textAlign: TextAlign.center,
                                                       textInputAction: TextInputAction.done,
+
                                                     ),
                                                   ),
                                                   const SizedBox(
